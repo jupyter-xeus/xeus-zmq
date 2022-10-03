@@ -7,33 +7,32 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_TRIVIAL_MESSENGER_HPP
-#define XEUS_TRIVIAL_MESSENGER_HPP
+#ifndef XEUS_ZMQ_EXPORT_HPP
+#define XEUS_ZMQ_EXPORT_HPP
 
-#include "nlohmann/json.hpp"
+#ifdef _WIN32
+    #ifdef XEUS_ZMQ_STATIC_LIB
+        #define XEUS_ZMQ_API
+    #else
+        #ifdef XEUS_ZMQ_EXPORTS
+            #define XEUS_ZMQ_API __declspec(dllexport)
+        #else
+            #define XEUS_ZMQ_API __declspec(dllimport)
+        #endif
+    #endif
+#else
+    #define XEUS_ZMQ_API
+#endif
 
-#include "xeus/xcontrol_messenger.hpp"
-#include "xeus-zmq/xeus-zmq.hpp"
+// Project version
+#define XEUS_ZMQ_VERSION_MAJOR 1
+#define XEUS_ZMQ_VERSION_MINOR 0
+#define XEUS_ZMQ_VERSION_PATCH 0
 
-namespace nl = nlohmann;
-
-namespace xeus
-{
-    class xserver_zmq;
-
-    class XEUS_API xtrivial_messenger : public xcontrol_messenger
-    {
-    public:
-        
-        explicit xtrivial_messenger(xserver_zmq* server);
-        virtual ~xtrivial_messenger ();
-
-    private:
-
-        nl::json send_to_shell_impl(const nl::json& message) override;
-
-        xserver_zmq* p_server;
-    };
-}
+// Binary version
+#define XEUS_ZMQ_BINARY_CURRENT 1
+#define XEUS_ZMQ_BINARY_REVISION 0
+#define XEUS_ZMQ_BINARY_AGE 0
 
 #endif
+

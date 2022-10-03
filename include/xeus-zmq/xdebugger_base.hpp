@@ -21,13 +21,13 @@
 
 #include "zmq.hpp"
 #include "nlohmann/json.hpp"
+#include "xeus/xdebugger.hpp"
 
-#include "xdebugger.hpp"
-#include "xeus.hpp"
+#include "xeus-zmq.hpp"
 
 namespace xeus
 {
-    struct XEUS_API xdebugger_info
+    struct XEUS_ZMQ_API xdebugger_info
     {
         std::size_t m_hash_seed;
         std::string m_tmp_file_prefix;
@@ -42,7 +42,7 @@ namespace xeus
                        std::vector<std::string> exception_paths = {});
     };
 
-    class XEUS_API xdebugger_base : public xdebugger
+    class XEUS_ZMQ_API xdebugger_base : public xdebugger
     {
     public:
 

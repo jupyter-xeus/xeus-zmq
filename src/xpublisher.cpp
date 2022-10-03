@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include "zmq_addon.hpp"
-#include "xeus/xmiddleware.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 #include "xpublisher.hpp"
 
 namespace xeus

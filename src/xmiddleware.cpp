@@ -11,7 +11,7 @@
 #include <random>
 
 #include "zmq_addon.hpp"
-#include "xeus/xmiddleware.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 
 namespace xeus
 {

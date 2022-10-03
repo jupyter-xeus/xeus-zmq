@@ -12,11 +12,9 @@
 
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
-
 #include "nlohmann/json.hpp"
-
-#include "xeus/xeus.hpp"
 #include "xeus/xcontrol_messenger.hpp"
+#include "xeus-zmq/xeus-zmq.hpp"
 
 namespace nl = nlohmann;
 

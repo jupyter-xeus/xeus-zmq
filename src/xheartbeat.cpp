@@ -11,7 +11,7 @@
 #include <string>
 
 #include "zmq_addon.hpp"
-#include "xeus/xmiddleware.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 #include "xheartbeat.hpp"
 
 namespace xeus

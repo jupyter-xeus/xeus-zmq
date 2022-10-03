@@ -11,10 +11,10 @@
 #include <chrono>
 #include <iostream>
 
-#include "xeus/xserver_control_main.hpp"
-#include "xeus/xguid.hpp"
-#include "xeus/xmiddleware.hpp"
 #include "zmq_addon.hpp"
+#include "xeus/xguid.hpp"
+#include "xeus-zmq/xserver_control_main.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 #include "xcontrol.hpp"
 
 namespace xeus

@@ -9,7 +9,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "xeus/xserver_zmq.hpp"
+#include "xeus-zmq/xserver_zmq.hpp"
 #include "xtrivial_messenger.hpp"
 
 namespace xeus

@@ -11,9 +11,9 @@
 #include <fstream>
 #include <iostream>
 
-#include "xeus/xdap_tcp_client.hpp"
-#include "xeus/xdebugger_base.hpp"
-#include "xeus/xmiddleware.hpp"
+#include "xeus-zmq/xdap_tcp_client.hpp"
+#include "xeus-zmq/xdebugger_base.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 
 using namespace std::placeholders;
 

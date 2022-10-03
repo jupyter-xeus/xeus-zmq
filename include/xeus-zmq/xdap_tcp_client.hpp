@@ -6,12 +6,11 @@
 #include <string>
 
 #include "zmq.hpp"
-
 #include "nlohmann/json.hpp"
+#include "xeus/xkernel_configuration.hpp"
 
 #include "xauthentication.hpp"
-#include "xeus.hpp"
-#include "xkernel_configuration.hpp"
+#include "xeus-zmq.hpp"
 
 namespace nl = nlohmann;
 
@@ -29,7 +28,7 @@ namespace xeus
         parallel
     };
 
-    struct XEUS_API xdap_tcp_configuration
+    struct XEUS_ZMQ_API xdap_tcp_configuration
     {
         dap_tcp_type m_dap_tcp_type;
         dap_init_type m_dap_init_type;
@@ -42,7 +41,7 @@ namespace xeus
                                const std::string& session_id);
     };
 
-    class XEUS_API xdap_tcp_client
+    class XEUS_ZMQ_API xdap_tcp_client
     {
     public:
 

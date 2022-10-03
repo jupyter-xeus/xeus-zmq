@@ -12,11 +12,12 @@
 
 #include "zmq.hpp"
 
-#include "xeus.hpp"
-#include "xeus_context.hpp"
-#include "xserver.hpp"
+#include "xeus/xeus_context.hpp"
+#include "xeus/xkernel_configuration.hpp"
+#include "xeus/xserver.hpp"
+
+#include "xeus-zmq.hpp"
 #include "xauthentication.hpp"
-#include "xkernel_configuration.hpp"
 
 namespace xeus
 {
@@ -24,7 +25,7 @@ namespace xeus
     class xheartbeat;
     class xtrivial_messenger;
 
-    class XEUS_API xserver_zmq : public xserver
+    class XEUS_ZMQ_API xserver_zmq : public xserver
     {
     public:
 
@@ -78,7 +79,7 @@ namespace xeus
         bool m_request_stop;
     };
 
-    XEUS_API
+    XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_zmq(xcontext& context,
                                               const xconfiguration& config,
                                               nl::json::error_handler_t eh = nl::json::error_handler_t::strict);

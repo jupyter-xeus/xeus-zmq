@@ -12,13 +12,14 @@
 
 #include "zmq_addon.hpp"
 
-#include "xeus.hpp"
+#include "xeus/xmessage.hpp"
+
+#include "xeus-zmq.hpp"
 #include "xauthentication.hpp"
-#include "xmessage.hpp"
 
 namespace xeus
 {
-    class XEUS_API xzmq_serializer
+    class XEUS_ZMQ_API xzmq_serializer
     {
     public:
 

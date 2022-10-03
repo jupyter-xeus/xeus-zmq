@@ -10,15 +10,16 @@
 #ifndef XEUS_SERVER_CONTROL_MAIN_HPP
 #define XEUS_SERVER_CONTROL_MAIN_HPP
 
-#include "xeus.hpp"
-#include "xeus_context.hpp"
+#include "xeus/xcontrol_messenger.hpp"
+#include "xeus/xeus_context.hpp"
+#include "xeus/xkernel_configuration.hpp"
+
+#include "xeus-zmq.hpp"
 #include "xserver_zmq_split.hpp"
-#include "xkernel_configuration.hpp"
-#include "xcontrol_messenger.hpp"
 
 namespace xeus
 {
-    class XEUS_API xserver_control_main : public xserver_zmq_split
+    class XEUS_ZMQ_API xserver_control_main : public xserver_zmq_split
     {
     public:
 
@@ -32,7 +33,7 @@ namespace xeus
         void start_server(zmq::multipart_t& wire_msg) override;
     };
 
-    XEUS_API
+    XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
                                                        const xconfiguration& config,
                                                        nl::json::error_handler_t eh = nl::json::error_handler_t::strict);

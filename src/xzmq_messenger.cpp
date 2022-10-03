@@ -8,9 +8,7 @@
 ****************************************************************************/
 
 #include "nlohmann/json.hpp"
-
-#include "xeus/xmiddleware.hpp"
-
+#include "xeus-zmq/xmiddleware.hpp"
 #include "xzmq_messenger.hpp"
 
 namespace nl = nlohmann;

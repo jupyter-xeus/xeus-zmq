@@ -12,10 +12,11 @@
 
 #include "zmq_addon.hpp"
 
-#include "xeus/xeus.hpp"
 #include "xeus/xserver.hpp"
 #include "xeus/xkernel_configuration.hpp"
-#include "xeus/xauthentication.hpp"
+
+#include "xeus-zmq.hpp"
+#include "xauthentication.hpp"
 
 namespace xeus
 {
@@ -24,7 +25,7 @@ namespace xeus
     class xpublisher;
     class xshell;
 
-    class XEUS_API xserver_zmq_split : public xserver
+    class XEUS_ZMQ_API xserver_zmq_split : public xserver
     {
     public:
 

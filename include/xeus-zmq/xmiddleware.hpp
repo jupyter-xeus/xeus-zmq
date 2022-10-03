@@ -13,36 +13,36 @@
 #include <string>
 
 #include "zmq.hpp"
-#include "xeus.hpp"
+#include "xeus-zmq.hpp"
 
 namespace xeus
 {
-    XEUS_API
+    XEUS_ZMQ_API
     std::string get_controller_end_point(const std::string& channel);
     
-    XEUS_API
+    XEUS_ZMQ_API
     std::string get_publisher_end_point();
 
-    XEUS_API
+    XEUS_ZMQ_API
     std::string get_end_point(const std::string& transport,
                               const std::string& ip,
                               const std::string& port);
 
-    XEUS_API
+    XEUS_ZMQ_API
     int get_socket_linger();
 
-    XEUS_API
+    XEUS_ZMQ_API
     void init_socket(zmq::socket_t& socket,
                      const std::string& transport,
                      const std::string& ip,
                      const std::string& port);
-    XEUS_API
+    XEUS_ZMQ_API
     void init_socket(zmq::socket_t& socket, const std::string& end_point);
 
-    XEUS_API
+    XEUS_ZMQ_API
     std::string get_socket_port(const zmq::socket_t& socket);
 
-    XEUS_API
+    XEUS_ZMQ_API
     std::string find_free_port(std::size_t max_tries = 100, int start = 49152, int stop = 65536);
 }
 

@@ -11,11 +11,11 @@
 #include <chrono>
 #include <iostream>
 
-#include "xeus/xserver_zmq_split.hpp"
-#include "xeus/xguid.hpp"
-#include "xeus/xmiddleware.hpp"
-#include "xeus/xzmq_serializer.hpp"
 #include "zmq_addon.hpp"
+#include "xeus/xguid.hpp"
+#include "xeus-zmq/xserver_zmq_split.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
+#include "xeus-zmq/xzmq_serializer.hpp"
 #include "xcontrol.hpp"
 #include "xheartbeat.hpp"
 #include "xpublisher.hpp"

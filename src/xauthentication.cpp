@@ -17,9 +17,9 @@
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 
-#include "xeus/xauthentication.hpp"
+#include "xeus/xstring_utils.hpp"
+#include "xeus-zmq/xauthentication.hpp"
 
-#include "xstring_utils.hpp"
 
 namespace xeus
 {
