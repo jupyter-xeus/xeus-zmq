@@ -45,7 +45,7 @@ namespace xeus
 
         while (true)
         {
-            zmq::poll(&items[0], 2, -1);
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
 
             if (items[0].revents & ZMQ_POLLIN)
             {

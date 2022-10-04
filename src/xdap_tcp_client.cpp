@@ -174,7 +174,7 @@ namespace xeus
         m_wait_attach = m_dap_init_type == dap_init_type::parallel;
         while(!m_request_stop)
         {
-            zmq::poll(&items[0], 3, -1);
+            zmq::poll(&items[0], 3, std::chrono::milliseconds(-1));
 
             if(items[0].revents & ZMQ_POLLIN)
             {
