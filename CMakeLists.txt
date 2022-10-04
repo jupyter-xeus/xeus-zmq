@@ -82,7 +82,7 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 
 find_package(xeus)
 set(nlohmann_json_REQUIRED_VERSION 3.2.0)
-set(cppzmq_REQUIRED_VERSION 4.4.1)
+set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
 
 if (NOT TARGET nlohmann_json)
