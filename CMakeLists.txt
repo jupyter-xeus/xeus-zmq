@@ -80,10 +80,14 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 # Dependencies
 # ============
 
-find_package(xeus)
+set(xeus_REQUIRED_VERSION 3.0.0)
 set(nlohmann_json_REQUIRED_VERSION 3.2.0)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
+
+if (NOT TARGET xeus)
+    find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
+endif ()
 
 if (NOT TARGET nlohmann_json)
     find_package(nlohmann_json ${nlohmann_json_REQUIRED_VERSION} REQUIRED)
