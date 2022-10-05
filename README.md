@@ -59,15 +59,15 @@ See the [documentation](http://xeus.readthedocs.io/) for an exhaustive list of t
 `xeus-zmq` depends on the following libraries: [xeus](https://github.com/jupyter-xeus/xeus), [`ZeroMQ`](https://github.com/zeromq/libzmq),
 [`cppzmq`](https://github.com/zeromq/cppzmq), [`OpenSSL`](https://github.com/openssl/openssl), and [`nlohmann_json`](https://github.com/nlohmann/json).
 
-| xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |
-|----------|---------|---------|---------|---------------|---------|
-| master   | ^3.0.0  | ^4.2.5  | ^4.8.1  |     ^3.2.0    | ^3.0    |
+| xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |      xtl       |
+|----------|---------|---------|---------|---------------|---------|----------------|
+| master   | ^3.0.0  | ^4.2.5  | ^4.8.1  |     ^3.2.0    | ^3.0    | >=0.7.0,<0.8.0 |
 
 
 We have packaged all these dependencies on conda-forge. The simplest way to install them is to run:
 
 ```bash
-mamba install cmake pkg-config zeromq cppzmq OpenSSL nlohmann_json xeus -c conda-forge
+mamba install cmake pkg-config zeromq cppzmq OpenSSL nlohmann_json xtl xeus -c conda-forge
 ```
 
 Once you have installed the dependencies, you can build and install `xeus-zmq`:
@@ -124,6 +124,15 @@ make install
 
 ```bash
 cmake
+make install
+```
+
+### xtl
+
+[xtl](https://github.com/xtensor-stack/xtl) is a header only library:
+
+```bash
+cmake -D CMAKE_BUILD_TYPE
 make install
 ```
 
