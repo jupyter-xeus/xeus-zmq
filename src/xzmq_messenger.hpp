@@ -20,7 +20,7 @@ namespace nl = nlohmann;
 
 namespace xeus
 {
-    class XEUS_API xzmq_messenger : public xcontrol_messenger
+    class xzmq_messenger : public xcontrol_messenger
     {
     public:
 

@@ -21,7 +21,7 @@ namespace xeus
 {
     class xserver_zmq;
 
-    class XEUS_API xtrivial_messenger : public xcontrol_messenger
+    class xtrivial_messenger : public xcontrol_messenger
     {
     public:
         
