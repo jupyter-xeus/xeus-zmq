@@ -1,5 +1,8 @@
 # xeus-zmq
 
+[![GithubActions](https://github.com/jupyter-xeus/xeus-zmq/actions/workflows/main.yml/badge.svg)](https://github.com/jupyter-xeus/xeus-zmq/actions/workflows/main.yml)
+[![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ZeroMQ-based middleware for xeus
 
 ## Introduction
