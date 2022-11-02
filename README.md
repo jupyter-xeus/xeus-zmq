@@ -65,6 +65,7 @@ See the [documentation](http://xeus.readthedocs.io/) for an exhaustive list of t
 | xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |      xtl       |
 |----------|---------|---------|---------|---------------|---------|----------------|
 | master   | ^3.0.0  | ^4.2.5  | ^4.8.1  |     ^3.2.0    | ^3.0    | >=0.7.0,<0.8.0 |
+|  1.x     | ^3.0.0  | ^4.2.5  | ^4.8.1  |     ^3.2.0    | ^3.0    | >=0.7.0,<0.8.0 |
 
 
 We have packaged all these dependencies on conda-forge. The simplest way to install them is to run:
