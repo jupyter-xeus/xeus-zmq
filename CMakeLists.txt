@@ -48,7 +48,6 @@ message(STATUS "xeus binary version: v${XEUS_ZMQ_BINARY_VERSION}")
 # =============
 
 # Compilation options
-option(XEUS_ZMQ_DISABLE_ARCH_NATIVE "disable -march=native flag" OFF)
 option(XEUS_ZMQ_BUILD_SHARED_LIBS "Build xeus shared library." ON)
 option(XEUS_ZMQ_BUILD_STATIC_LIBS "Build xeus static library (default if BUILD_SHARED_LIBS is OFF)." ON)
 option(XEUS_ZMQ_STATIC_DEPENDENCIES "link statically with xeus dependencies" OFF)
@@ -264,10 +263,6 @@ macro(xeus_zmq_create_target target_name linkage output_name)
         CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 
         target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder)
-
-        if (NOT XEUS_ZMQ_DISABLE_ARCH_NATIVE)
-            target_compile_options(${target_name} PUBLIC -march=native)
-        endif ()
 
         message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
     endif()
