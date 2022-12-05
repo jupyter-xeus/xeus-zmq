@@ -84,7 +84,7 @@ set(nlohmann_json_REQUIRED_VERSION 3.2.0)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
 
-if (NOT TARGET xeus)
+if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
