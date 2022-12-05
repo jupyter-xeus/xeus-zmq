@@ -61,9 +61,11 @@ option(XEUS_ZMQ_BUILD_TESTS "xeus test suite" OFF)
 
 if (XEUS_ZMQ_STATIC_DEPENDENCIES)
     set(CPPZMQ_TARGET_NAME cppzmq-static)
+    set(XEUS_TARGET_NAME xeus-static)
     set(OPENSSL_USE_STATIC_LIBS ON CACHE BOOL "Linking statically with OpenSSL")
 else()
     set(CPPZMQ_TARGET_NAME cppzmq)
+    set(XEUS_TARGET_NAME xeus)
     set(OPENSSL_USE_STATIC_LIBS OFF CACHE BOOL "Not linking statically with OpenSSL")
 endif()
 
@@ -84,7 +86,7 @@ set(nlohmann_json_REQUIRED_VERSION 3.2.0)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
 
-if (NOT TARGET xeus)
+if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
@@ -200,10 +202,9 @@ macro(xeus_zmq_create_target target_name linkage output_name)
         ${target_name}
         PUBLIC ${CPPZMQ_TARGET_NAME}
         PUBLIC nlohmann_json::nlohmann_json
+        PUBLIC OpenSSL::Crypto
+        PUBLIC ${XEUS_TARGET_NAME}
     )
-        
-    target_link_libraries(${target_name} PUBLIC OpenSSL::Crypto)
-    target_link_libraries(${target_name} PUBLIC xeus)
 
     if (NOT MSVC)
         if (APPLE)
