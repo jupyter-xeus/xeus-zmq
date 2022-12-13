@@ -10,6 +10,8 @@
 #ifndef XEUS_SERVER_IMPL_HPP
 #define XEUS_SERVER_IMPL_HPP
 
+#include <thread>
+
 #include "zmq.hpp"
 
 #include "xeus/xeus_context.hpp"
@@ -68,6 +70,9 @@ namespace xeus
 
         publisher_ptr p_publisher;
         heartbeat_ptr p_heartbeat;
+
+        std::thread m_iopub_thread;
+        std::thread m_hb_thread;
 
         using trivial_messenger_ptr = std::unique_ptr<xtrivial_messenger>;
         trivial_messenger_ptr p_messenger;

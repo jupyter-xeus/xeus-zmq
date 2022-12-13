@@ -7,7 +7,6 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <thread>
 #include <chrono>
 #include <iostream>
 
@@ -34,6 +33,8 @@ namespace xeus
         , m_heartbeat_controller(context, zmq::socket_type::req)
         , p_publisher(new xpublisher(context, config.m_transport, config.m_ip, config.m_iopub_port))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
+        , m_iopub_thread()
+        , m_hb_thread()
         , p_messenger(new xtrivial_messenger(this))
         , p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_error_handler(eh)
@@ -53,6 +54,15 @@ namespace xeus
 
     xserver_zmq::~xserver_zmq()
     {
+        try
+        {
+            m_iopub_thread.join();
+            m_hb_thread.join();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
     }
 
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
@@ -117,14 +127,12 @@ namespace xeus
 
     void xserver_zmq::start_publisher_thread()
     {
-        std::thread iopub_thread(&xpublisher::run, p_publisher.get());
-        iopub_thread.detach();
+        m_iopub_thread = std::move(std::thread(&xpublisher::run, p_publisher.get()));
     }
 
     void xserver_zmq::start_heartbeat_thread()
     {
-        std::thread hb_thread(&xheartbeat::run, p_heartbeat.get());
-        hb_thread.detach();
+        m_hb_thread = std::move(std::thread(&xheartbeat::run, p_heartbeat.get()));
     }
 
     void xserver_zmq::poll(long timeout)
