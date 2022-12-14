@@ -10,6 +10,8 @@
 #ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
 #define XEUS_SERVER_ZMQ_SPLIT_HPP
 
+#include <thread>
+
 #include "zmq_addon.hpp"
 
 #include "xeus/xserver.hpp"
@@ -83,10 +85,15 @@ namespace xeus
         publisher_ptr p_publisher;
         shell_ptr p_shell;
 
+        std::thread m_control_thread;
+        std::thread m_hb_thread;
+        std::thread m_iopub_thread;
+        std::thread m_shell_thread;
+
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;
         nl::json::error_handler_t m_error_handler;
-        
+
         bool m_control_stopped;
     };
 }

@@ -7,7 +7,6 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <thread>
 #include <chrono>
 #include <iostream>
 
@@ -24,7 +23,6 @@
 
 namespace xeus
 {
-    
     xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh)
@@ -32,6 +30,10 @@ namespace xeus
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
         , p_publisher(new xpublisher(context, config.m_transport, config.m_ip, config.m_iopub_port))
         , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
+        , m_control_thread()
+        , m_hb_thread()
+        , m_iopub_thread()
+        , m_shell_thread()
         , p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_error_handler(eh)
         , m_control_stopped(false)
@@ -41,6 +43,17 @@ namespace xeus
 
     xserver_zmq_split::~xserver_zmq_split()
     {
+        try
+        {
+            m_control_thread.join();
+            m_hb_thread.join();
+            m_iopub_thread.join();
+            m_shell_thread.join();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
     }
     
     zmq::multipart_t xserver_zmq_split::notify_internal_listener(zmq::multipart_t& wire_msg)
@@ -123,26 +136,22 @@ namespace xeus
 
     void xserver_zmq_split::start_control_thread()
     {
-        std::thread control_thread(&xcontrol::run, p_controller.get());
-        control_thread.detach();
+        m_control_thread = std::move(std::thread(&xcontrol::run, p_controller.get()));
     }
 
     void xserver_zmq_split::start_heartbeat_thread()
     {
-        std::thread hb_thread(&xheartbeat::run, p_heartbeat.get());
-        hb_thread.detach();
+        m_hb_thread = std::move(std::thread(&xheartbeat::run, p_heartbeat.get()));
     }
 
     void xserver_zmq_split::start_publisher_thread()
     {
-        std::thread iopub_thread(&xpublisher::run, p_publisher.get());
-        iopub_thread.detach();
+        m_iopub_thread = std::move(std::thread(&xpublisher::run, p_publisher.get()));
     }
 
     void xserver_zmq_split::start_shell_thread()
     {
-        std::thread shell_thread(&xshell::run, p_shell.get());
-        shell_thread.detach();
+        m_shell_thread = std::move(std::thread(&xshell::run, p_shell.get()));
     }
 
     xcontrol& xserver_zmq_split::get_controller()
