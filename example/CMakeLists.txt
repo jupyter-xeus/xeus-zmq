@@ -25,20 +25,18 @@ configure_file (
 
 option(XEUS_STATIC_DEPENDENCIES "link statically with xeus dependencies" OFF)
 if (XEUS_STATIC_DEPENDENCIES)
-    set(xeus_target "xeus-static")
+    set(xeus-zmq_target "xeus-zmq-static")
 else ()
-    set(xeus_target "xeus")
+    set(xeus-zmq_target "xeus-zmq")
 endif ()
 
 # Dependencies
 # ============
 
 # Be sure to use recent versions
-set(xeus_REQUIRED_VERSION 0.19.1)
-set(cppzmq_REQUIRED_VERSION 4.3.0)
+set(xeus-zmq_REQUIRED_VERSION 1.0.2)
 
-find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
-find_package(cppzmq ${cppzmq_REQUIRED_VERSION} REQUIRED)
+find_package(xeus-zmq ${xeus-zmq_REQUIRED_VERSION} REQUIRED)
 find_package(Threads)
 
 # Flags
@@ -67,7 +65,7 @@ set(MY_KERNEL_SRC
 
 # My kernel executable
 add_executable(${EXECUTABLE_NAME} src/main.cpp ${MY_KERNEL_SRC} )
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${xeus_target} Threads::Threads)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${xeus-zmq_target} Threads::Threads)
 
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
