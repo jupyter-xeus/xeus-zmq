@@ -211,14 +211,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
             target_link_libraries(${target_name} PUBLIC "-framework CoreFoundation")
         else ()
             if (XEUS_ZMQ_STATIC_DEPENDENCIES)
-                find_path(LIBUUID_INCLUDE_DIR uuid.h PATH_SUFFIXES uuid)
-                find_library(LIBUUID_LIBRARY libuuid.a)
-                target_include_directories(${target_name} PRIVATE ${LIBUUID_INCLUDE_DIR})
-                target_link_libraries(${target_name} PUBLIC ${LIBUUID_LIBRARY}) 
                 target_link_libraries(${target_name} PUBLIC ${sodium_LIBRARY_RELEASE})
-            else ()
-                find_package(LibUUID REQUIRED)
-                target_link_libraries(${target_name} PUBLIC LibUUID::LibUUID)
             endif ()
         endif ()
     endif ()
@@ -378,7 +371,6 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Conf
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-              ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindLibUUID.cmake
               DESTINATION ${XEUS_ZMQ_CMAKECONFIG_INSTALL_DIR})
 install(EXPORT ${PROJECT_NAME}-targets
         FILE ${PROJECT_NAME}Targets.cmake

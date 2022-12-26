@@ -38,11 +38,6 @@ else()
 endif()
 
 find_dependency(cppzmq @cppzmq_REQUIRED_VERSION@)
-
-if(UNIX AND NOT APPLE)
-    find_dependency(LibUUID)
-endif()
-
 find_dependency(OpenSSL)
 
 if(NOT TARGET xeus-zmq AND NOT TARGET xeus-zmq-static)
