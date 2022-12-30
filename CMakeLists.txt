@@ -119,10 +119,7 @@ if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
     endif ()
 endif ()
 
-if (NOT DEFINED OPENSSL_LIBRARY)
-    set(OPENSSL_ROOT_DIR ${CMAKE_INSTALL_PREFIX})
-    find_package(OpenSSL REQUIRED)
-endif ()
+find_package(OpenSSL REQUIRED)
 
 # Source files
 # ============
