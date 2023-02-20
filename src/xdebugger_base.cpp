@@ -23,12 +23,14 @@ namespace xeus
                                    const std::string& tmp_file_prefix,
                                    const std::string& tmp_file_suffix,
                                    bool rich_rendering,
-                                   std::vector<std::string> exception_paths)
+                                   std::vector<std::string> exception_paths,
+                                   bool copy_to_globals)
         : m_hash_seed(hash_seed)
         , m_tmp_file_prefix(tmp_file_prefix)
         , m_tmp_file_suffix(tmp_file_suffix)
         , m_rich_rendering(rich_rendering)
         , m_exception_paths(exception_paths)
+        , m_copy_to_globals(copy_to_globals)
     {
     }
 
@@ -102,7 +104,8 @@ namespace xeus
                 {"breakpoints", breakpoint_list},
                 {"stoppedThreads", m_stopped_threads},
                 {"richRendering", info.m_rich_rendering},
-                {"exceptionPaths", info.m_exception_paths}
+                {"exceptionPaths", info.m_exception_paths},
+                {"copyToGlobals", info.m_copy_to_globals}
             }}
         };
         return reply;
@@ -257,7 +260,7 @@ namespace xeus
     {
         m_event_handler[event] = handler;
     }
-    
+
     void xdebugger_base::continued_event(const nl::json& message)
     {
         std::lock_guard<std::mutex> lock(m_stopped_mutex);
@@ -354,7 +357,7 @@ namespace xeus
                 }
                 else
                 {
-                    reply = 
+                    reply =
                     {
                         {"command", "initialize"},
                         {"request_seq", message["seq"]},
