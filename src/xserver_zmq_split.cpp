@@ -41,9 +41,9 @@ namespace xeus
         p_controller->connect_messenger();
     }
 
-    xserver_zmq_split::~xserver_zmq_split()
-    {
-    }
+    // Has to be in the cpp because incomplete
+    // types are used in unique_ptr in the header
+    xserver_zmq_split::~xserver_zmq_split() = default;
 
     zmq::multipart_t xserver_zmq_split::notify_internal_listener(zmq::multipart_t& wire_msg)
     {

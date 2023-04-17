@@ -52,9 +52,9 @@ namespace xeus
         m_heartbeat_controller.connect(get_controller_end_point("heartbeat"));
     }
 
-    xserver_zmq::~xserver_zmq()
-    {
-    }
+    // Has to be in the cpp because incomplete
+    // types are used in unique_ptr in the header
+    xserver_zmq::~xserver_zmq() = default;
 
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
     {
@@ -112,8 +112,6 @@ namespace xeus
         }
 
         stop_channels();
-
-        std::exit(0);
     }
 
     void xserver_zmq::start_publisher_thread()

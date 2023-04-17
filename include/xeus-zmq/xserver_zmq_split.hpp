@@ -10,6 +10,8 @@
 #ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
 #define XEUS_SERVER_ZMQ_SPLIT_HPP
 
+#include <atomic>
+
 #include "zmq_addon.hpp"
 
 #include "xeus/xserver.hpp"
@@ -94,7 +96,7 @@ namespace xeus
         authentication_ptr p_auth;
         nl::json::error_handler_t m_error_handler;
 
-        bool m_control_stopped;
+        std::atomic<bool> m_control_stopped;
     };
 }
 
