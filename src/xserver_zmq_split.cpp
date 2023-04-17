@@ -41,14 +41,26 @@ namespace xeus
         p_controller->connect_messenger();
     }
 
+    void try_join(std::thread& t, const std::string& name)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+        else
+        {
+            std::cout << name << " was not joinable" << std::endl;
+        }
+    }
+
     xserver_zmq_split::~xserver_zmq_split()
     {
         try
         {
-            m_control_thread.join();
-            m_hb_thread.join();
-            m_iopub_thread.join();
-            m_shell_thread.join();
+            try_join(m_control_thread, "Control thread");
+            try_join(m_hb_thread, "Heartbeat thread");
+            try_join(m_iopub_thread, "IOPub thread");
+            try_join(m_shell_thread, "Shell thread");
         }
         catch(const std::exception& e)
         {
