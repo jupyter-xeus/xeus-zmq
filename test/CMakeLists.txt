@@ -163,3 +163,28 @@ set_tests_properties(test_kernel_shell
     PROPERTIES
     ENVIRONMENT "JUPYTER_PATH=${CMAKE_CURRENT_BINARY_DIR}")
 
+if (UNIX)
+
+    # Test_kernel_ipc
+    # ===============
+
+    set(TEST_KERNEL_IPC_SOURCES
+        xmock_interpreter.cpp
+        xmock_interpreter.hpp
+        main_ipc.cpp)
+
+    add_executable(test_kernel_ipc ${TEST_KERNEL_IPC_SOURCES})
+    target_link_libraries(test_kernel_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
+    target_compile_features(test_kernel_ipc PRIVATE cxx_std_11)
+
+    # Test_client_ipc
+    # ===============
+
+    set(TEST_CLIENT_IPC_SOURCES
+        client_ipc.cpp)
+
+    add_executable(test_client_ipc ${TEST_CLIENT_IPC_SOURCES})
+    target_link_libraries(test_client_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
+    target_compile_features(test_client_ipc PRIVATE cxx_std_11)
+
+endif (UNIX)
