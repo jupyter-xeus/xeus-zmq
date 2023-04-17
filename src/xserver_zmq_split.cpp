@@ -43,19 +43,8 @@ namespace xeus
 
     xserver_zmq_split::~xserver_zmq_split()
     {
-        try
-        {
-            m_control_thread.join();
-            m_hb_thread.join();
-            m_iopub_thread.join();
-            m_shell_thread.join();
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
     }
-    
+
     zmq::multipart_t xserver_zmq_split::notify_internal_listener(zmq::multipart_t& wire_msg)
     {
         nl::json msg = nl::json::parse(wire_msg.popstr());
@@ -136,22 +125,22 @@ namespace xeus
 
     void xserver_zmq_split::start_control_thread()
     {
-        m_control_thread = std::move(std::thread(&xcontrol::run, p_controller.get()));
+        m_control_thread = std::move(xthread(&xcontrol::run, p_controller.get()));
     }
 
     void xserver_zmq_split::start_heartbeat_thread()
     {
-        m_hb_thread = std::move(std::thread(&xheartbeat::run, p_heartbeat.get()));
+        m_hb_thread = std::move(xthread(&xheartbeat::run, p_heartbeat.get()));
     }
 
     void xserver_zmq_split::start_publisher_thread()
     {
-        m_iopub_thread = std::move(std::thread(&xpublisher::run, p_publisher.get()));
+        m_iopub_thread = std::move(xthread(&xpublisher::run, p_publisher.get()));
     }
 
     void xserver_zmq_split::start_shell_thread()
     {
-        m_shell_thread = std::move(std::thread(&xshell::run, p_shell.get()));
+        m_shell_thread = std::move(xthread(&xshell::run, p_shell.get()));
     }
 
     xcontrol& xserver_zmq_split::get_controller()

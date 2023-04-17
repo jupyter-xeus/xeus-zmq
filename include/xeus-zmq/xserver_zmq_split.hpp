@@ -10,8 +10,6 @@
 #ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
 #define XEUS_SERVER_ZMQ_SPLIT_HPP
 
-#include <thread>
-
 #include "zmq_addon.hpp"
 
 #include "xeus/xserver.hpp"
@@ -19,6 +17,7 @@
 
 #include "xeus-zmq.hpp"
 #include "xauthentication.hpp"
+#include "xthread.hpp"
 
 namespace xeus
 {
@@ -39,7 +38,8 @@ namespace xeus
         xserver_zmq_split(zmq::context_t& context,
                           const xconfiguration& config,
                           nl::json::error_handler_t eh);
-        virtual ~xserver_zmq_split();
+
+        ~xserver_zmq_split() override;
 
         // The xcontrol object needs to call this method
         using xserver::notify_control_listener;
@@ -85,10 +85,10 @@ namespace xeus
         publisher_ptr p_publisher;
         shell_ptr p_shell;
 
-        std::thread m_control_thread;
-        std::thread m_hb_thread;
-        std::thread m_iopub_thread;
-        std::thread m_shell_thread;
+        xthread m_control_thread;
+        xthread m_hb_thread;
+        xthread m_iopub_thread;
+        xthread m_shell_thread;
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;
