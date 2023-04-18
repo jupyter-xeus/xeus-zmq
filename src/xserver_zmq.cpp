@@ -52,18 +52,9 @@ namespace xeus
         m_heartbeat_controller.connect(get_controller_end_point("heartbeat"));
     }
 
-    xserver_zmq::~xserver_zmq()
-    {
-        try
-        {
-            m_iopub_thread.join();
-            m_hb_thread.join();
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
-    }
+    // Has to be in the cpp because incomplete
+    // types are used in unique_ptr in the header
+    xserver_zmq::~xserver_zmq() = default;
 
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
     {
@@ -121,18 +112,16 @@ namespace xeus
         }
 
         stop_channels();
-
-        std::exit(0);
     }
 
     void xserver_zmq::start_publisher_thread()
     {
-        m_iopub_thread = std::move(std::thread(&xpublisher::run, p_publisher.get()));
+        m_iopub_thread = std::move(xthread(&xpublisher::run, p_publisher.get()));
     }
 
     void xserver_zmq::start_heartbeat_thread()
     {
-        m_hb_thread = std::move(std::thread(&xheartbeat::run, p_heartbeat.get()));
+        m_hb_thread = std::move(xthread(&xheartbeat::run, p_heartbeat.get()));
     }
 
     void xserver_zmq::poll(long timeout)

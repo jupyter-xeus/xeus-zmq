@@ -39,13 +39,6 @@ namespace xeus
 
         xserver_zmq_split::get_shell().publish(wire_msg);
         xserver_zmq_split::get_shell().run();
-
-        while(!xserver_zmq_split::is_control_stopped())
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        }
-
-        std::exit(0);
     }
 
     std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,

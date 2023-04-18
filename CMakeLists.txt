@@ -134,6 +134,7 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_shell_main.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
 )
 

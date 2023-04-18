@@ -38,8 +38,6 @@ namespace xeus
 
         xserver_zmq_split::get_controller().publish(wire_msg);
         xserver_zmq_split::get_controller().run();
-
-        std::exit(0);
     }
 
     std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
