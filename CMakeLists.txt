@@ -51,7 +51,6 @@ message(STATUS "xeus binary version: v${XEUS_ZMQ_BINARY_VERSION}")
 option(XEUS_ZMQ_BUILD_SHARED_LIBS "Build xeus shared library." ON)
 option(XEUS_ZMQ_BUILD_STATIC_LIBS "Build xeus static library (default if BUILD_SHARED_LIBS is OFF)." ON)
 option(XEUS_ZMQ_STATIC_DEPENDENCIES "link statically with xeus dependencies" OFF)
-option(XEUS_ZMQ_BUILD_TESTS "xeus test suite" OFF)
 
 # Test options
 option(XEUS_ZMQ_BUILD_TESTS "xeus test suite" OFF)
@@ -72,7 +71,6 @@ endif()
 # Print build configuration
 # ==========================
 
-message(STATUS "XEUS_ZMQ_DISABLE_ARCH_NATIVE:        ${XEUS_ZMQ_DISABLE_ARCH_NATIVE}")
 message(STATUS "XEUS_ZMQ_BUILD_SHARED_LIBS:          ${XEUS_ZMQ_BUILD_SHARED_LIBS}")
 message(STATUS "XEUS_ZMQ_BUILD_STATIC_LIBS:          ${XEUS_ZMQ_BUILD_STATIC_LIBS}")
 message(STATUS "XEUS_ZMQ_STATIC_DEPENDENCIES:        ${XEUS_ZMQ_STATIC_DEPENDENCIES}")  
