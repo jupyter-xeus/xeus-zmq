@@ -223,6 +223,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
             ${target_name}
             PROPERTIES
             PUBLIC_HEADER "${XEUS_ZMQ_HEADERS}"
+            COMPILE_OPTIONS "-fvisibility=hidden"
             COMPILE_DEFINITIONS "XEUS_ZMQ_EXPORTS"
             PREFIX ""
             VERSION
