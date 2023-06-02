@@ -10,9 +10,9 @@
 #include <iostream>
 #include <thread>
 
-#include "xeus/xeus_context.hpp"
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus-zmq/xzmq_context.hpp"
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xmock_interpreter.hpp"
 
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     config.m_signature_scheme = "none";
     config.m_key = "";
 
-    auto context = xeus::make_context<zmq::context_t>();
+    auto context = xeus::make_zmq_context();
 
     using interpreter_ptr = std::unique_ptr<xeus::xmock_interpreter>;
     interpreter_ptr interpreter = interpreter_ptr(new xeus::xmock_interpreter());
