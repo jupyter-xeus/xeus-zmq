@@ -28,9 +28,9 @@ The documentation can be found with that of xeus at http://xeus.readthedocs.io/
 #include <iostream>
 #include <memory>
 
-#include "xeus/xeus_context.hpp"
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus-zmq/xzmq_context.hpp"
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xmock_interpreter.hpp"
 
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     std::string file_name = (argc == 1) ? "connection.json" : argv[2];
     xeus::xconfiguration config = xeus::load_configuration(file_name);
 
-    auto context = xeus::make_context<zmq::context_t>();
+    auto context = xeus::make_zmq_context();
 
     using interpreter_ptr = std::unique_ptr<my_custom_interpreter>;
     interpreter_ptr interpreter = interpreter_ptr(new my_custom_interpreter());

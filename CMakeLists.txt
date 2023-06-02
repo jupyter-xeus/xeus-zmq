@@ -133,6 +133,7 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
 )
 
@@ -144,9 +145,6 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_base.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xmiddleware.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.hpp
@@ -158,6 +156,10 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_context.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
 )
 
 # Targets and link
