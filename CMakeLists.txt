@@ -28,7 +28,7 @@ foreach(ver ${xeus_zmq_version_defines})
 endforeach()
 set(XEUS_ZMQ_VERSION
     ${XEUS_ZMQ_VERSION_MAJOR}.${XEUS_ZMQ_VERSION_MINOR}.${XEUS_ZMQ_VERSION_PATCH})
-message(STATUS "xeus version: v${XEUS_ZMQ_VERSION}")
+message(STATUS "xeus-zmq version: v${XEUS_ZMQ_VERSION}")
 
 # Binary version
 # See the following URL for explanations about the binary versionning
@@ -42,7 +42,7 @@ foreach(ver ${xeus_zmq_version_defines})
 endforeach()
 set(XEUS_ZMQ_BINARY_VERSION
     ${XEUS_ZMQ_BINARY_CURRENT}.${XEUS_ZMQ_BINARY_REVISION}.${XEUS_ZMQ_BINARY_AGE})
-message(STATUS "xeus binary version: v${XEUS_ZMQ_BINARY_VERSION}")
+message(STATUS "xeus-zmq binary version: v${XEUS_ZMQ_BINARY_VERSION}")
 
 # Build options
 # =============
@@ -79,7 +79,7 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 # Dependencies
 # ============
 
-set(xeus_REQUIRED_VERSION 3.0.0)
+set(xeus_REQUIRED_VERSION 3.1.1)
 set(nlohmann_json_REQUIRED_VERSION 3.2.0)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
