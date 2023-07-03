@@ -187,5 +187,15 @@ namespace xeus
         xmessage_base_data data = deserialize_message_base(wire_msg, auth);
         return xpub_message(topic, std::move(data));
     }
+
+    xpub_message xzmq_serializer::create_xpub_message(const std::string& topic)
+    {
+        xmessage_base_data data;
+        data.m_header = xeus::make_header("iopub_welcome", "", "");
+        data.m_content["subscription"] = topic;
+        xpub_message p_msg("", std::move(data));
+
+        return p_msg;
+    }
 }
 

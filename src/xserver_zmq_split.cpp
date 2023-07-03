@@ -12,6 +12,7 @@
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
+#include "xeus-zmq/xauthentication.hpp"
 #include "xeus-zmq/xserver_zmq_split.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
@@ -26,7 +27,8 @@ namespace xeus
     xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh)
-        : p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
+        : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
+        , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
         , p_publisher(new xpublisher(context, config.m_transport, config.m_ip, config.m_iopub_port))
         , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
@@ -34,10 +36,10 @@ namespace xeus
         , m_hb_thread()
         , m_iopub_thread()
         , m_shell_thread()
-        , p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_error_handler(eh)
         , m_control_stopped(false)
     {
+        p_publisher->set_iopub_cb(&xserver_zmq_split::create_iopub_welcome_wire_msg, this);
         p_controller->connect_messenger();
     }
 
@@ -156,6 +158,14 @@ namespace xeus
     bool xserver_zmq_split::is_control_stopped() const
     {
         return m_control_stopped;
+    }
+
+    zmq::multipart_t xserver_zmq_split::create_iopub_welcome_wire_msg(const std::string& topic)
+    {
+        // Create the `iopub_welcome` wire message
+        xpub_message p_msg = xzmq_serializer::create_xpub_message(topic);
+        zmq::multipart_t wire_msg = xzmq_serializer::serialize_iopub(std::move(p_msg), *p_auth, m_error_handler);
+        return wire_msg;
     }
 }
 

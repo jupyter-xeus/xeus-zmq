@@ -18,11 +18,11 @@
 #include "xeus/xkernel_configuration.hpp"
 
 #include "xeus-zmq.hpp"
-#include "xauthentication.hpp"
 #include "xthread.hpp"
 
 namespace xeus
 {
+    class xauthentication;
     class xcontrol;
     class xheartbeat;
     class xpublisher;
@@ -54,6 +54,8 @@ namespace xeus
 
         xmessage deserialize(zmq::multipart_t& wire_msg) const;
 
+        zmq::multipart_t create_iopub_welcome_wire_msg(const std::string& topic);
+
     protected:
 
         xcontrol_messenger& get_control_messenger_impl() override;
@@ -82,6 +84,9 @@ namespace xeus
 
         virtual void start_server(zmq::multipart_t& wire_msg) = 0;
 
+        using authentication_ptr = std::unique_ptr<xauthentication>;
+        authentication_ptr p_auth;
+
         controller_ptr p_controller;
         heartbeat_ptr p_heartbeat;
         publisher_ptr p_publisher;
@@ -92,8 +97,6 @@ namespace xeus
         xthread m_iopub_thread;
         xthread m_shell_thread;
 
-        using authentication_ptr = std::unique_ptr<xauthentication>;
-        authentication_ptr p_auth;
         nl::json::error_handler_t m_error_handler;
 
         std::atomic<bool> m_control_stopped;
