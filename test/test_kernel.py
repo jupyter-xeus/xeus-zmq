@@ -31,6 +31,9 @@ class XeusKernelTests(jupyter_kernel_test.KernelTests):
         self.assertEqual(output_msgs[0]['content']['name'], 'stderr')
         self.assertEqual(output_msgs[0]['content']['text'], 'error')
 
+class XeusIopubWelcomeTests(jupyter_kernel_test.IopubWelcomeTests):
+
+    kernel_name = "test_kernel"
 
 if __name__ == '__main__':
     unittest.main()
