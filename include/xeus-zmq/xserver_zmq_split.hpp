@@ -54,7 +54,7 @@ namespace xeus
 
         xmessage deserialize(zmq::multipart_t& wire_msg) const;
 
-        zmq::multipart_t create_iopub_welcome_wire_msg(const std::string& topic);
+        zmq::multipart_t serialize_iopub(xpub_message&& msg);
 
     protected:
 

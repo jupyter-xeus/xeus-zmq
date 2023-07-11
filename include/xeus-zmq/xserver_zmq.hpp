@@ -40,7 +40,7 @@ namespace xeus
 
         ~xserver_zmq() override;
 
-        zmq::multipart_t create_iopub_welcome_wire_msg(const std::string& topic);
+        zmq::multipart_t serialize_iopub(xpub_message&& msg);
 
         using xserver::notify_internal_listener;
 

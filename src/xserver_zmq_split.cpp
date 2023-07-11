@@ -30,7 +30,9 @@ namespace xeus
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
-        , p_publisher(new xpublisher(context, config.m_transport, config.m_ip, config.m_iopub_port))
+        , p_publisher(new xpublisher(context,
+                                     std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
+                                     config.m_transport, config.m_ip, config.m_iopub_port))
         , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
         , m_control_thread()
         , m_hb_thread()
@@ -39,7 +41,6 @@ namespace xeus
         , m_error_handler(eh)
         , m_control_stopped(false)
     {
-        p_publisher->set_iopub_cb(&xserver_zmq_split::create_iopub_welcome_wire_msg, this);
         p_controller->connect_messenger();
     }
 
@@ -160,12 +161,9 @@ namespace xeus
         return m_control_stopped;
     }
 
-    zmq::multipart_t xserver_zmq_split::create_iopub_welcome_wire_msg(const std::string& topic)
+    zmq::multipart_t xserver_zmq_split::serialize_iopub(xpub_message&& msg)
     {
-        // Create the `iopub_welcome` wire message
-        xpub_message p_msg = xzmq_serializer::create_xpub_message(topic);
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize_iopub(std::move(p_msg), *p_auth, m_error_handler);
-        return wire_msg;
+        return xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
     }
 }
 

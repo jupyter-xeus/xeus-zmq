@@ -36,8 +36,6 @@ namespace xeus
 
         static xpub_message deserialize_iopub(zmq::multipart_t& wire_msg,
                                               const xauthentication& auth);
-
-        static xpub_message create_xpub_message(const std::string& topic);
     };
 
 }

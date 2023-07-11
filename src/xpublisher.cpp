@@ -16,12 +16,14 @@
 namespace xeus
 {
     xpublisher::xpublisher(zmq::context_t& context,
+                           std::function<zmq::multipart_t(xpub_message&&)> serialize_iopub_msg_cb,
                            const std::string& transport,
                            const std::string& ip,
                            const std::string& port)
         : m_publisher(context, zmq::socket_type::xpub)
         , m_listener(context, zmq::socket_type::sub)
         , m_controller(context, zmq::socket_type::rep)
+        , m_serialize_iopub_msg_cb(std::move(serialize_iopub_msg_cb))
     {
         init_socket(m_publisher, transport, ip, port);
         // Set xpub_verbose option to 1 to pass all subscription messages (not only unique ones).
@@ -34,6 +36,16 @@ namespace xeus
 
     xpublisher::~xpublisher()
     {
+    }
+
+    xpub_message xpublisher::create_xpub_message(const std::string& topic)
+    {
+        xmessage_base_data data;
+        data.m_header = xeus::make_header("iopub_welcome", "", "");
+        data.m_content["subscription"] = topic;
+        xpub_message p_msg("", std::move(data));
+
+        return p_msg;
     }
 
     std::string xpublisher::get_port() const
@@ -84,10 +96,6 @@ namespace xeus
                 }
 
                 zmq::message_t frame = wire_msg.pop();
-                if (frame.size() == 0)
-                {
-                    break;
-                }
 
                 //  Event is one byte 0 = unsub or 1 = sub, followed by topic
                 uint8_t *event = (uint8_t *)frame.data();
@@ -98,7 +106,8 @@ namespace xeus
                     if (m_serialize_iopub_msg_cb)
                     {
                         // Construct the `iopub_welcome` message
-                        zmq::multipart_t iopub_welcome_wire_msg = m_serialize_iopub_msg_cb(topic);
+                        xpub_message p_msg = create_xpub_message(topic);
+                        zmq::multipart_t iopub_welcome_wire_msg = m_serialize_iopub_msg_cb(std::move(p_msg));
                         // Send the `iopub_welcome` message
                         iopub_welcome_wire_msg.send(m_publisher);
                     }
