@@ -34,6 +34,7 @@ class XeusKernelTests(jupyter_kernel_test.KernelTests):
 class XeusIopubWelcomeTests(jupyter_kernel_test.IopubWelcomeTests):
 
     kernel_name = "test_kernel"
+    support_iopub_welcome = True
 
 if __name__ == '__main__':
     unittest.main()
