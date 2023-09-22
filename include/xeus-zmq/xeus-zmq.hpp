@@ -27,12 +27,12 @@
 // Project version
 #define XEUS_ZMQ_VERSION_MAJOR 1
 #define XEUS_ZMQ_VERSION_MINOR 1
-#define XEUS_ZMQ_VERSION_PATCH 0
+#define XEUS_ZMQ_VERSION_PATCH 1
 
 // Binary version
-#define XEUS_ZMQ_BINARY_CURRENT 2
+#define XEUS_ZMQ_BINARY_CURRENT 3
 #define XEUS_ZMQ_BINARY_REVISION 0
-#define XEUS_ZMQ_BINARY_AGE 0
+#define XEUS_ZMQ_BINARY_AGE 1
 
 #endif
 
