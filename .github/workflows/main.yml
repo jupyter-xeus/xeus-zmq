@@ -28,7 +28,7 @@ jobs:
             xeus_build_shared_lib: 0
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v1
 
@@ -89,7 +89,7 @@ jobs:
         os: [ windows-2019, windows-2022 ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
