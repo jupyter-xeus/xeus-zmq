@@ -34,12 +34,15 @@ namespace xeus
         std::string m_tmp_file_suffix;
         bool m_rich_rendering;
         std::vector<std::string> m_exception_paths;
+        bool m_copy_to_globals;
 
         xdebugger_info(std::size_t hash_seed,
                        const std::string& tmp_file_prefix,
                        const std::string& tmp_file_suffix,
                        bool rich_rendering = false,
-                       std::vector<std::string> exception_paths = {});
+                       std::vector<std::string> exception_paths = {},
+                       bool copy_to_globals = false);
+
     };
 
     class XEUS_ZMQ_API xdebugger_base : public xdebugger
@@ -47,7 +50,7 @@ namespace xeus
     public:
 
         virtual ~xdebugger_base() = default;
-        
+
     protected:
 
         xdebugger_base(zmq::context_t& context);
@@ -105,7 +108,7 @@ namespace xeus
 
         zmq::socket_t m_header_socket;
         zmq::socket_t m_request_socket;
-        
+
         using request_handler_map_t = std::map<std::string, request_handler_t>;
         request_handler_map_t m_started_handler;
         request_handler_map_t m_request_handler;
