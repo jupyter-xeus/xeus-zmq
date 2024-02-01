@@ -12,7 +12,7 @@
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus-zmq/xzmq_context.hpp"
-#include "xeus-zmq/xserver_shell_main.hpp"
+#include "xeus-zmq/xserver_zmq.hpp"
 #include "xmock_interpreter.hpp"
 
 int main(int argc, char* argv[])

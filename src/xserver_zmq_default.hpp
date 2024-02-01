@@ -7,54 +7,43 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
-#define XEUS_SERVER_ZMQ_SPLIT_HPP
+#ifndef XEUS_SERVER_IMPL_HPP
+#define XEUS_SERVER_IMPL_HPP
 
-#include <atomic>
-
+#include "zmq.hpp"
 #include "zmq_addon.hpp"
 
-#include "xeus/xserver.hpp"
+#include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
-#include "xeus-zmq.hpp"
-#include "xthread.hpp"
+#include "xeus-zmq/xeus-zmq.hpp"
+#include "xeus-zmq/xthread.hpp"
+
+#include "xserver_zmq_impl.hpp"
 
 namespace xeus
 {
     class xauthentication;
-    class xcontrol;
-    class xheartbeat;
     class xpublisher;
-    class xshell;
+    class xheartbeat;
+    class xtrivial_messenger;
 
-    class XEUS_ZMQ_API xserver_zmq_split : public xserver
+    class XEUS_ZMQ_API xserver_zmq_default : public xserver_zmq_impl
     {
     public:
 
-        using controller_ptr = std::unique_ptr<xcontrol>;
-        using heartbeat_ptr = std::unique_ptr<xheartbeat>;
         using publisher_ptr = std::unique_ptr<xpublisher>;
-        using shell_ptr = std::unique_ptr<xshell>;
+        using heartbeat_ptr = std::unique_ptr<xheartbeat>;
 
-        xserver_zmq_split(zmq::context_t& context,
-                          const xconfiguration& config,
-                          nl::json::error_handler_t eh);
+        xserver_zmq_default(zmq::context_t& context,
+                    const xconfiguration& config,
+                    nl::json::error_handler_t eh);
 
-        ~xserver_zmq_split() override;
-
-        // The xcontrol object needs to call this method
-        using xserver::notify_control_listener;
-        // The xshell object needs to call these methods
-        using xserver::notify_shell_listener;
-        using xserver::notify_stdin_listener;
-
-        zmq::multipart_t notify_internal_listener(zmq::multipart_t& wire_msg);
-        void notify_control_stopped();
-
-        xmessage deserialize(zmq::multipart_t& wire_msg) const;
+        ~xserver_zmq_default() override;
 
         zmq::multipart_t serialize_iopub(xpub_message&& msg);
+
+        using xserver_zmq_impl::notify_internal_listener;
 
     protected:
 
@@ -70,38 +59,34 @@ namespace xeus
         void stop_impl() override;
         void update_config_impl(xconfiguration& config) const override;
 
-        void start_control_thread();
-        void start_heartbeat_thread();
+        void poll(long timeout);
         void start_publisher_thread();
-        void start_shell_thread();
+        void start_heartbeat_thread();
+        void stop_channels();
 
-        xcontrol& get_controller();
-        xshell& get_shell();
-
-        bool is_control_stopped() const;
-
-    private:
-
-        virtual void start_server(zmq::multipart_t& wire_msg) = 0;
+        zmq::socket_t m_shell;
+        zmq::socket_t m_controller;
+        zmq::socket_t m_stdin;
+        zmq::socket_t m_publisher_pub;
+        zmq::socket_t m_publisher_controller;
+        zmq::socket_t m_heartbeat_controller;
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;
 
-        controller_ptr p_controller;
-        heartbeat_ptr p_heartbeat;
         publisher_ptr p_publisher;
-        shell_ptr p_shell;
+        heartbeat_ptr p_heartbeat;
 
-        xthread m_control_thread;
-        xthread m_hb_thread;
         xthread m_iopub_thread;
-        xthread m_shell_thread;
+        xthread m_hb_thread;
+
+        using trivial_messenger_ptr = std::unique_ptr<xtrivial_messenger>;
+        trivial_messenger_ptr p_messenger;
 
         nl::json::error_handler_t m_error_handler;
-
-        std::atomic<bool> m_control_stopped;
+        
+        bool m_request_stop;
     };
 }
 
 #endif
-
