@@ -29,55 +29,50 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v1
 
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+      - name: Get number of CPU cores
+        uses: SimenB/github-actions-cpu-cores@v2
+
+      - name: Install micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: environment-dev.yml
           environment-name: xeus-zmq
+          init-shell: bash
 
-      - name: install cxx compiler
+      - name: Create build directory
+        shell: bash -l {0}
+        run: mkdir -p build
+
+      - name: Configure cmake
         shell: bash -l {0}
         run: |
-          $HOME/micromamba-bin/micromamba install cxx-compiler libuuid  -c conda-forge -y
-
-      - name: cmake configure
-        shell: bash -l {0}
-        run: |
-          mkdir -p build
-          cd build
           cmake .. \
            -DXEUS_ZMQ_BUILD_TESTS=ON \
            -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
            -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
            -DXEUS_STATIC_DEPENDENCIES=${{ matrix.xeus_static_dependencies }} \
            -DXEUS_BUILD_SHARED_LIBS=${{ matrix.xeus_build_shared_lib }}
+        working-directory: build
 
-      - name: build
+      - name: Build
         shell: bash -l {0}
-        run: |
-          cd build
-          make -j 2
-          # make -j ${{ steps.cpu-cores.outputs.count }}
+        run: make -j ${{ steps.cpu-cores.outputs.count }}
+        working-directory: build
 
       - name: Test xeus-zmq
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 4
           max_attempts: 4
           shell: bash
-          command: |
-            cd build/test
-            ctest --output-on-failure
+          command: ctest --output-on-failure
+        working-directory: build/test
 
-
-      - name: install xeus-zmq
+      - name: Install xeus-zmq
         shell: bash -l {0}
-        run: |
-          cd build
-          make install
+        run: make install
+        working-directory: build
 
   win:
 
@@ -91,24 +86,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+      - name: Install micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: environment-dev.yml
           environment-name: xeus-zmq
-
-      - name: micromamba shell hook
-        shell: powershell
-        run: |
-          micromamba shell hook -s cmd.exe -p C:\Users\runneradmin\micromamba-root
+          init-shell: >-
+            powershell
+            cmd
 
       - name: Make build directory
         run: mkdir build
 
-      - name: cmake configure
+      - name: Configure cmake
         shell: cmd
         run: |
-          call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate xeus-zmq
           cmake .. ^
            -G Ninja ^
            -DCMAKE_BUILD_TYPE=Release ^
@@ -118,23 +110,20 @@ jobs:
            -DCMAKE_INSTALL_PREFIX="%CONDA_PREFIX%"
         working-directory: build
 
-      - name: build
+      - name: Build
         shell: cmd
         run: |
-          call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate xeus-zmq
           set CL=/MP
           ninja install
         working-directory: build
 
       - name: ctest
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 4
           max_attempts: 4
           shell: cmd
           command: |
-            call C:\Users\runneradmin\micromamba-root\condabin\micromamba.bat activate xeus-zmq
             set PATH=%CONDA_PREFIX%;%CONDA_PREFIX%\\Scripts;%CONDA_PREFIX%\\Library;%CONDA_PREFIX%\\Library\\bin;%PATH%
-            cd build
             ctest --output-on-failure
-
+          working-directory: build
