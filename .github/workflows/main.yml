@@ -66,8 +66,9 @@ jobs:
           timeout_minutes: 4
           max_attempts: 4
           shell: bash
-          command: ctest --output-on-failure
-        working-directory: build/test
+          command: |
+            cd build/test
+            ctest --output-on-failure
 
       - name: Install xeus-zmq
         shell: bash -l {0}
@@ -125,5 +126,5 @@ jobs:
           shell: cmd
           command: |
             set PATH=%CONDA_PREFIX%;%CONDA_PREFIX%\\Scripts;%CONDA_PREFIX%\\Library;%CONDA_PREFIX%\\Library\\bin;%PATH%
+            cd build
             ctest --output-on-failure
-          working-directory: build
