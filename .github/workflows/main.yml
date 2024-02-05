@@ -100,7 +100,7 @@ jobs:
         run: mkdir build
 
       - name: Configure cmake
-        shell: cmd
+        shell: cmd /C call {0}
         run: |
           cmake .. ^
            -G Ninja ^
@@ -112,7 +112,7 @@ jobs:
         working-directory: build
 
       - name: Build
-        shell: cmd
+        shell: cmd /C call {0}
         run: |
           set CL=/MP
           ninja install
