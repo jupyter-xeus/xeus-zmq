@@ -121,6 +121,7 @@ if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
 endif ()
 
 find_package(OpenSSL REQUIRED)
+find_package(uvw REQUIRED)
 
 # Source files
 # ============
