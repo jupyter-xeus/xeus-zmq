@@ -15,6 +15,7 @@
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
+#include "xeus/xeus_context.hpp"
 #include "xeus-zmq/xauthentication.hpp"
 #include "xeus-zmq/xserver_uv_shell_main.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
@@ -177,6 +178,15 @@ namespace xeus
     zmq::multipart_t xserver_uv_shell_main::serialize_iopub(xpub_message&& msg)
     {
         return xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
+    }
+
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
+        xcontext& context,
+        const xconfiguration& config,
+        nl::json::error_handler_t eh)
+    {
+        return std::make_unique<xserver_uv_shell_main>(
+            context.get_wrapped_context<zmq::context_t>(), config, eh);
     }
 }
 
