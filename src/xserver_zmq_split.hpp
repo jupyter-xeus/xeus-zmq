@@ -29,7 +29,7 @@ namespace xeus
     class xpublisher;
     class xshell;
 
-    class XEUS_ZMQ_API xserver_zmq_split : public xserver_zmq_impl
+    class xserver_zmq_split : public xserver_zmq_impl
     {
     public:
 

@@ -16,7 +16,7 @@
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xmock_interpreter.hpp"
 
-int main(int argc, char* argv[])
+int main(int /*argc*/, char* /*argv*/[])
 {
 
     using namespace std::chrono_literals;

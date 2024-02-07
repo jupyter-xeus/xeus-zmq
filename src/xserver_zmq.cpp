@@ -16,16 +16,14 @@
 namespace xeus
 {
 
-    xserver_zmq::xserver_zmq(xserver_zmq_impl* impl)
-        : p_impl(impl)
+    xserver_zmq::xserver_zmq(std::unique_ptr<xserver_zmq_impl> impl)
+        : p_impl(std::move(impl))
     {
-        // TODO if reqd
     }
 
-    xserver_zmq::~xserver_zmq()
-    {
-        delete p_impl;
-    }
+    // Has to be in the cpp because incomplete
+    // types are used in unique_ptr in the header
+    xserver_zmq::~xserver_zmq() = default;
 
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
     {
@@ -72,30 +70,27 @@ namespace xeus
         p_impl->update_config(config);
     }
 
-    XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_zmq_default(xcontext& context,
                                               const xconfiguration& config,
                                               nl::json::error_handler_t eh)
     {
-        auto* impl = new xserver_zmq_default(context.get_wrapped_context<zmq::context_t>(), config, eh);
-        return std::make_unique<xserver_zmq>(impl);
+        auto impl = std::make_unique<xserver_zmq_default>(context.get_wrapped_context<zmq::context_t>(), config, eh);
+        return std::make_unique<xserver_zmq>(std::move(impl));
     }
 
-    XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
                                                        const xconfiguration& config,
                                                        nl::json::error_handler_t eh)
     {
-        auto* impl = new xserver_control_main(context.get_wrapped_context<zmq::context_t>(), config, eh);
-        return std::make_unique<xserver_zmq>(impl);
+        auto impl = std::make_unique<xserver_control_main>(context.get_wrapped_context<zmq::context_t>(), config, eh);
+        return std::make_unique<xserver_zmq>(std::move(impl));
     }
 
-    XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,
                                                      const xconfiguration& config,
                                                      nl::json::error_handler_t eh)
     {
-        auto* impl = new xserver_shell_main(context.get_wrapped_context<zmq::context_t>(), config, eh);
-        return std::make_unique<xserver_zmq>(impl);
+        auto impl = std::make_unique<xserver_shell_main>(context.get_wrapped_context<zmq::context_t>(), config, eh);
+        return std::make_unique<xserver_zmq>(std::move(impl));
     }
 }

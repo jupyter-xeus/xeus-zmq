@@ -18,7 +18,7 @@
 
 namespace xeus
 {
-    class XEUS_ZMQ_API xserver_control_main : public xserver_zmq_split
+    class xserver_control_main : public xserver_zmq_split
     {
     public:
 

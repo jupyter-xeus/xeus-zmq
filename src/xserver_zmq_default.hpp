@@ -28,7 +28,7 @@ namespace xeus
     class xheartbeat;
     class xtrivial_messenger;
 
-    class XEUS_ZMQ_API xserver_zmq_default : public xserver_zmq_impl
+    class xserver_zmq_default : public xserver_zmq_impl
     {
     public:
 

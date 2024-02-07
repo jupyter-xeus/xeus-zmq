@@ -19,14 +19,14 @@
 namespace xeus
 {
     class xserver_zmq_impl;
-    class XEUS_ZMQ_API xserver_zmq : public xserver
+    class XEUS_ZMQ_API xserver_zmq final: public xserver
     {
     public:
 
-        explicit xserver_zmq(xserver_zmq_impl* impl);
-        ~xserver_zmq();
+        explicit xserver_zmq(std::unique_ptr<xserver_zmq_impl> impl);
+        ~xserver_zmq() override;
 
-    protected:
+    private:
 
         xcontrol_messenger& get_control_messenger_impl() override;
 
@@ -40,9 +40,7 @@ namespace xeus
         void stop_impl() override;
         void update_config_impl(xconfiguration& config) const override;
 
-    private:
-
-        xserver_zmq_impl* p_impl;
+        std::unique_ptr<xserver_zmq_impl> p_impl;
     };
 
     XEUS_ZMQ_API
