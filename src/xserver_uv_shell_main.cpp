@@ -19,10 +19,10 @@
 #include "xeus-zmq/xserver_uv_shell_main.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
-#include "xcontrol.hpp"
+#include "xshell_uv.hpp"
+#include "xcontrol_uv.hpp"
 #include "xheartbeat.hpp"
 #include "xpublisher.hpp"
-#include "xshell.hpp"
 #include "xzmq_messenger.hpp"
 
 namespace xeus
@@ -31,12 +31,12 @@ namespace xeus
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
-        // , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
+        , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
         , p_publisher(new xpublisher(context,
                                      std::bind(&xserver_uv_shell_main::serialize_iopub, this, std::placeholders::_1),
                                      config.m_transport, config.m_ip, config.m_iopub_port))
-        // , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
+        , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
         , m_control_thread()
         , m_hb_thread()
         , m_iopub_thread()
