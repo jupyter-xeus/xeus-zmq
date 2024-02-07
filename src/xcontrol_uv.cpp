@@ -17,7 +17,7 @@
 
 namespace xeus
 {
-    xcontrol::xcontrol(zmq::context_t& context,
+    xcontrol_uv::xcontrol_uv(zmq::context_t& context,
                        const std::string& transport,
                        const std::string& ip,
                        const std::string& control_port,
@@ -33,26 +33,26 @@ namespace xeus
         m_publisher_pub.connect(get_publisher_end_point());
     }
 
-    xcontrol::~xcontrol()
+    xcontrol_uv::~xcontrol_uv()
     {
     }
 
-    std::string xcontrol::get_port() const
+    std::string xcontrol_uv::get_port() const
     {
         return get_socket_port(m_control);
     }
 
-    void xcontrol::connect_messenger()
+    void xcontrol_uv::connect_messenger()
     {
         m_messenger.connect();
     }
 
-    xcontrol_messenger& xcontrol::get_messenger()
+    xcontrol_messenger& xcontrol_uv::get_messenger()
     {
         return m_messenger;
     }
 
-    void xcontrol::run()
+    void xcontrol_uv::run()
     {
         m_request_stop = false;
 
@@ -75,17 +75,17 @@ namespace xeus
         p_server->notify_control_stopped();
     }
 
-    void xcontrol::stop()
+    void xcontrol_uv::stop()
     {
         m_request_stop = true;
     }
 
-    void xcontrol::send_control(zmq::multipart_t& message)
+    void xcontrol_uv::send_control(zmq::multipart_t& message)
     {
         message.send(m_control);
     }
 
-    void xcontrol::publish(zmq::multipart_t& message)
+    void xcontrol_uv::publish(zmq::multipart_t& message)
     {
         message.send(m_publisher_pub);
     }
