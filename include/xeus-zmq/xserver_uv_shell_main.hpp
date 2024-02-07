@@ -85,7 +85,7 @@ namespace xeus
 
     private:
 
-        virtual void start_server(zmq::multipart_t& wire_msg) = 0;
+        void start_server(zmq::multipart_t& wire_msg);
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;

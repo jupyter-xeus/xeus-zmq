@@ -51,6 +51,16 @@ namespace xeus
     // types are used in unique_ptr in the header
     xserver_uv_shell_main::~xserver_uv_shell_main() = default;
 
+    void xserver_uv_shell_main::start_server(zmq::multipart_t& wire_msg)
+    {
+        start_publisher_thread();
+        start_heartbeat_thread();
+        start_control_thread();
+
+        get_shell().publish(wire_msg);
+        get_shell().run();
+    }
+
     zmq::multipart_t xserver_uv_shell_main::notify_internal_listener(zmq::multipart_t& wire_msg)
     {
         nl::json msg = nl::json::parse(wire_msg.popstr());
