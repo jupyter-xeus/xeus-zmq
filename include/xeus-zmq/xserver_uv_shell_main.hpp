@@ -12,9 +12,6 @@
 
 #include <atomic>
 
-#define UVW_AS_LIB
-#include <uvw.hpp>
-
 #include "zmq_addon.hpp"
 
 #include "xeus/xserver.hpp"
@@ -27,20 +24,20 @@
 namespace xeus
 {
     class xauthentication;
-    class xcontrol;
+    class xcontrol_uv;
     class xheartbeat;
     class xpublisher;
-    class xshell;
+    class xshell_uv;
     class xcontext;
 
     class XEUS_ZMQ_API xserver_uv_shell_main : public xserver
     {
     public:
 
-        using controller_ptr = std::unique_ptr<xcontrol>;
+        using controller_ptr = std::unique_ptr<xcontrol_uv>;
         using heartbeat_ptr = std::unique_ptr<xheartbeat>;
         using publisher_ptr = std::unique_ptr<xpublisher>;
-        using shell_ptr = std::unique_ptr<xshell>;
+        using shell_ptr = std::unique_ptr<xshell_uv>;
 
         xserver_uv_shell_main(zmq::context_t& context,
                           const xconfiguration& config,
@@ -48,9 +45,9 @@ namespace xeus
 
         ~xserver_uv_shell_main() override;
 
-        // The xcontrol object needs to call this method
+        // The xcontrol_uv object needs to call this method
         using xserver::notify_control_listener;
-        // The xshell object needs to call these methods
+        // The xshell_uv object needs to call these methods
         using xserver::notify_shell_listener;
         using xserver::notify_stdin_listener;
 
@@ -80,8 +77,8 @@ namespace xeus
         void start_publisher_thread();
         void start_shell_thread();
 
-        xcontrol& get_controller();
-        xshell& get_shell();
+        xcontrol_uv& get_controller();
+        xshell_uv& get_shell();
 
         bool is_control_stopped() const;
 
@@ -112,7 +109,7 @@ namespace xeus
         xcontext& context,
         const xconfiguration& config,
         nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
-}
 
-#endif
+} // namespace xeus
 
+#endif // XEUS_SERVER_UV_SHELL_MAIN_HPP

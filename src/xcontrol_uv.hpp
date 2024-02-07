@@ -20,19 +20,19 @@ namespace xeus
 {
     class xserver_uv_shell_main;
 
-    class xcontrol
+    class xcontrol_uv
     {
     public:
 
         using listener = std::function<void(zmq::multipart_t&)>;
 
-        xcontrol(zmq::context_t& context,
+        xcontrol_uv(zmq::context_t& context,
                  const std::string& transport,
                  const std::string& ip,
                  const std::string& control_port,
                  xserver_uv_shell_main* server);
 
-        ~xcontrol();
+        ~xcontrol_uv();
 
         std::string get_port() const;
 

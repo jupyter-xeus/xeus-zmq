@@ -147,6 +147,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_uv.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_uv.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.hpp
@@ -178,6 +180,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_context.cpp

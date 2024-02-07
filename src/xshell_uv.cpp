@@ -11,13 +11,16 @@
 #include <chrono>
 #include <iostream>
 
+#define UVW_AS_LIB
+#include <uvw.hpp>
+
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xserver_uv_shell_main.hpp"
 #include "xshell_uv.hpp"
 
 namespace xeus
 {
-    xshell::xshell(zmq::context_t& context,
+    xshell_uv::xshell_uv(zmq::context_t& context,
                    const std::string& transport,
                    const std::string& ip,
                    const std::string& shell_port,
@@ -38,32 +41,44 @@ namespace xeus
         m_controller.bind(get_controller_end_point("shell"));
     }
 
-    xshell::~xshell()
+    xshell_uv::~xshell_uv()
     {
     }
 
-    std::string xshell::get_shell_port() const
+    std::string xshell_uv::get_shell_port() const
     {
         return get_socket_port(m_shell);
     }
 
-    std::string xshell::get_stdin_port() const
+    std::string xshell_uv::get_stdin_port() const
     {
         return get_socket_port(m_stdin);
     }
 
-    void xshell::run()
+    void xshell_uv::run()
     {
-        zmq::pollitem_t items[] = {
-            { m_shell, 0, ZMQ_POLLIN, 0 },
-            { m_controller, 0, ZMQ_POLLIN, 0 }
-        };
+        // Initialize the default loop
+        auto loop = uvw::loop::get_default();
 
-        while (true)
-        {
-            zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
+        using poll_h = uvw::poll_handle;
 
-            if (items[0].revents & ZMQ_POLLIN)
+        // m_shell and m_controller are zmq sockets
+
+        // Create a resource and bind it to the loop
+        std::shared_ptr<poll_h> shell_resource = loop->resource<poll_h>();
+        std::shared_ptr<poll_h> control_resource = loop->resource<poll_h>();
+
+        // Resources are event emitters to which listeners are attached
+        shell_resource->on<uvw::error_event>(
+            [](const uvw::error_event&, poll_h&)
+            {
+                // TODO: handle errors
+                std::cerr << "Something wrong.\n";
+            }
+        );
+
+        shell_resource->on<uvw::listen_event>(
+            [this](const uvw::listen_event& /*event*/, poll_h&)
             {
                 zmq::multipart_t wire_msg;
                 wire_msg.recv(m_shell);
@@ -77,17 +92,19 @@ namespace xeus
                     std::cerr << e.what() << std::endl;
                 }
             }
+        );
 
-            if (items[1].revents & ZMQ_POLLIN)
+        control_resource->on<uvw::listen_event>(
+            [this](const uvw::listen_event&, poll_h&)
             {
                 // stop message
                 zmq::multipart_t wire_msg;
                 wire_msg.recv(m_controller);
-                std::string msg = wire_msg.peekstr(0);
+                std::string msg { wire_msg.peekstr(0) };
                 if(msg == "stop")
                 {
+                    // TODO: close handles
                     wire_msg.send(m_controller);
-                    break;
                 }
                 else
                 {
@@ -95,15 +112,23 @@ namespace xeus
                     wire_reply.send(m_controller);
                 }
             }
-        }
+        );
+
+        // TODO: connect the server to the client?
+        shell_resource->bind(get_shell_port(), 4242);
+        shell_resource->listen();
+        // control_resource->listen();
+
+        // loop->run();
+        loop->run(uvw::loop::run_mode::DEFAULT); // ONCE, NOWAIT
     }
 
-    void xshell::send_shell(zmq::multipart_t& message)
+    void xshell_uv::send_shell(zmq::multipart_t& message)
     {
         message.send(m_shell);
     }
 
-    void xshell::send_stdin(zmq::multipart_t& message)
+    void xshell_uv::send_stdin(zmq::multipart_t& message)
     {
         message.send(m_stdin);
         zmq::multipart_t wire_msg;
@@ -119,12 +144,12 @@ namespace xeus
         }
     }
 
-    void xshell::publish(zmq::multipart_t& message)
+    void xshell_uv::publish(zmq::multipart_t& message)
     {
         message.send(m_publisher_pub);
     }
 
-    void xshell::abort_queue(const listener& l, long polling_interval)
+    void xshell_uv::abort_queue(const listener& l, long polling_interval)
     {
         while (true)
         {
@@ -148,7 +173,7 @@ namespace xeus
         }
     }
 
-    void xshell::reply_to_controller(zmq::multipart_t& message)
+    void xshell_uv::reply_to_controller(zmq::multipart_t& message)
     {
         message.send(m_controller);
     }

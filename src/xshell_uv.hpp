@@ -21,20 +21,20 @@ namespace xeus
 {
     class xserver_uv_shell_main;
 
-    class xshell
+    class xshell_uv
     {
     public:
 
         using listener = std::function<void(xmessage)>;
 
-        xshell(zmq::context_t& context,
+        xshell_uv(zmq::context_t& context,
                const std::string& transport,
                const std::string& ip,
                const std::string& shell_port,
                const std::string& sdtin_port,
                xserver_uv_shell_main* server);
 
-        ~xshell();
+        ~xshell_uv();
 
         std::string get_shell_port() const;
         std::string get_stdin_port() const;
