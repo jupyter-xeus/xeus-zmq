@@ -19,6 +19,7 @@
 
 #include "xeus/xserver.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus/xeus_context.hpp"
 
 #include "xeus-zmq.hpp"
 #include "xthread.hpp"
@@ -30,6 +31,7 @@ namespace xeus
     class xheartbeat;
     class xpublisher;
     class xshell;
+    class xcontext;
 
     class XEUS_ZMQ_API xserver_uv_shell_main : public xserver
     {
@@ -104,6 +106,12 @@ namespace xeus
 
         std::atomic<bool> m_control_stopped;
     };
+
+    XEUS_ZMQ_API
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
+        xcontext& context,
+        const xconfiguration& config,
+        nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 }
 
 #endif
