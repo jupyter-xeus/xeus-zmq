@@ -21,6 +21,8 @@
 namespace xeus
 {
 
+    class xserver_zmq;
+
     class XEUS_API xserver_zmq_impl
     {
     public:
@@ -48,10 +50,7 @@ namespace xeus
         void stop();
         void update_config(xconfiguration& config) const;
 
-        void register_shell_listener(const listener& l);
-        void register_control_listener(const listener& l);
-        void register_stdin_listener(const listener& l);
-        void register_internal_listener(const internal_listener& l);
+        void register_kernel_notifier(xserver_zmq& notifier);
 
     protected:
 
@@ -76,10 +75,7 @@ namespace xeus
         virtual void stop_impl() = 0;
         virtual void update_config_impl(xconfiguration& config) const = 0;
 
-        listener m_shell_listener;
-        listener m_control_listener;
-        listener m_stdin_listener;
-        internal_listener m_internal_listener;
+        xserver_zmq* p_kernel_notifier;
     };
 }
 

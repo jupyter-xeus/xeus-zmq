@@ -19,12 +19,34 @@ namespace xeus
     xserver_zmq::xserver_zmq(std::unique_ptr<xserver_zmq_impl> impl)
         : p_impl(std::move(impl))
     {
+        p_impl->register_kernel_notifier(*this);
     }
 
     // Has to be in the cpp because incomplete
     // types are used in unique_ptr in the header
     xserver_zmq::~xserver_zmq() = default;
 
+
+    void xserver_zmq::call_notify_shell_listener(xmessage msg)
+    {
+        xserver::notify_shell_listener(std::move(msg));
+    }
+
+    void xserver_zmq::call_notify_control_listener(xmessage msg)
+    {
+        xserver::notify_control_listener(std::move(msg));
+    }
+
+    void xserver_zmq::call_notify_stdin_listener(xmessage msg)
+    {
+        xserver::notify_stdin_listener(std::move(msg));
+    }
+
+    nl::json xserver_zmq::call_notify_internal_listener(nl::json msg)
+    {
+        return xserver::notify_internal_listener(std::move(msg));
+    }
+    
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
     {
         return p_impl->get_control_messenger();

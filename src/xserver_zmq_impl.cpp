@@ -7,6 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include "xeus-zmq/xserver_zmq.hpp"
 #include "xserver_zmq_impl.hpp"
 
 namespace xeus
@@ -56,43 +57,28 @@ namespace xeus
         update_config_impl(config);
     }
 
-    void xserver_zmq_impl::register_shell_listener(const listener& l)
+    void xserver_zmq_impl::register_kernel_notifier(xserver_zmq& notifier)
     {
-        m_shell_listener = l;
-    }
-
-    void xserver_zmq_impl::register_control_listener(const listener& l)
-    {
-        m_control_listener = l;
-    }
-
-    void xserver_zmq_impl::register_stdin_listener(const listener& l)
-    {
-        m_stdin_listener = l;
-    }
-
-    void xserver_zmq_impl::register_internal_listener(const internal_listener& l)
-    {
-        m_internal_listener = l;
+        p_kernel_notifier = &notifier;
     }
 
     void xserver_zmq_impl::notify_shell_listener(xmessage msg)
     {
-        m_shell_listener(std::move(msg));
+        p_kernel_notifier->call_notify_shell_listener(std::move(msg));
     }
 
     void xserver_zmq_impl::notify_control_listener(xmessage msg)
     {
-        m_control_listener(std::move(msg));
+        p_kernel_notifier->call_notify_control_listener(std::move(msg));
     }
 
     void xserver_zmq_impl::notify_stdin_listener(xmessage msg)
     {
-        m_stdin_listener(std::move(msg));
+        p_kernel_notifier->call_notify_stdin_listener(std::move(msg));
     }
 
     nl::json xserver_zmq_impl::notify_internal_listener(nl::json msg)
     {
-        return m_internal_listener(std::move(msg));
+        return p_kernel_notifier->call_notify_internal_listener(std::move(msg));
     }
 }

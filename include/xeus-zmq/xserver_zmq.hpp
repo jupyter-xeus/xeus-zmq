@@ -26,8 +26,14 @@ namespace xeus
         explicit xserver_zmq(std::unique_ptr<xserver_zmq_impl> impl);
         ~xserver_zmq() override;
 
+        void call_notify_shell_listener(xmessage msg);
+        void call_notify_control_listener(xmessage msg);
+        void call_notify_stdin_listener(xmessage msg);
+        nl::json call_notify_internal_listener(nl::json msg);
+
     private:
 
+        // Implementation of xserver virtual methods
         xcontrol_messenger& get_control_messenger_impl() override;
 
         void send_shell_impl(xmessage msg) override;
