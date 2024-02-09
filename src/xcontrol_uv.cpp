@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "xeus-zmq/xmiddleware.hpp"
-#include "xeus-zmq/xserver_uv_shell_main.hpp"
+#include "xserver_uv_shell_main.hpp"
 #include "xcontrol_uv.hpp"
 
 namespace xeus
