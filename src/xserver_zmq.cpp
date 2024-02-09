@@ -122,7 +122,8 @@ namespace xeus
         const xconfiguration& config,
         nl::json::error_handler_t eh)
     {
-        return std::make_unique<xserver_uv_shell_main>(
+        auto impl = std::make_unique<xserver_uv_shell_main>(
             context.get_wrapped_context<zmq::context_t>(), config, eh);
+        return std::make_unique<xserver_zmq>(std::move(impl));
     }
 }
