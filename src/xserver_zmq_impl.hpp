@@ -23,7 +23,7 @@ namespace xeus
 
     class xserver_zmq;
 
-    class XEUS_API xserver_zmq_impl
+    class xserver_zmq_impl
     {
     public:
 

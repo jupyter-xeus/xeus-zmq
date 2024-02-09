@@ -50,7 +50,7 @@ namespace xeus
     };
 
     XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_zmq_default(xcontext& context,
+    std::unique_ptr<xserver> make_xserver_default(xcontext& context,
                                               const xconfiguration& config,
                                               nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 

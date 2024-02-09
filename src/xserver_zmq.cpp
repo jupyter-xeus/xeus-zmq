@@ -92,7 +92,7 @@ namespace xeus
         p_impl->update_config(config);
     }
 
-    std::unique_ptr<xserver> make_xserver_zmq_default(xcontext& context,
+    std::unique_ptr<xserver> make_xserver_default(xcontext& context,
                                               const xconfiguration& config,
                                               nl::json::error_handler_t eh)
     {
