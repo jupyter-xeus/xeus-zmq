@@ -15,7 +15,7 @@
 #include <uvw.hpp>
 
 #include "xeus-zmq/xmiddleware.hpp"
-#include "xeus-zmq/xserver_uv_shell_main.hpp"
+#include "xserver_uv_shell_main.hpp"
 #include "xshell_uv.hpp"
 
 namespace xeus
