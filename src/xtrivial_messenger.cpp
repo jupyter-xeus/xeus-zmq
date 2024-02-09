@@ -9,12 +9,12 @@
 
 #include "nlohmann/json.hpp"
 
-#include "xeus-zmq/xserver_zmq.hpp"
+#include "xserver_zmq_default.hpp"
 #include "xtrivial_messenger.hpp"
 
 namespace xeus
 {
-    xtrivial_messenger::xtrivial_messenger(xserver_zmq* server)
+    xtrivial_messenger::xtrivial_messenger(xserver_zmq_default* server)
         : p_server(server)
     {
     }

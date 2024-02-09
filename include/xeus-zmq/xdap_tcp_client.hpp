@@ -8,6 +8,7 @@
 #include "zmq.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus/xeus_context.hpp"
 
 #include "xauthentication.hpp"
 #include "xeus-zmq.hpp"
@@ -67,7 +68,7 @@ namespace xeus
 
     protected:
 
-        xdap_tcp_client(zmq::context_t& context,
+        xdap_tcp_client(xcontext& context,
                         const xeus::xconfiguration& config,
                         int socket_linger,
                         const xdap_tcp_configuration& dap_config,

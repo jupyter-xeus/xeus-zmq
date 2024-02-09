@@ -13,9 +13,9 @@
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
 #include "xeus-zmq/xauthentication.hpp"
-#include "xeus-zmq/xserver_zmq_split.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
+#include "xserver_zmq_split.hpp"
 #include "xcontrol.hpp"
 #include "xheartbeat.hpp"
 #include "xpublisher.hpp"
@@ -51,7 +51,7 @@ namespace xeus
     zmq::multipart_t xserver_zmq_split::notify_internal_listener(zmq::multipart_t& wire_msg)
     {
         nl::json msg = nl::json::parse(wire_msg.popstr());
-        nl::json reply = xserver::notify_internal_listener(msg);
+        nl::json reply = xserver_zmq_impl::notify_internal_listener(msg);
         return zmq::multipart_t(reply.dump(-1, ' ', false, m_error_handler));
     }
 

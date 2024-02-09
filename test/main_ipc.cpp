@@ -16,7 +16,7 @@
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xmock_interpreter.hpp"
 
-int main(int argc, char* argv[])
+int main(int /*argc*/, char* /*argv*/[])
 {
 
     using namespace std::chrono_literals;
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
                          xeus::get_user_name(),
                          std::move(context),
                          std::move(interpreter),
-                         xeus::make_xserver_zmq);
+                         xeus::make_xserver_default);
     std::cout << "starting kernel" << std::endl;
     kernel.start();
 

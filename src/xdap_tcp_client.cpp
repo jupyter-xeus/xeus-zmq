@@ -21,16 +21,16 @@ namespace xeus
     {
     }
 
-    xdap_tcp_client::xdap_tcp_client(zmq::context_t& context,
+    xdap_tcp_client::xdap_tcp_client(xcontext& context,
                                      const xeus::xconfiguration& config,
                                      int socket_linger,
                                      const xdap_tcp_configuration& dap_config,
                                      const event_callback& cb)
-        : m_tcp_socket(context, zmq::socket_type::stream)
+        : m_tcp_socket(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::stream)
         , m_socket_id()
-        , m_publisher(context, zmq::socket_type::pub)
-        , m_controller(context, zmq::socket_type::rep)
-        , m_controller_header(context, zmq::socket_type::rep)
+        , m_publisher(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::pub)
+        , m_controller(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::rep)
+        , m_controller_header(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::rep)
         , m_dap_tcp_type(dap_config.m_dap_tcp_type)
         , m_dap_init_type(dap_config.m_dap_init_type)
         , m_user_name(dap_config.m_user_name)

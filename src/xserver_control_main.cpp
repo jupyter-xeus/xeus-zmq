@@ -13,8 +13,8 @@
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
-#include "xeus-zmq/xserver_control_main.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
+#include "xserver_control_main.hpp"
 #include "xcontrol.hpp"
 
 namespace xeus
@@ -40,11 +40,5 @@ namespace xeus
         xserver_zmq_split::get_controller().run();
     }
 
-    std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
-                                                       const xconfiguration& config,
-                                                       nl::json::error_handler_t eh)
-    {
-        return std::make_unique<xserver_control_main>(context.get_wrapped_context<zmq::context_t>(), config, eh);
-    }
 }
 

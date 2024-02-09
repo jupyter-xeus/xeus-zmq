@@ -14,11 +14,12 @@
 
 #include "zmq_addon.hpp"
 
-#include "xeus/xserver.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
-#include "xeus-zmq.hpp"
-#include "xthread.hpp"
+#include "xeus-zmq/xeus-zmq.hpp"
+#include "xeus-zmq/xthread.hpp"
+
+#include "xserver_zmq_impl.hpp"
 
 namespace xeus
 {
@@ -28,7 +29,7 @@ namespace xeus
     class xpublisher;
     class xshell;
 
-    class XEUS_ZMQ_API xserver_zmq_split : public xserver
+    class xserver_zmq_split : public xserver_zmq_impl
     {
     public:
 
@@ -44,10 +45,10 @@ namespace xeus
         ~xserver_zmq_split() override;
 
         // The xcontrol object needs to call this method
-        using xserver::notify_control_listener;
+        using xserver_zmq_impl::notify_control_listener;
         // The xshell object needs to call these methods
-        using xserver::notify_shell_listener;
-        using xserver::notify_stdin_listener;
+        using xserver_zmq_impl::notify_shell_listener;
+        using xserver_zmq_impl::notify_stdin_listener;
 
         zmq::multipart_t notify_internal_listener(zmq::multipart_t& wire_msg);
         void notify_control_stopped();

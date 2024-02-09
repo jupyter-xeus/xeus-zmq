@@ -19,20 +19,20 @@ namespace nl = nlohmann;
 
 namespace xeus
 {
-    class xserver_zmq;
+    class xserver_zmq_default;
 
     class xtrivial_messenger : public xcontrol_messenger
     {
     public:
         
-        explicit xtrivial_messenger(xserver_zmq* server);
+        explicit xtrivial_messenger(xserver_zmq_default* server);
         virtual ~xtrivial_messenger ();
 
     private:
 
         nl::json send_to_shell_impl(const nl::json& message) override;
 
-        xserver_zmq* p_server;
+        xserver_zmq_default* p_server;
     };
 }
 

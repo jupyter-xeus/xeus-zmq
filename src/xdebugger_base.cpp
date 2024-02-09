@@ -34,9 +34,9 @@ namespace xeus
     {
     }
 
-    xdebugger_base::xdebugger_base(zmq::context_t& context)
-        : m_header_socket(context, zmq::socket_type::req)
-        , m_request_socket(context, zmq::socket_type::req)
+    xdebugger_base::xdebugger_base(xcontext& context)
+        : m_header_socket(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::req)
+        , m_request_socket(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::req)
         , m_is_started(false)
     {
         m_header_socket.set(zmq::sockopt::linger, xeus::get_socket_linger());

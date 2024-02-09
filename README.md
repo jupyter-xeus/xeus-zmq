@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
                          xeus::get_user_name(),
                          std::move(context),
                          std::move(interpreter),
-                         xeus::make_xserver_zmq);
+                         xeus::make_xserver_default);
     std::cout << "starting kernel" << std::endl;
     kernel.start();
 

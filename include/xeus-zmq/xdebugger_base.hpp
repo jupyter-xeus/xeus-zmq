@@ -22,6 +22,7 @@
 #include "zmq.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xdebugger.hpp"
+#include "xeus/xeus_context.hpp"
 
 #include "xeus-zmq.hpp"
 
@@ -53,7 +54,7 @@ namespace xeus
 
     protected:
 
-        xdebugger_base(zmq::context_t& context);
+        xdebugger_base(xcontext& context);
 
         bool is_started() const;
         std::function<void (const nl::json&)> get_event_callback();
