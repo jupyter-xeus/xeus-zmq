@@ -12,6 +12,7 @@
 #include "xserver_zmq_default.hpp"
 #include "xserver_control_main.hpp"
 #include "xserver_shell_main.hpp"
+#include "xserver_uv_shell_main.hpp"
 
 namespace xeus
 {
@@ -46,7 +47,7 @@ namespace xeus
     {
         return xserver::notify_internal_listener(std::move(msg));
     }
-    
+
     xcontrol_messenger& xserver_zmq::get_control_messenger_impl()
     {
         return p_impl->get_control_messenger();
@@ -114,5 +115,14 @@ namespace xeus
     {
         auto impl = std::make_unique<xserver_shell_main>(context.get_wrapped_context<zmq::context_t>(), config, eh);
         return std::make_unique<xserver_zmq>(std::move(impl));
+    }
+
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
+        xcontext& context,
+        const xconfiguration& config,
+        nl::json::error_handler_t eh)
+    {
+        return std::make_unique<xserver_uv_shell_main>(
+            context.get_wrapped_context<zmq::context_t>(), config, eh);
     }
 }

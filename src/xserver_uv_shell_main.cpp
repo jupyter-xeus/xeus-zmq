@@ -12,13 +12,12 @@
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
-#include "xeus/xeus_context.hpp"
 #include "xeus-zmq/xauthentication.hpp"
-#include "xeus-zmq/xserver_uv_shell_main.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
-#include "xshell_uv.hpp"
+#include "xserver_uv_shell_main.hpp"
 #include "xcontrol_uv.hpp"
+#include "xshell_uv.hpp"
 #include "xheartbeat.hpp"
 #include "xpublisher.hpp"
 #include "xzmq_messenger.hpp"
@@ -49,20 +48,10 @@ namespace xeus
     // types are used in unique_ptr in the header
     xserver_uv_shell_main::~xserver_uv_shell_main() = default;
 
-    void xserver_uv_shell_main::start_server(zmq::multipart_t& wire_msg)
-    {
-        start_publisher_thread();
-        start_heartbeat_thread();
-        start_control_thread();
-
-        get_shell().publish(wire_msg);
-        get_shell().run();
-    }
-
     zmq::multipart_t xserver_uv_shell_main::notify_internal_listener(zmq::multipart_t& wire_msg)
     {
         nl::json msg = nl::json::parse(wire_msg.popstr());
-        nl::json reply = xserver::notify_internal_listener(msg);
+        nl::json reply = xserver_zmq_impl::notify_internal_listener(msg);
         return zmq::multipart_t(reply.dump(-1, ' ', false, m_error_handler));
     }
 
@@ -175,15 +164,6 @@ namespace xeus
     zmq::multipart_t xserver_uv_shell_main::serialize_iopub(xpub_message&& msg)
     {
         return xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
-    }
-
-    std::unique_ptr<xserver> make_xserver_uv_shell_main(
-        xcontext& context,
-        const xconfiguration& config,
-        nl::json::error_handler_t eh)
-    {
-        return std::make_unique<xserver_uv_shell_main>(
-            context.get_wrapped_context<zmq::context_t>(), config, eh);
     }
 }
 
