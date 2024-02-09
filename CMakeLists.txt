@@ -171,6 +171,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xserver_uv_shell_main.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xserver_uv_shell_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.cpp

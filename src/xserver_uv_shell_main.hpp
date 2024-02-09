@@ -7,19 +7,19 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SERVER_UV_SHELL_MAIN_HPP
-#define XEUS_SERVER_UV_SHELL_MAIN_HPP
+#ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
+#define XEUS_SERVER_ZMQ_SPLIT_HPP
 
 #include <atomic>
 
 #include "zmq_addon.hpp"
 
-#include "xeus/xserver.hpp"
 #include "xeus/xkernel_configuration.hpp"
-#include "xeus/xeus_context.hpp"
 
-#include "xeus-zmq.hpp"
-#include "xthread.hpp"
+#include "xeus-zmq/xeus-zmq.hpp"
+#include "xeus-zmq/xthread.hpp"
+
+#include "xserver_zmq_impl.hpp"
 
 namespace xeus
 {
@@ -28,9 +28,8 @@ namespace xeus
     class xheartbeat;
     class xpublisher;
     class xshell_uv;
-    class xcontext;
 
-    class XEUS_ZMQ_API xserver_uv_shell_main : public xserver
+    class xserver_uv_shell_main : public xserver_zmq_impl
     {
     public:
 
@@ -46,10 +45,10 @@ namespace xeus
         ~xserver_uv_shell_main() override;
 
         // The xcontrol_uv object needs to call this method
-        using xserver::notify_control_listener;
+        using xserver_zmq_impl::notify_control_listener;
         // The xshell_uv object needs to call these methods
-        using xserver::notify_shell_listener;
-        using xserver::notify_stdin_listener;
+        using xserver_zmq_impl::notify_shell_listener;
+        using xserver_zmq_impl::notify_stdin_listener;
 
         zmq::multipart_t notify_internal_listener(zmq::multipart_t& wire_msg);
         void notify_control_stopped();
@@ -104,12 +103,6 @@ namespace xeus
         std::atomic<bool> m_control_stopped;
     };
 
-    XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_uv_shell_main(
-        xcontext& context,
-        const xconfiguration& config,
-        nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+}
 
-} // namespace xeus
-
-#endif // XEUS_SERVER_UV_SHELL_MAIN_HPP
+#endif // XEUS_SERVER_ZMQ_SPLIT_HPP

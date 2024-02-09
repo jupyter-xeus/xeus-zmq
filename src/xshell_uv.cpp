@@ -115,8 +115,8 @@ namespace xeus
         );
 
         // TODO: connect the server to the client?
-        shell_resource->bind(get_shell_port(), 4242);
-        shell_resource->listen();
+        // shell_resource->bind(get_shell_port(), 4242); // poll handle has no bind()!!!
+        // shell_resource->listen(); // poll handle has no listen either
         // control_resource->listen();
 
         // loop->run();
