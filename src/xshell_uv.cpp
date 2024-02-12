@@ -59,20 +59,22 @@ namespace xeus
     void xshell_uv::run()
     {
         // Initialize the default loop
-        auto loop = uvw::loop::get_default();
+        std::shared_ptr<uvw::loop> loop = uvw::loop::get_default();
 
-        // Get the socket file descriptor
-        auto fd = m_shell.get(zmq::sockopt::fd);
+        // Get the file descriptor for the shell and controller sockets
+        zmq::fd_t shell_fd = m_shell.get(zmq::sockopt::fd);
+        zmq::fd_t controller_fd = m_controller.get(zmq::sockopt::fd);
 
-        // Create a (libuv) poll handle and bind it to the loop
-        auto poll_resource = loop->resource<uvw::poll_handle>(fd);
-        // poll_resource->init();
+        // Create (libuv) poll handles and bind them to the loop
+        auto shell_poll = loop->resource<uvw::poll_handle>(shell_fd);
+        auto controller_poll = loop->resource<uvw::poll_handle>(controller_fd);
 
-        // Register callback
-        poll_resource->on<uvw::details::uvw_poll_event>(
+        // Register callbacks
+        // TODO: update to libuvw v3.3.0 and use uvw::poll_event
+        shell_poll->on<uvw::details::uvw_poll_event>(
             [this](uvw::details::uvw_poll_event&, uvw::poll_handle&)
             {
-                std::cout << "[OOO] New message\n"; // REMOVE
+                std::cout << "[OOO] New shell message\n"; // REMOVE
                 zmq::multipart_t wire_msg;
                 wire_msg.recv(m_shell);
                 try
@@ -84,26 +86,30 @@ namespace xeus
                 {
                     std::cerr << e.what() << std::endl;
                 }
-
-                // // stop message
-                // wire_msg.recv(m_controller);
-                // std::string msg { wire_msg.peekstr(0) };
-                // if(msg == "stop")
-                // {
-                //     // TODO: close handles
-                //     wire_msg.send(m_controller);
-                // }
-                // else
-                // {
-                //     zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                //     wire_reply.send(m_controller);
-                // }
             }
         );
 
-        // Start the poll
-        poll_resource->start(uvw::poll_handle::poll_event::READABLE);
+        controller_poll->on<uvw::details::uvw_poll_event>(
+            [this](uvw::details::uvw_poll_event&, uvw::poll_handle&)
+            {
+                std::cout << "[OOO] New control message\n"; // REMOVE
+                zmq::multipart_t wire_msg;
+                wire_msg.recv(m_controller);
+                try
+                {
+                    xmessage msg = p_server->deserialize(wire_msg);
+                    p_server->notify_control_listener(std::move(msg));
+                }
+                catch(std::exception& e)
+                {
+                    std::cerr << e.what() << std::endl;
+                }
+            }
+        );
 
+        // Start the polls
+        shell_poll->start(uvw::poll_handle::poll_event::READABLE);
+        controller_poll->start(uvw::poll_handle::poll_event::READABLE);
 
         // // Resources are event emitters to which listeners are attached
         // shell_resource->on<uvw::error_event>(
