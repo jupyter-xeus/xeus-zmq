@@ -69,8 +69,8 @@ namespace xeus
         // poll_resource->init();
 
         // Register callback
-        poll_resource->on<uvw::poll_event>(
-            [this](uvw::poll_event&, uvw::poll_handle&)
+        poll_resource->on<uvw::details::uvw_poll_event>(
+            [this](uvw::details::uvw_poll_event&, uvw::poll_handle&)
             {
                 std::cout << "[OOO] New message\n"; // REMOVE
                 zmq::multipart_t wire_msg;
