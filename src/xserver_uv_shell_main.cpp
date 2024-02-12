@@ -165,5 +165,15 @@ namespace xeus
     {
         return xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
     }
+
+    void xserver_uv_shell_main::start_server(zmq::multipart_t& wire_msg)
+    {
+        xserver_uv_shell_main::start_publisher_thread();
+        xserver_uv_shell_main::start_heartbeat_thread();
+        xserver_uv_shell_main::start_control_thread();
+
+        xserver_uv_shell_main::get_shell().publish(wire_msg);
+        xserver_uv_shell_main::get_shell().run();
+    }
 }
 

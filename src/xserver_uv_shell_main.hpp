@@ -7,8 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SERVER_ZMQ_SPLIT_HPP
-#define XEUS_SERVER_ZMQ_SPLIT_HPP
+#ifndef XEUS_SERVER_UV_SHELL_MAIN_HPP
+#define XEUS_SERVER_UV_SHELL_MAIN_HPP
 
 #include <atomic>
 
@@ -102,7 +102,6 @@ namespace xeus
 
         std::atomic<bool> m_control_stopped;
     };
-
 }
 
-#endif // XEUS_SERVER_ZMQ_SPLIT_HPP
+#endif // XEUS_SERVER_UV_SHELL_MAIN_HPP
