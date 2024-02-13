@@ -118,7 +118,9 @@ if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
 endif ()
 
 find_package(OpenSSL REQUIRED)
-find_package(uvw REQUIRED)
+
+find_library(UVW_LIBRARY uvw)
+find_path(UVW_INCLUDE_DIR uvw.hpp)
 
 # Source files
 # ============
@@ -223,6 +225,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
         PUBLIC nlohmann_json::nlohmann_json
         PUBLIC OpenSSL::Crypto
         PUBLIC ${XEUS_TARGET_NAME}
+        PUBLIC ${UVW_LIBRARY}
     )
 
     if (NOT MSVC)
