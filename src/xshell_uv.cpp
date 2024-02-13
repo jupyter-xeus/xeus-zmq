@@ -87,9 +87,29 @@ namespace xeus
         );
 
         controller_poll->on<uvw::poll_event>(
-            [this](uvw::poll_event&, uvw::poll_handle&)
+            [this, &loop](uvw::poll_event&, uvw::poll_handle&)
             {
-                // TODO: check for stop
+                zmq::multipart_t multi_msg;
+                zmq::multipart_t wire_msg;
+                if (multi_msg.recv(m_shell, ZMQ_DONTWAIT))
+                {
+                    std::cout << "[CCC] inside controller if\n"; // REMOVE
+                    wire_msg = std::move(multi_msg);
+                    std::string msg = wire_msg.peekstr(0);
+                    if(msg == "stop")
+                    {
+                        std::cout << "[CCC] stopping\n"; // REMOVE
+                        wire_msg.send(m_controller);
+                        // TODO: stop the loop?
+                    }
+                    else
+                    {
+                        std::cout << "[CCC] not stopping\n"; // REMOVE
+                        // FIXME: nlohmann::json error
+                        // zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                        // wire_reply.send(m_controller);
+                    }
+                }
             }
         );
 
