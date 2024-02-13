@@ -13,7 +13,6 @@
 
 #define UVW_AS_LIB
 #include <uvw.hpp>
-#include <zmq.hpp>
 
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xserver_uv_shell_main.hpp"
@@ -70,9 +69,8 @@ namespace xeus
         auto controller_poll = loop->resource<uvw::poll_handle>(controller_fd);
 
         // Register callbacks
-        // TODO: update to libuvw v3.3.0 and use uvw::poll_event
-        shell_poll->on<uvw::details::uvw_poll_event>(
-            [this](uvw::details::uvw_poll_event&, uvw::poll_handle&)
+        shell_poll->on<uvw::poll_event>(
+            [this](uvw::poll_event&, uvw::poll_handle&)
             {
                 std::cout << "[OOO] New shell message\n"; // REMOVE
                 zmq::multipart_t wire_msg;
@@ -89,8 +87,8 @@ namespace xeus
             }
         );
 
-        controller_poll->on<uvw::details::uvw_poll_event>(
-            [this](uvw::details::uvw_poll_event&, uvw::poll_handle&)
+        controller_poll->on<uvw::poll_event>(
+            [this](uvw::poll_event&, uvw::poll_handle&)
             {
                 std::cout << "[OOO] New control message\n"; // REMOVE
                 zmq::multipart_t wire_msg;
@@ -108,8 +106,8 @@ namespace xeus
         );
 
         // Start the polls
-        shell_poll->start(uvw::poll_handle::poll_event::READABLE);
-        controller_poll->start(uvw::poll_handle::poll_event::READABLE);
+        shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
+        controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
 
         // // Resources are event emitters to which listeners are attached
         // shell_resource->on<uvw::error_event>(
