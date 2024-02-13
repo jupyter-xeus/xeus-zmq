@@ -72,56 +72,57 @@ namespace xeus
         shell_poll->on<uvw::poll_event>(
             [this](uvw::poll_event&, uvw::poll_handle&)
             {
-                std::cout << "[OOO] New shell message\n"; // REMOVE
+                // std::cout << "[OOO] New shell message\n"; // REMOVE
+                zmq::multipart_t multi_msg;
                 zmq::multipart_t wire_msg;
-                wire_msg.recv(m_shell);
-                try
+                if (multi_msg.recv(m_shell, ZMQ_DONTWAIT))
                 {
+                    std::cout << "[OOO] inside shell if\n"; // REMOVE
+                    wire_msg = std::move(multi_msg);
                     xmessage msg = p_server->deserialize(wire_msg);
                     p_server->notify_shell_listener(std::move(msg));
                 }
-                catch(std::exception& e)
-                {
-                    std::cerr << e.what() << std::endl;
-                }
+                std::cout << "[OOO] after if\n"; // REMOVE
             }
         );
 
         controller_poll->on<uvw::poll_event>(
             [this](uvw::poll_event&, uvw::poll_handle&)
             {
-                std::cout << "[OOO] New control message\n"; // REMOVE
-                zmq::multipart_t wire_msg;
-                wire_msg.recv(m_controller);
-                try
-                {
-                    xmessage msg = p_server->deserialize(wire_msg);
-                    p_server->notify_control_listener(std::move(msg));
-                }
-                catch(std::exception& e)
-                {
-                    std::cerr << e.what() << std::endl;
-                }
+                // TODO: check for stop
             }
         );
+
+        std::cout << "After registering callbacks\n"; // REMOVE
+
+        // Resources are event emitters to which listeners are attached
+        shell_poll->on<uvw::error_event>(
+            [](const uvw::error_event&, uvw::poll_handle&)
+            {
+                // TODO: handle errors
+                std::cout << "Something wrong with the shell.\n";
+            }
+        );
+
+        controller_poll->on<uvw::error_event>(
+            [](const uvw::error_event&, uvw::poll_handle&)
+            {
+                std::cerr << "Something wrong with the controller.\n";
+            }
+        );
+
+        std::cout << "After registering error events\n"; // REMOVE
 
         // Start the polls
         shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
         controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
 
-        // // Resources are event emitters to which listeners are attached
-        // shell_resource->on<uvw::error_event>(
-        //     [](const uvw::error_event&, poll_h&)
-        //     {
-        //         // TODO: handle errors
-        //         std::cerr << "Something wrong.\n";
-        //     }
-        // );
-
-
+        std::cout << "After starting polls\n"; // REMOVE
 
         loop->run();
-        // loop->run(uvw::loop::run_mode::DEFAULT); // ONCE, NOWAIT
+        // loop->run(uvw::loop::run_mode::ONCE); // DEFAULT, NOWAIT
+
+        std::cout << "After looprun()\n"; // REMOVE
 
         // TODO: close resources ??
     }
