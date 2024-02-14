@@ -79,8 +79,15 @@ namespace xeus
                 {
                     std::cout << "[OOO] inside shell if\n"; // REMOVE
                     wire_msg = std::move(multi_msg);
-                    xmessage msg = p_server->deserialize(wire_msg);
-                    p_server->notify_shell_listener(std::move(msg));
+                    try
+                    {
+                        xmessage msg = p_server->deserialize(wire_msg);
+                        p_server->notify_shell_listener(std::move(msg));
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << "[EEE SHELL]" << e.what() << '\n';
+                    }
                 }
                 std::cout << "[OOO] after if\n"; // REMOVE
             }
@@ -91,7 +98,7 @@ namespace xeus
             {
                 zmq::multipart_t multi_msg;
                 zmq::multipart_t wire_msg;
-                if (multi_msg.recv(m_shell, ZMQ_DONTWAIT))
+                if (multi_msg.recv(m_controller, ZMQ_DONTWAIT))
                 {
                     std::cout << "[CCC] inside controller if\n"; // REMOVE
                     wire_msg = std::move(multi_msg);
@@ -106,8 +113,15 @@ namespace xeus
                     {
                         std::cout << "[CCC] not stopping\n"; // REMOVE
                         // FIXME: nlohmann::json error
-                        // zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                        // wire_reply.send(m_controller);
+                        try
+                        {
+                            zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                            wire_reply.send(m_controller);
+                        }
+                        catch(const std::exception& e)
+                        {
+                            std::cerr << "[EEE CONTROL]" << e.what() << '\n';
+                        }
                     }
                 }
             }
