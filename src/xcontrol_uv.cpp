@@ -62,12 +62,19 @@ namespace xeus
             wire_msg.recv(m_control);
             try
             {
+                std::cout << "[CCCCC] Control message!\n";
                 xmessage msg = p_server->deserialize(wire_msg);
+                std::cout << "\tcontrol msg: " << msg.content() << '\n';
                 p_server->notify_control_listener(std::move(msg));
+                std::cout << "[CCCCC] Control message processed!\n";
             }
             catch (std::exception& e)
             {
                 std::cerr << e.what() << std::endl;
+            }
+            catch (...)
+            {
+                std::cerr << "[CCCCC] Unknown error\n";
             }
         }
 
