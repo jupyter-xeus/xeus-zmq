@@ -72,62 +72,55 @@ namespace xeus
         shell_poll->on<uvw::poll_event>(
             [this](uvw::poll_event&, uvw::poll_handle&)
             {
-                // std::cout << "[OOO] New shell message\n"; // REMOVE
-                zmq::multipart_t multi_msg;
+                std::cout << "[SHELL] inside shell poll\n"; // REMOVE
                 zmq::multipart_t wire_msg;
-                if (multi_msg.recv(m_shell, ZMQ_DONTWAIT))
+                if (wire_msg.recv(m_shell, ZMQ_DONTWAIT)) // non-blocking
                 {
-                    std::cout << "[OOO] inside shell if\n"; // REMOVE
-                    wire_msg = std::move(multi_msg);
                     try
                     {
+                        std::cout << "\t[SHELL] msgsg\n";
                         xmessage msg = p_server->deserialize(wire_msg);
+                        std::cout << "\tMessage content " << msg.content() << '\n';
                         p_server->notify_shell_listener(std::move(msg));
+                        std::cout << "\t[SHELL] msgsg end\n";
                     }
-                    catch(const std::exception& e)
+                    catch(std::exception& e)
                     {
-                        std::cerr << "[EEE SHELL]" << e.what() << '\n';
+                        std::cout << "\t[SHELL ERROR] " << e.what() << std::endl;
+                    }
+                    catch(...)
+                    {
+                        std::cout << "\t[SHELL ERROR] Unknown exception\n";
                     }
                 }
-                std::cout << "[OOO] after if\n"; // REMOVE
+                std::cout << "[SHELL] poll end\n"; // REMOVE
             }
         );
 
         controller_poll->on<uvw::poll_event>(
             [this, &loop](uvw::poll_event&, uvw::poll_handle&)
             {
-                zmq::multipart_t multi_msg;
+                std::cout << "[CONTROL] inside controller poll\n"; // REMOVE
                 zmq::multipart_t wire_msg;
-                if (multi_msg.recv(m_controller, ZMQ_DONTWAIT))
+                if (wire_msg.recv(m_controller, ZMQ_DONTWAIT))
                 {
-                    std::cout << "[CCC] inside controller if\n"; // REMOVE
-                    wire_msg = std::move(multi_msg);
+                    std::cout << "[CONTROL] inside controller if\n"; // REMOVE
                     std::string msg = wire_msg.peekstr(0);
                     if(msg == "stop")
                     {
-                        std::cout << "[CCC] stopping\n"; // REMOVE
+                        std::cout << "[CONTROL] stopping\n"; // REMOVE
                         wire_msg.send(m_controller);
-                        // TODO: stop the loop?
+                        loop->stop();
                     }
                     else
                     {
-                        std::cout << "[CCC] not stopping\n"; // REMOVE
-                        // FIXME: nlohmann::json error
-                        try
-                        {
-                            zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                            wire_reply.send(m_controller);
-                        }
-                        catch(const std::exception& e)
-                        {
-                            std::cerr << "[EEE CONTROL]" << e.what() << '\n';
-                        }
+                        std::cout << "[CONTROL] not stopping\n"; // REMOVE
+                        zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                        wire_reply.send(m_controller);
                     }
                 }
             }
         );
-
-        std::cout << "After registering callbacks\n"; // REMOVE
 
         // Resources are event emitters to which listeners are attached
         shell_poll->on<uvw::error_event>(
@@ -145,8 +138,6 @@ namespace xeus
             }
         );
 
-        std::cout << "After registering error events\n"; // REMOVE
-
         // Start the polls
         shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
         controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
@@ -154,9 +145,6 @@ namespace xeus
         std::cout << "After starting polls\n"; // REMOVE
 
         loop->run();
-        // loop->run(uvw::loop::run_mode::ONCE); // DEFAULT, NOWAIT
-
-        std::cout << "After looprun()\n"; // REMOVE
 
         // TODO: close resources ??
     }
