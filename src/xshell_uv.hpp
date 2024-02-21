@@ -11,6 +11,12 @@
 #define XEUS_SHELL_HPP
 
 #include <string>
+#include <memory> // std::shared_ptr
+
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
 
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
@@ -27,12 +33,13 @@ namespace xeus
 
         using listener = std::function<void(xmessage)>;
 
-        xshell_uv(zmq::context_t& context,
-               const std::string& transport,
-               const std::string& ip,
-               const std::string& shell_port,
-               const std::string& sdtin_port,
-               xserver_uv_shell_main* server);
+        xshell_uv(std::shared_ptr<uvw::loop> loop_ptr,
+            zmq::context_t& context,
+            const std::string& transport,
+            const std::string& ip,
+            const std::string& shell_port,
+            const std::string& sdtin_port,
+            xserver_uv_shell_main* server);
 
         ~xshell_uv();
 
@@ -55,6 +62,7 @@ namespace xeus
         zmq::socket_t m_publisher_pub;
         zmq::socket_t m_controller;
         xserver_uv_shell_main* p_server;
+        std::shared_ptr<uvw::loop> p_loop;
     };
 }
 
