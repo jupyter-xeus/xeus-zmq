@@ -11,6 +11,12 @@
 #define XEUS_SERVER_UV_SHELL_MAIN_HPP
 
 #include <atomic>
+#include <memory> // std::shared_ptr
+
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
 
 #include "zmq_addon.hpp"
 
@@ -40,7 +46,8 @@ namespace xeus
 
         xserver_uv_shell_main(zmq::context_t& context,
                           const xconfiguration& config,
-                          nl::json::error_handler_t eh);
+                          nl::json::error_handler_t eh,
+                          std::shared_ptr<uvw::loop> loop_ptr);
 
         ~xserver_uv_shell_main() override;
 

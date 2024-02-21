@@ -9,6 +9,12 @@
 
 #include <chrono>
 #include <iostream>
+#include <memory> // std::shared_ptr
+
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
@@ -26,14 +32,17 @@ namespace xeus
 {
     xserver_uv_shell_main::xserver_uv_shell_main(zmq::context_t& context,
                                          const xconfiguration& config,
-                                         nl::json::error_handler_t eh)
+                                         nl::json::error_handler_t eh,
+                                         std::shared_ptr<uvw::loop> loop_ptr)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , p_controller(new xcontrol_uv(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
         , p_publisher(new xpublisher(context,
-                                     std::bind(&xserver_uv_shell_main::serialize_iopub, this, std::placeholders::_1),
-                                     config.m_transport, config.m_ip, config.m_iopub_port))
-        , p_shell(new xshell_uv(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
+                        std::bind(&xserver_uv_shell_main::serialize_iopub, this, std::placeholders::_1),
+                        config.m_transport, config.m_ip, config.m_iopub_port))
+        , p_shell(new xshell_uv(loop_ptr,
+                        context, config.m_transport, config.m_ip,
+                        config.m_shell_port, config.m_stdin_port, this))
         , m_control_thread()
         , m_hb_thread()
         , m_iopub_thread()

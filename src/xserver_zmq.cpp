@@ -7,6 +7,13 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
+
+#include <memory> // std::unique_ptr
+
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xserver_zmq_impl.hpp"
 #include "xserver_zmq_default.hpp"
@@ -120,10 +127,11 @@ namespace xeus
     std::unique_ptr<xserver> make_xserver_uv_shell_main(
         xcontext& context,
         const xconfiguration& config,
-        nl::json::error_handler_t eh)
+        nl::json::error_handler_t eh,
+        std::shared_ptr<uvw::loop> loop_ptr)
     {
         auto impl = std::make_unique<xserver_uv_shell_main>(
-            context.get_wrapped_context<zmq::context_t>(), config, eh);
+            context.get_wrapped_context<zmq::context_t>(), config, eh, loop_ptr);
         return std::make_unique<xserver_zmq>(std::move(impl));
     }
 }

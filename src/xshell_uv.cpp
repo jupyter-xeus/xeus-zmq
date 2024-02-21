@@ -10,9 +10,12 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <memory> // std::shared_ptr
 
+#ifndef UVW_AS_LIB
 #define UVW_AS_LIB
 #include <uvw.hpp>
+#endif
 
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xserver_uv_shell_main.hpp"
@@ -20,17 +23,19 @@
 
 namespace xeus
 {
-    xshell_uv::xshell_uv(zmq::context_t& context,
-                   const std::string& transport,
-                   const std::string& ip,
-                   const std::string& shell_port,
-                   const std::string& stdin_port,
-                   xserver_uv_shell_main* server)
+    xshell_uv::xshell_uv(std::shared_ptr<uvw::loop> loop_ptr,
+                        zmq::context_t& context,
+                        const std::string& transport,
+                        const std::string& ip,
+                        const std::string& shell_port,
+                        const std::string& stdin_port,
+                        xserver_uv_shell_main* server)
         : m_shell(context, zmq::socket_type::router)
         , m_stdin(context, zmq::socket_type::router)
         , m_publisher_pub(context, zmq::socket_type::pub)
         , m_controller(context, zmq::socket_type::rep)
         , p_server(server)
+        , p_loop(loop_ptr)
     {
         init_socket(m_shell, transport, ip, shell_port);
         init_socket(m_stdin, transport, ip, stdin_port);
@@ -58,15 +63,17 @@ namespace xeus
     void xshell_uv::run()
     {
         // Initialize the default loop
-        std::shared_ptr<uvw::loop> loop = uvw::loop::get_default();
+        // std::shared_ptr<uvw::loop> loop = uvw::loop::get_default();
+        std::cout << "Compare pointers:\n\t" << p_loop.get() << "\n\t" << uvw::loop::get_default().get() << '\n'; // REMOVE
+
 
         // Get the file descriptor for the shell and controller sockets
         zmq::fd_t shell_fd = m_shell.get(zmq::sockopt::fd);
         zmq::fd_t controller_fd = m_controller.get(zmq::sockopt::fd);
 
         // Create (libuv) poll handles and bind them to the loop
-        auto shell_poll = loop->resource<uvw::poll_handle>(shell_fd);
-        auto controller_poll = loop->resource<uvw::poll_handle>(controller_fd);
+        auto shell_poll = p_loop->resource<uvw::poll_handle>(shell_fd);
+        auto controller_poll = p_loop->resource<uvw::poll_handle>(controller_fd);
 
         // Register callbacks
         shell_poll->on<uvw::poll_event>(
@@ -98,7 +105,7 @@ namespace xeus
         );
 
         controller_poll->on<uvw::poll_event>(
-            [this, &loop](uvw::poll_event&, uvw::poll_handle&)
+            [this](uvw::poll_event&, uvw::poll_handle&)
             {
                 std::cout << "[CONTROL] inside controller poll\n"; // REMOVE
                 zmq::multipart_t wire_msg;
@@ -110,7 +117,7 @@ namespace xeus
                     {
                         std::cout << "[CONTROL] stopping\n"; // REMOVE
                         wire_msg.send(m_controller);
-                        loop->stop();
+                        p_loop->stop();
                     }
                     else
                     {
@@ -144,7 +151,7 @@ namespace xeus
 
         std::cout << "After starting polls\n"; // REMOVE
 
-        loop->run();
+        // loop->run();
 
         // TODO: close resources ??
     }
