@@ -158,7 +158,7 @@ namespace xeus
 
         std::cout << "After starting polls\n"; // REMOVE
 
-        // loop->run();
+        p_loop->run();
 
         // TODO: close resources ??
     }
