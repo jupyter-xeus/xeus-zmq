@@ -64,16 +64,23 @@ namespace xeus
     {
         // Initialize the default loop
         // std::shared_ptr<uvw::loop> loop = uvw::loop::get_default();
-        std::cout << "Compare pointers:\n\t" << p_loop.get() << "\n\t" << uvw::loop::get_default().get() << '\n'; // REMOVE
-
+        // std::cout << "\nCompare pointers:\n\t" << p_loop.get() << "\n\t" << uvw::loop::get_default().get() << '\n\n'; // REMOVE
+        if (!p_loop)
+        {
+            throw std::runtime_error("No loop provided");
+        }
 
         // Get the file descriptor for the shell and controller sockets
         zmq::fd_t shell_fd = m_shell.get(zmq::sockopt::fd);
         zmq::fd_t controller_fd = m_controller.get(zmq::sockopt::fd);
 
+        std::cout << "File descriptors.\n"; // REMOVE
+
         // Create (libuv) poll handles and bind them to the loop
         auto shell_poll = p_loop->resource<uvw::poll_handle>(shell_fd);
         auto controller_poll = p_loop->resource<uvw::poll_handle>(controller_fd);
+
+        std::cout << "Resources.\n";
 
         // Register callbacks
         shell_poll->on<uvw::poll_event>(
