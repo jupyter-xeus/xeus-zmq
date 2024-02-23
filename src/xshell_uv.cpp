@@ -21,6 +21,8 @@
 #include "xserver_uv_shell_main.hpp"
 #include "xshell_uv.hpp"
 
+// namespace py = pybind11;
+
 namespace xeus
 {
     xshell_uv::xshell_uv(std::shared_ptr<uvw::loop> loop_ptr,
@@ -158,7 +160,10 @@ namespace xeus
 
         std::cout << "After starting polls\n"; // REMOVE
 
-        p_loop->run();
+        // p_loop->run();
+        // py::exec("loop.run_forever()");
+
+        std::cout << "Done not running\n"; // REMOVE
 
         // TODO: close resources ??
     }
