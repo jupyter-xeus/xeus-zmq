@@ -46,6 +46,7 @@ namespace xeus
 
         m_controller.set(zmq::sockopt::linger, get_socket_linger());
         m_controller.bind(get_controller_end_point("shell"));
+        create_polls();
     }
 
     xshell_uv::~xshell_uv()
@@ -62,110 +63,76 @@ namespace xeus
         return get_socket_port(m_stdin);
     }
 
-    void xshell_uv::run()
+    void xshell_uv::create_polls()
     {
-        // Initialize the default loop
-        // std::shared_ptr<uvw::loop> loop = uvw::loop::get_default();
-        // std::cout << "\nCompare pointers:\n\t" << p_loop.get() << "\n\t" << uvw::loop::get_default().get() << '\n\n'; // REMOVE
         if (!p_loop)
-        {
             throw std::runtime_error("No loop provided");
-        }
 
         // Get the file descriptor for the shell and controller sockets
         zmq::fd_t shell_fd = m_shell.get(zmq::sockopt::fd);
         zmq::fd_t controller_fd = m_controller.get(zmq::sockopt::fd);
 
-        std::cout << "File descriptors.\n"; // REMOVE
-
         // Create (libuv) poll handles and bind them to the loop
-        auto shell_poll = p_loop->resource<uvw::poll_handle>(shell_fd);
-        auto controller_poll = p_loop->resource<uvw::poll_handle>(controller_fd);
-
-        std::cout << "Resources.\n";
+        p_shell_poll = p_loop->resource<uvw::poll_handle>(shell_fd);
+        p_controller_poll = p_loop->resource<uvw::poll_handle>(controller_fd);
 
         // Register callbacks
-        shell_poll->on<uvw::poll_event>(
+        p_shell_poll->on<uvw::poll_event>(
             [this](uvw::poll_event&, uvw::poll_handle&)
             {
-                std::cout << "[SHELL] inside shell poll\n"; // REMOVE
+                std::cout << "Shell poll event\t"; // REMOVE
                 zmq::multipart_t wire_msg;
                 if (wire_msg.recv(m_shell, ZMQ_DONTWAIT)) // non-blocking
                 {
-                    try
-                    {
-                        std::cout << "\t[SHELL] msgsg\n";
-                        xmessage msg = p_server->deserialize(wire_msg);
-                        std::cout << "\tMessage content " << msg.content() << '\n';
-                        p_server->notify_shell_listener(std::move(msg));
-                        std::cout << "\t[SHELL] msgsg end\n";
-                    }
-                    catch(std::exception& e)
-                    {
-                        std::cout << "\t[SHELL ERROR] " << e.what() << std::endl;
-                    }
-                    catch(...)
-                    {
-                        std::cout << "\t[SHELL ERROR] Unknown exception\n";
-                    }
+                    xmessage msg = p_server->deserialize(wire_msg);
+                    p_server->notify_shell_listener(std::move(msg));
                 }
-                std::cout << "[SHELL] poll end\n"; // REMOVE
+                std::cout << "Done\n"; // REMOVE
             }
         );
 
-        controller_poll->on<uvw::poll_event>(
+        p_controller_poll->on<uvw::poll_event>(
             [this](uvw::poll_event&, uvw::poll_handle&)
             {
-                std::cout << "[CONTROL] inside controller poll\n"; // REMOVE
+                std::cout << "Controller poll event\t"; // REMOVE
                 zmq::multipart_t wire_msg;
                 if (wire_msg.recv(m_controller, ZMQ_DONTWAIT))
                 {
-                    std::cout << "[CONTROL] inside controller if\n"; // REMOVE
-                    std::string msg = wire_msg.peekstr(0);
-                    if(msg == "stop")
-                    {
-                        std::cout << "[CONTROL] stopping\n"; // REMOVE
-                        wire_msg.send(m_controller);
-                        p_loop->stop();
-                    }
-                    else
-                    {
-                        std::cout << "[CONTROL] not stopping\n"; // REMOVE
-                        zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                        wire_reply.send(m_controller);
-                    }
+                    zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                    wire_reply.send(m_controller);
                 }
+                std::cout << "Done\n"; // REMOVE
             }
         );
 
-        // Resources are event emitters to which listeners are attached
-        shell_poll->on<uvw::error_event>(
+        p_shell_poll->on<uvw::error_event>(
             [](const uvw::error_event&, uvw::poll_handle&)
-            {
-                // TODO: handle errors
+            {   // TODO: handle errors
                 std::cout << "Something wrong with the shell.\n";
-            }
-        );
+            });
 
-        controller_poll->on<uvw::error_event>(
+        p_controller_poll->on<uvw::error_event>(
             [](const uvw::error_event&, uvw::poll_handle&)
-            {
-                std::cerr << "Something wrong with the controller.\n";
-            }
-        );
+            {   // TODO: handle errors
+                std::cout << "Something wrong with the controller.\n";
+            });
 
+        std::cout << "Polls created\n"; // REMOVE
+    }
+
+    void xshell_uv::run()
+    {
+        std::cout << "Starting polls\n";
         // Start the polls
-        shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
-        controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
+        p_shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
+        p_controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
 
         std::cout << "After starting polls\n"; // REMOVE
 
-        // p_loop->run();
-        // py::exec("loop.run_forever()");
+        p_loop->run();
 
-        std::cout << "Done not running\n"; // REMOVE
+        std::cout << "Loop done running\n"; // REMOVE
 
-        // TODO: close resources ??
     }
 
     void xshell_uv::send_shell(zmq::multipart_t& message)
