@@ -57,12 +57,16 @@ namespace xeus
 
     private:
 
+        void create_polls();
+
         zmq::socket_t m_shell;
         zmq::socket_t m_stdin;
         zmq::socket_t m_publisher_pub;
         zmq::socket_t m_controller;
         xserver_uv_shell_main* p_server;
         std::shared_ptr<uvw::loop> p_loop;
+        std::shared_ptr<uvw::poll_handle> p_shell_poll;
+        std::shared_ptr<uvw::poll_handle> p_controller_poll;
     };
 }
 
