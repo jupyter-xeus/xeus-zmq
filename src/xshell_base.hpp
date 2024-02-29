@@ -7,8 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SHELL_HPP
-#define XEUS_SHELL_HPP
+#ifndef XEUS_SHELL_BASE_HPP
+#define XEUS_SHELL_BASE_HPP
 
 #include <string>
 
@@ -21,25 +21,25 @@ namespace xeus
 {
     class xserver_zmq_split;
 
-    class xshell
+    class xshell_base
     {
     public:
 
         using listener = std::function<void(xmessage)>;
 
-        xshell(zmq::context_t& context,
+        xshell_base(zmq::context_t& context,
                const std::string& transport,
                const std::string& ip,
                const std::string& shell_port,
                const std::string& sdtin_port,
                xserver_zmq_split* server);
 
-        ~xshell();
+        ~xshell_base();
 
         std::string get_shell_port() const;
         std::string get_stdin_port() const;
 
-        void run();
+        virtual void run();
 
         void send_shell(zmq::multipart_t& message);
         void send_stdin(zmq::multipart_t& message);
@@ -48,7 +48,7 @@ namespace xeus
 
         void reply_to_controller(zmq::multipart_t& message);
 
-    private:
+    protected:
 
         zmq::socket_t m_shell;
         zmq::socket_t m_stdin;

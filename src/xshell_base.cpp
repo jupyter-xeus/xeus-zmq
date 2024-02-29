@@ -13,11 +13,11 @@
 
 #include "xserver_zmq_split.hpp"
 #include "xmiddleware_impl.hpp"
-#include "xshell.hpp"
+#include "xshell_base.hpp"
 
 namespace xeus
 {
-    xshell::xshell(zmq::context_t& context,
+    xshell_base::xshell_base(zmq::context_t& context,
                    const std::string& transport,
                    const std::string& ip,
                    const std::string& shell_port,
@@ -38,72 +38,30 @@ namespace xeus
         m_controller.bind(get_controller_end_point("shell"));
     }
 
-    xshell::~xshell()
+    xshell_base::~xshell_base()
     {
     }
 
-    std::string xshell::get_shell_port() const
+    std::string xshell_base::get_shell_port() const
     {
         return get_socket_port(m_shell);
     }
 
-    std::string xshell::get_stdin_port() const
+    std::string xshell_base::get_stdin_port() const
     {
         return get_socket_port(m_stdin);
     }
 
-    void xshell::run()
+    void xshell_base::run()
     {
-        zmq::pollitem_t items[] = {
-            { m_shell, 0, ZMQ_POLLIN, 0 },
-            { m_controller, 0, ZMQ_POLLIN, 0 }
-        };
-
-        while (true)
-        {
-            zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
-
-            if (items[0].revents & ZMQ_POLLIN)
-            {
-                zmq::multipart_t wire_msg;
-                wire_msg.recv(m_shell);
-                try
-                {
-                    xmessage msg = p_server->deserialize(wire_msg);
-                    p_server->notify_shell_listener(std::move(msg));
-                }
-                catch(std::exception& e)
-                {
-                    std::cerr << e.what() << std::endl;
-                }
-            }
-
-            if (items[1].revents & ZMQ_POLLIN)
-            {
-                // stop message
-                zmq::multipart_t wire_msg;
-                wire_msg.recv(m_controller);
-                std::string msg = wire_msg.peekstr(0);
-                if(msg == "stop")
-                {
-                    wire_msg.send(m_controller);
-                    break;
-                }
-                else
-                {
-                    zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                    wire_reply.send(m_controller);
-                }
-            }
-        }
     }
 
-    void xshell::send_shell(zmq::multipart_t& message)
+    void xshell_base::send_shell(zmq::multipart_t& message)
     {
         message.send(m_shell);
     }
 
-    void xshell::send_stdin(zmq::multipart_t& message)
+    void xshell_base::send_stdin(zmq::multipart_t& message)
     {
         message.send(m_stdin);
         zmq::multipart_t wire_msg;
@@ -119,12 +77,12 @@ namespace xeus
         }
     }
 
-    void xshell::publish(zmq::multipart_t& message)
+    void xshell_base::publish(zmq::multipart_t& message)
     {
         message.send(m_publisher_pub);
     }
 
-    void xshell::abort_queue(const listener& l, long polling_interval)
+    void xshell_base::abort_queue(const listener& l, long polling_interval)
     {
         while (true)
         {
@@ -148,7 +106,7 @@ namespace xeus
         }
     }
 
-    void xshell::reply_to_controller(zmq::multipart_t& message)
+    void xshell_base::reply_to_controller(zmq::multipart_t& message)
     {
         message.send(m_controller);
     }

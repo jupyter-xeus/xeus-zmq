@@ -10,6 +10,11 @@
 #include <chrono>
 #include <iostream>
 
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
+
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
@@ -19,7 +24,9 @@
 #include "xcontrol.hpp"
 #include "xheartbeat.hpp"
 #include "xpublisher.hpp"
-#include "xshell.hpp"
+#include "xshell_base.hpp"
+#include "xshell_default.hpp"
+#include "xshell_uv.hpp"
 #include "xzmq_messenger.hpp"
 
 namespace xeus
@@ -33,7 +40,31 @@ namespace xeus
         , p_publisher(new xpublisher(context,
                                      std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
                                      config.m_transport, config.m_ip, config.m_iopub_port))
-        , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
+        , p_shell(new xshell_default(context, config.m_transport, config.m_ip, config.m_shell_port, config.m_stdin_port, this))
+        , m_control_thread()
+        , m_hb_thread()
+        , m_iopub_thread()
+        , m_shell_thread()
+        , m_error_handler(eh)
+        , m_control_stopped(false)
+    {
+        p_controller->connect_messenger();
+    }
+
+    // In the case where an event loop is provided
+    xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
+                                         const xconfiguration& config,
+                                         nl::json::error_handler_t eh,
+                                         std::shared_ptr<uvw::loop> loop_ptr)
+        : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
+        , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
+        , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
+        , p_publisher(new xpublisher(context,
+                                     std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
+                                     config.m_transport, config.m_ip, config.m_iopub_port))
+        , p_shell(new xshell_uv(context, config.m_transport, config.m_ip,
+                                config.m_shell_port, config.m_stdin_port, this,
+                                loop_ptr))
         , m_control_thread()
         , m_hb_thread()
         , m_iopub_thread()
@@ -111,12 +142,12 @@ namespace xeus
     {
         p_shell->abort_queue(l, polling_interval);
     }
-    
+
     void xserver_zmq_split::stop_impl()
     {
         p_controller->stop();
     }
-    
+
     void xserver_zmq_split::update_config_impl(xconfiguration& config) const
     {
         config.m_control_port = p_controller->get_port();
@@ -143,7 +174,7 @@ namespace xeus
 
     void xserver_zmq_split::start_shell_thread()
     {
-        m_shell_thread = std::move(xthread(&xshell::run, p_shell.get()));
+        m_shell_thread = std::move(xthread(&xshell_base::run, p_shell.get()));
     }
 
     xcontrol& xserver_zmq_split::get_controller()
@@ -151,7 +182,7 @@ namespace xeus
         return *p_controller;
     }
 
-    xshell& xserver_zmq_split::get_shell()
+    xshell_base& xserver_zmq_split::get_shell()
     {
         return *p_shell;
     }

@@ -12,6 +12,11 @@
 
 #include <atomic>
 
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
+
 #include "zmq_addon.hpp"
 
 #include "xeus/xkernel_configuration.hpp"
@@ -27,7 +32,7 @@ namespace xeus
     class xcontrol;
     class xheartbeat;
     class xpublisher;
-    class xshell;
+    class xshell_base;
 
     class xserver_zmq_split : public xserver_zmq_impl
     {
@@ -36,17 +41,23 @@ namespace xeus
         using controller_ptr = std::unique_ptr<xcontrol>;
         using heartbeat_ptr = std::unique_ptr<xheartbeat>;
         using publisher_ptr = std::unique_ptr<xpublisher>;
-        using shell_ptr = std::unique_ptr<xshell>;
+        using shell_ptr = std::unique_ptr<xshell_base>;
 
         xserver_zmq_split(zmq::context_t& context,
                           const xconfiguration& config,
                           nl::json::error_handler_t eh);
 
+        // In the case where an event loop is provided
+        xserver_zmq_split(zmq::context_t& context,
+                          const xconfiguration& config,
+                          nl::json::error_handler_t eh,
+                          std::shared_ptr<uvw::loop> loop_ptr);
+
         ~xserver_zmq_split() override;
 
         // The xcontrol object needs to call this method
         using xserver_zmq_impl::notify_control_listener;
-        // The xshell object needs to call these methods
+        // The xshell_base object needs to call these methods
         using xserver_zmq_impl::notify_shell_listener;
         using xserver_zmq_impl::notify_stdin_listener;
 
@@ -77,7 +88,7 @@ namespace xeus
         void start_shell_thread();
 
         xcontrol& get_controller();
-        xshell& get_shell();
+        xshell_base& get_shell();
 
         bool is_control_stopped() const;
 

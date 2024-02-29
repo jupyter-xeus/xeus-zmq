@@ -11,11 +11,16 @@
 #include <chrono>
 #include <iostream>
 
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
+
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
 #include "xserver_shell_main.hpp"
-#include "xshell.hpp"
+#include "xshell_base.hpp"
 
 namespace xeus
 {
@@ -24,6 +29,14 @@ namespace xeus
                                            const xconfiguration& config,
                                            nl::json::error_handler_t eh)
         : xserver_zmq_split(context, config, eh)
+    {
+    }
+
+    xserver_shell_main::xserver_shell_main(zmq::context_t& context,
+                                           const xconfiguration& config,
+                                           nl::json::error_handler_t eh,
+                                           std::shared_ptr<uvw::loop> loop_ptr)
+        : xserver_zmq_split(context, config, eh, loop_ptr)
     {
     }
 
