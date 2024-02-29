@@ -25,7 +25,6 @@ namespace xeus
 
     private:
 
-        zmq::socket_t m_shell_controller;
-        // Add more controller sockets as needed for other channels
+        // Add some relevant sockets
     };
 }
