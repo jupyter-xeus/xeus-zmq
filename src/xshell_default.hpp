@@ -7,46 +7,30 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SHELL_UV_HPP
-#define XEUS_SHELL_UV_HPP
-
-#include <memory>
-
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#include <uvw.hpp>
-#endif
+#ifndef XEUS_SHELL_DEFAULT_HPP
+#define XEUS_SHELL_DEFAULT_HPP
 
 #include "xshell_base.hpp"
 
 namespace xeus
 {
 
-    class xshell_uv : public xshell_base
+    class xshell_default : public xshell_base
     {
     public:
 
-        xshell_uv(zmq::context_t& context,
+        xshell_default(zmq::context_t& context,
                        const std::string& transport,
                        const std::string& ip,
                        const std::string& shell_port,
                        const std::string& stdin_port,
-                       xserver_zmq_split* server,
-                       std::shared_ptr<uvw::loop> loop_ptr);
+                       xserver_zmq_split* server);
 
-        ~xshell_uv();
+        ~xshell_default();
 
         void run() override;
-
-    private:
-
-        void create_polls();
-
-        std::shared_ptr<uvw::loop> p_loop;
-        std::shared_ptr<uvw::poll_handle> p_shell_poll;
-        std::shared_ptr<uvw::poll_handle> p_controller_poll;
     };
 
 } // namespace xeus
 
-#endif // XEUS_SHELL_UV_HPP
+#endif // XEUS_SHELL_DEFAULT_HPP

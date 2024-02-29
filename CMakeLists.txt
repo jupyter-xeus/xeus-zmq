@@ -73,8 +73,8 @@ endif()
 
 message(STATUS "XEUS_ZMQ_BUILD_SHARED_LIBS:          ${XEUS_ZMQ_BUILD_SHARED_LIBS}")
 message(STATUS "XEUS_ZMQ_BUILD_STATIC_LIBS:          ${XEUS_ZMQ_BUILD_STATIC_LIBS}")
-message(STATUS "XEUS_ZMQ_STATIC_DEPENDENCIES:        ${XEUS_ZMQ_STATIC_DEPENDENCIES}")  
-message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")  
+message(STATUS "XEUS_ZMQ_STATIC_DEPENDENCIES:        ${XEUS_ZMQ_STATIC_DEPENDENCIES}")
+message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 
 # Dependencies
 # ============
@@ -142,8 +142,6 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_uv.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_uv.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_base.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.cpp
@@ -155,8 +153,6 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_uv_shell_main.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_uv_shell_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.cpp
@@ -164,8 +160,10 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_base.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_base.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
