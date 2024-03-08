@@ -72,7 +72,7 @@ namespace xeus
                                                      nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 
     XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_shell_main(
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
         xcontext& context,
         const xconfiguration& config,
         nl::json::error_handler_t eh = nl::json::error_handler_t::strict,

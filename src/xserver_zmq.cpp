@@ -123,7 +123,7 @@ namespace xeus
         return std::make_unique<xserver_zmq>(std::move(impl));
     }
 
-    std::unique_ptr<xserver> make_xserver_shell_main(
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
         xcontext& context,
         const xconfiguration& config,
         nl::json::error_handler_t eh,
