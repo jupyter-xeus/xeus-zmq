@@ -35,8 +35,9 @@ namespace xeus
     xserver_shell_main::xserver_shell_main(zmq::context_t& context,
                                            const xconfiguration& config,
                                            nl::json::error_handler_t eh,
-                                           std::shared_ptr<uvw::loop> loop_ptr)
-        : xserver_zmq_split(context, config, eh, loop_ptr)
+                                           std::shared_ptr<uvw::loop> loop_ptr,
+                                           std::unique_ptr<hook_base> hook)
+        : xserver_zmq_split(context, config, eh, loop_ptr, std::move(hook))
     {
     }
 

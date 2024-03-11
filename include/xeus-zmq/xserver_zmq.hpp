@@ -22,6 +22,7 @@
 #include "xeus/xserver.hpp"
 
 #include "xeus-zmq.hpp"
+#include "hook_base.hpp"
 
 namespace xeus
 {
@@ -76,7 +77,8 @@ namespace xeus
         xcontext& context,
         const xconfiguration& config,
         nl::json::error_handler_t eh = nl::json::error_handler_t::strict,
-        std::shared_ptr<uvw::loop> loop_ptr = nullptr);
+        std::shared_ptr<uvw::loop> loop_ptr = nullptr,
+        std::unique_ptr<hook_base> hook = nullptr);
 
 }
 

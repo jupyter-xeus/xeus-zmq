@@ -55,7 +55,8 @@ namespace xeus
     xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh,
-                                         std::shared_ptr<uvw::loop> loop_ptr)
+                                         std::shared_ptr<uvw::loop> loop_ptr,
+                                         std::unique_ptr<hook_base> hook)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
@@ -64,7 +65,7 @@ namespace xeus
                                      config.m_transport, config.m_ip, config.m_iopub_port))
         , p_shell(new xshell_uv(context, config.m_transport, config.m_ip,
                                 config.m_shell_port, config.m_stdin_port, this,
-                                loop_ptr))
+                                loop_ptr, std::move(hook)))
         , m_control_thread()
         , m_hb_thread()
         , m_iopub_thread()
