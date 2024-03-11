@@ -127,10 +127,11 @@ namespace xeus
         xcontext& context,
         const xconfiguration& config,
         nl::json::error_handler_t eh,
-        std::shared_ptr<uvw::loop> loop_ptr)
+        std::shared_ptr<uvw::loop> loop_ptr,
+        std::unique_ptr<hook_base> hook)
     {
         auto impl = std::make_unique<xserver_shell_main>(
-            context.get_wrapped_context<zmq::context_t>(), config, eh, loop_ptr);
+            context.get_wrapped_context<zmq::context_t>(), config, eh, loop_ptr, std::move(hook));
         return std::make_unique<xserver_zmq>(std::move(impl));
     }
 }

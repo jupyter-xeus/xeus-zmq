@@ -18,9 +18,11 @@
 #endif
 
 #include "xshell_base.hpp"
+#include "xeus-zmq/hook_base.hpp"
 
 namespace xeus
 {
+
 
     class xshell_uv : public xshell_base
     {
@@ -32,7 +34,8 @@ namespace xeus
                        const std::string& shell_port,
                        const std::string& stdin_port,
                        xserver_zmq_split* server,
-                       std::shared_ptr<uvw::loop> loop_ptr);
+                       std::shared_ptr<uvw::loop> loop_ptr,
+                       std::unique_ptr<hook_base> hook);
 
         ~xshell_uv();
 
@@ -42,9 +45,10 @@ namespace xeus
 
         void create_polls();
 
-        std::shared_ptr<uvw::loop> p_loop;
-        std::shared_ptr<uvw::poll_handle> p_shell_poll;
-        std::shared_ptr<uvw::poll_handle> p_controller_poll;
+        std::shared_ptr<uvw::loop> p_loop{ nullptr };
+        std::shared_ptr<uvw::poll_handle> p_shell_poll{ nullptr };
+        std::shared_ptr<uvw::poll_handle> p_controller_poll{ nullptr };
+        std::unique_ptr<hook_base> p_hook{ nullptr };
     };
 
 } // namespace xeus
