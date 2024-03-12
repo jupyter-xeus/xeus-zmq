@@ -20,7 +20,7 @@
 
 #include "xeus-zmq/xeus-zmq.hpp"
 #include "xserver_zmq_split.hpp"
-#include "xeus-zmq/hook_base.hpp"
+#include "xeus-zmq/xhook_base.hpp"
 
 namespace xeus
 {
@@ -37,7 +37,7 @@ namespace xeus
                            const xconfiguration& config,
                            nl::json::error_handler_t he,
                            std::shared_ptr<uvw::loop> loop_ptr,
-                           std::unique_ptr<hook_base> hook);
+                           std::unique_ptr<xhook_base> hook);
 
         virtual ~xserver_shell_main();
 
