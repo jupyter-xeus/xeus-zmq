@@ -27,7 +27,7 @@ namespace xeus
                          const std::string& stdin_port,
                          xserver_zmq_split* server,
                          std::shared_ptr<uvw::loop> loop_ptr,
-                         std::unique_ptr<hook_base> hook)
+                         std::unique_ptr<xhook_base> hook)
         : xshell_base(context, transport, ip, shell_port, stdin_port, server)
         , p_loop{loop_ptr}
         , p_hook{std::move(hook)}
@@ -114,10 +114,8 @@ namespace xeus
 
         if (p_hook)
         {
-            std::cout << "Running PPP hook\n";
             p_hook->run(p_loop);
         } else {
-            std::cout << "Running normal loop\n";
             p_loop->run();
         }
     }

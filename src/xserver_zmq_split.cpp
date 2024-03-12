@@ -56,7 +56,7 @@ namespace xeus
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh,
                                          std::shared_ptr<uvw::loop> loop_ptr,
-                                         std::unique_ptr<hook_base> hook)
+                                         std::unique_ptr<xhook_base> hook)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
