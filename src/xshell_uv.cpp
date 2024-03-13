@@ -32,6 +32,11 @@ namespace xeus
         , p_loop{loop_ptr}
         , p_hook{std::move(hook)}
     {
+        if (!p_loop)
+        {
+            std::cerr << "No loop provided, using default loop." << std::endl;
+            p_loop = uvw::loop::get_default();
+        }
         create_polls();
     }
 
@@ -41,9 +46,6 @@ namespace xeus
 
     void xshell_uv::create_polls()
     {
-        if (!p_loop)
-            throw std::runtime_error("Cannot create polls without a valid loop");
-
         // Get the file descriptor for the shell and controller sockets
         zmq::fd_t shell_fd = m_shell.get(zmq::sockopt::fd);
         zmq::fd_t controller_fd = m_controller.get(zmq::sockopt::fd);
