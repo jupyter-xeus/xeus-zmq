@@ -12,7 +12,7 @@
 #include <uvw.hpp>
 #endif
 
-#include <memory> // std::unique_ptr
+#include <memory>
 
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xserver_zmq_impl.hpp"
@@ -100,8 +100,8 @@ namespace xeus
     }
 
     std::unique_ptr<xserver> make_xserver_default(xcontext& context,
-                                              const xconfiguration& config,
-                                              nl::json::error_handler_t eh)
+                                                  const xconfiguration& config,
+                                                  nl::json::error_handler_t eh)
     {
         auto impl = std::make_unique<xserver_zmq_default>(context.get_wrapped_context<zmq::context_t>(), config, eh);
         return std::make_unique<xserver_zmq>(std::move(impl));
@@ -123,12 +123,11 @@ namespace xeus
         return std::make_unique<xserver_zmq>(std::move(impl));
     }
 
-    std::unique_ptr<xserver> make_xserver_uv_shell_main(
-        xcontext& context,
-        const xconfiguration& config,
-        nl::json::error_handler_t eh,
-        std::shared_ptr<uvw::loop> loop_ptr,
-        std::unique_ptr<xhook_base> hook)
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(xcontext& context,
+                                                        const xconfiguration& config,
+                                                        nl::json::error_handler_t eh,
+                                                        std::shared_ptr<uvw::loop> loop_ptr,
+                                                        std::unique_ptr<xhook_base> hook)
     {
         auto impl = std::make_unique<xserver_shell_main>(
             context.get_wrapped_context<zmq::context_t>(), config, eh, loop_ptr, std::move(hook));

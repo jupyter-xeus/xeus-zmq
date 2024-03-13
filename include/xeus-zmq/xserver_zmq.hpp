@@ -15,7 +15,7 @@
 #include <uvw.hpp>
 #endif
 
-#include <memory> // std::unique_ptr
+#include <memory>
 
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
