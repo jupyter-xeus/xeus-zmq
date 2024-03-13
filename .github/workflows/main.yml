@@ -92,9 +92,7 @@ jobs:
         with:
           environment-file: environment-dev.yml
           environment-name: xeus-zmq
-          init-shell: >-
-            powershell
-            cmd.exe
+          init-shell: cmd.exe
 
       - name: Make build directory
         run: mkdir build

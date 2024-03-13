@@ -88,7 +88,7 @@ configure_file(
 
 add_executable(test_kernel ${TEST_KERNEL_SOURCES})
 target_link_libraries(test_kernel PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
-target_compile_features(test_kernel PRIVATE cxx_std_11)
+target_compile_features(test_kernel PRIVATE cxx_std_17)
 
 set(CONNECTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/connection.json)
 
@@ -118,7 +118,7 @@ configure_file(
 
 add_executable(test_kernel_control ${TEST_KERNEL_SPLIT_SOURCES})
 target_link_libraries(test_kernel_control PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
-target_compile_features(test_kernel_control PRIVATE cxx_std_11)
+target_compile_features(test_kernel_control PRIVATE cxx_std_17)
 
 set(CONNECTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/connection.json)
 
@@ -148,7 +148,7 @@ configure_file(
 
 add_executable(test_kernel_shell ${TEST_KERNEL_SPLIT_SOURCES})
 target_link_libraries(test_kernel_shell PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
-target_compile_features(test_kernel_shell PRIVATE cxx_std_11)
+target_compile_features(test_kernel_shell PRIVATE cxx_std_17)
 
 set(CONNECTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/connection.json)
 
@@ -175,7 +175,7 @@ if (UNIX)
 
     add_executable(test_kernel_ipc ${TEST_KERNEL_IPC_SOURCES})
     target_link_libraries(test_kernel_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
-    target_compile_features(test_kernel_ipc PRIVATE cxx_std_11)
+    target_compile_features(test_kernel_ipc PRIVATE cxx_std_17)
 
     # Test_client_ipc
     # ===============
@@ -185,6 +185,6 @@ if (UNIX)
 
     add_executable(test_client_ipc ${TEST_CLIENT_IPC_SOURCES})
     target_link_libraries(test_client_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
-    target_compile_features(test_client_ipc PRIVATE cxx_std_11)
+    target_compile_features(test_client_ipc PRIVATE cxx_std_17)
 
 endif (UNIX)
