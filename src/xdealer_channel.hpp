@@ -11,6 +11,8 @@
 #define XEUS_DEALER_CHANNEL_HPP
 
 #include "zmq.hpp"
+#include "zmq_addon.hpp"
+
 #include "nlohmann/json.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
@@ -29,7 +31,7 @@ namespace xeus
         void send_message(zmq::multipart_t& message);
         std::optional<zmq::multipart_t> receive_message(long timeout);
 
-        zmq::socket& get_socket();
+        zmq::socket_t& get_socket();
 
     private:
 

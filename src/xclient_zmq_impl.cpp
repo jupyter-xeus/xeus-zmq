@@ -7,6 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
+
 #include "xeus-zmq/xauthentication.hpp"
 #include "xclient_zmq_impl.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
@@ -15,13 +17,14 @@ namespace xeus
 {
 
     xclient_zmq_impl::xclient_zmq_impl(zmq::context_t& context,
-                                    const xeus::xconfiguration& config)
+                                    const xeus::xconfiguration& config,
+                                    nl::json::error_handler_t eh)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_shell_client(context, config)
         , m_control_client(context, config)
         , m_iopub_client(context, config)
         , p_messenger(context)
-        , m_error_handler(nl::json::error_handler_t::strict)
+        , m_error_handler(eh)
     {
     }
 
@@ -80,7 +83,7 @@ namespace xeus
         return m_iopub_client.iopub_queue_size();
     }
 
-    std::optional<xmessage> xclient_zmq_impl::pop_iopub_message();
+    std::optional<xmessage> xclient_zmq_impl::pop_iopub_message()
     {
         return m_iopub_client.pop_iopub_message();
     }
@@ -159,7 +162,7 @@ namespace xeus
 
         if (pending_message.has_value())
         {
-            notify_iopub_listener(*pending_message);
+            notify_iopub_listener(std::move(*pending_message));
         } else {
             poll(-1);
         }

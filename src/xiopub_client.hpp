@@ -10,13 +10,18 @@
 #ifndef XEUS_IOPUB_CLIENT_HPP
 #define XEUS_IOPUB_CLIENT_HPP
 
+#include <queue>
+#include <mutex>
+
 #include "zmq.hpp"
 #include "nlohmann/json.hpp"
 
+#include "xeus/xmessage.hpp"
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
 #include "xeus-zmq/xthread.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 
 namespace xeus
 {

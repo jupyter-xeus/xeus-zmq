@@ -16,6 +16,7 @@ namespace nl = nlohmann;
 namespace xeus
 {
     xclient_messenger::xclient_messenger(zmq::context_t& context)
+        : m_iopub_controller(context, zmq::socket_type::req)
     {
     }
 
@@ -25,12 +26,17 @@ namespace xeus
 
     void xclient_messenger::connect()
     {
-        // TODO
+        m_iopub_controller.set(zmq::sockopt::linger, get_socket_linger());
+        m_iopub_controller.connect(get_controller_end_point("iopub"));
     }
 
     void xclient_messenger::stop_channels()
     {
-        // TODO
+        zmq::message_t stop_msg("stop", 4);
+        zmq::message_t response;
+
+        // Wait for iopub answer
+        m_iopub_controller.send(stop_msg, zmq::send_flags::none);
+        (void)m_iopub_controller.recv(response);
     }
 }
-

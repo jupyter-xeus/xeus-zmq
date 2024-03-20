@@ -24,7 +24,8 @@ namespace xeus
         void stop_channels();
 
     private:
-
-        // Add some relevant sockets
+        zmq::socket_t m_iopub_controller;
     };
 }
+
+#endif

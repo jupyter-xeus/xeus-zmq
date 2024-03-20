@@ -7,6 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include "xeus-zmq/xmiddleware.hpp"
+
 #include "xdealer_channel.hpp"
 
 namespace xeus
@@ -35,8 +37,8 @@ namespace xeus
     std::optional<zmq::multipart_t> xdealer_channel::receive_message(long timeout)
     {
         zmq::multipart_t wire_msg;
-        m_socket.setsockopt(ZMQ_RCVTIMEO, timeout);
-        if (wire_msg.recv(m_socket, zmq::recv_flags::none))
+        m_socket.set(zmq::sockopt::linger, timeout);
+        if (wire_msg.recv(m_socket))
         {
             return wire_msg;
         } else {
@@ -44,7 +46,7 @@ namespace xeus
         }
     }
 
-    zmq::socket& xdealer_channel::get_socket()
+    zmq::socket_t& xdealer_channel::get_socket()
     {
         return m_socket;
     }

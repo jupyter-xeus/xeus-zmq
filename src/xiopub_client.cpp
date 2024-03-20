@@ -7,7 +7,10 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
+
 #include "xiopub_client.hpp"
+#include "xclient_zmq_impl.hpp"
 
 #include "xeus-zmq/xzmq_serializer.hpp"
 
@@ -40,7 +43,7 @@ namespace xeus
         std::lock_guard<std::mutex> guard(m_queue_mutex);
         if (!m_message_queue.empty())
         {
-            xmessage msg = m_message_queue.back();
+            xmessage msg = std::move(m_message_queue.back());
             m_message_queue.pop();
             return msg;
         } else {
@@ -67,7 +70,7 @@ namespace xeus
                     xmessage msg = p_client_impl->deserialize(wire_msg);
                     {
                         std::lock_guard<std::mutex> guard(m_queue_mutex);
-                        m_message_queue.push(msg);
+                        m_message_queue.push(std::move(msg));
                     }
                     p_client_impl->notify_shell_listener(std::move(msg));
                 }

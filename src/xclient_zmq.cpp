@@ -13,9 +13,8 @@
 namespace xeus
 {
 
-    xclient_zmq::xclient_zmq(xcontext& context,
-                            const xeus::xconfiguration& config)
-        : p_client_impl(std::make_unique<xclient_zmq_impl>(context.get_wrapped_context<zmq::context_t>(), config))
+    xclient_zmq::xclient_zmq(std::unique_ptr<xclient_zmq_impl> impl)
+        : p_client_impl(std::move(impl))
     {
     }
 
@@ -81,6 +80,14 @@ namespace xeus
 
     std::optional<xmessage> xclient_zmq::pop_iopub_message()
     {
-        p_client_impl->pop_iopub_message();
+        return p_client_impl->pop_iopub_message();
+    }
+
+    std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,
+                                                const xconfiguration& config,
+                                                nl::json::error_handler_t eh)
+    {
+        auto impl = std::make_unique<xclient_zmq_impl>(context.get_wrapped_context<zmq::context_t>(), config, eh);
+        return std::make_unique<xclient_zmq>(std::move(impl));
     }
 }

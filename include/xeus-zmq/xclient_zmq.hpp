@@ -10,6 +10,8 @@
 #ifndef XEUS_CLIENT_ZMQ_HPP
 #define XEUS_CLIENT_ZMQ_HPP
 
+#include <optional>
+
 #include <nlohmann/json.hpp>
 
 #include "xeus/xeus_context.hpp"
@@ -28,8 +30,7 @@ namespace xeus
 
         using listener = std::function<void(xmessage)>;
 
-        xclient_zmq::xclient_zmq(xcontext& context,
-                                const xeus::xconfiguration& config);
+        explicit xclient_zmq(std::unique_ptr<xclient_zmq_impl> impl);
         ~xclient_zmq();
 
         void send_on_shell(xmessage msg);
@@ -52,6 +53,11 @@ namespace xeus
     private:
         std::unique_ptr<xclient_zmq_impl> p_client_impl;
     };
+
+    XEUS_ZMQ_API
+    std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,
+                                              const xconfiguration& config,
+                                              nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 }
 
 #endif

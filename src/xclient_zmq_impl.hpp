@@ -25,6 +25,7 @@
 
 namespace xeus
 {
+    class xauthentication;
 
     class xclient_zmq_impl
     {
@@ -32,7 +33,11 @@ namespace xeus
         using iopub_client_ptr = std::unique_ptr<xiopub_client>;
         using listener = std::function<void(xmessage)>;
 
-        virtual ~xclient_zmq_impl() = default;
+        xclient_zmq_impl(zmq::context_t& context,
+                    const xconfiguration& config,
+                    nl::json::error_handler_t eh);
+
+        ~xclient_zmq_impl();
 
         xclient_zmq_impl(const xclient_zmq_impl&) = delete;
         xclient_zmq_impl& operator=(const xclient_zmq_impl&) = delete;
@@ -72,10 +77,6 @@ namespace xeus
 
         xmessage deserialize(zmq::multipart_t& wire_msg) const;
 
-    protected:
-        xclient_zmq_impl(zmq::context_t& context,
-                        const xeus::xconfiguration& config);
-
     private:
         void start_iopub_thread();
         void poll(long timeout);
@@ -83,11 +84,11 @@ namespace xeus
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;
 
-        xclient_messenger p_messenger;
-
         xdealer_channel m_shell_client;
         xdealer_channel m_control_client;
         xiopub_client m_iopub_client;
+
+        xclient_messenger p_messenger;
 
         nl::json::error_handler_t m_error_handler;
 
