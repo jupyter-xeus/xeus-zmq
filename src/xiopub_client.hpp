@@ -43,7 +43,7 @@ namespace xeus
 
     private:
         zmq::socket_t m_iopub;
-        std::string m_iopub_end_point;
+        zmq::socket_t m_controller;
 
         std::queue<xmessage> m_message_queue;
         mutable std::mutex m_queue_mutex;

@@ -20,8 +20,8 @@ namespace xeus
                                     const xeus::xconfiguration& config,
                                     nl::json::error_handler_t eh)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
-        , m_shell_client(context, config)
-        , m_control_client(context, config)
+        , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)
+        , m_control_client(context, config.m_transport, config.m_ip, config.m_control_port)
         , m_iopub_client(context, config)
         , p_messenger(context)
         , m_error_handler(eh)
@@ -91,11 +91,6 @@ namespace xeus
     void xclient_zmq_impl::register_iopub_listener(const listener& l)
     {
         m_iopub_listener = l;
-    }
-
-    xclient_messenger& xclient_zmq_impl::get_client_messenger()
-    {
-        return p_messenger;
     }
 
     void xclient_zmq_impl::connect()
@@ -171,7 +166,7 @@ namespace xeus
     void xclient_zmq_impl::start()
     {
         start_iopub_thread();
-        // TODO
+        // TODO : Introduce a client, xheartbeat_client that runs on its own thread, m_heartbeat_thread.
     }
 
     void xclient_zmq_impl::start_iopub_thread()

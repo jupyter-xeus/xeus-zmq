@@ -73,14 +73,34 @@ namespace xeus
         p_client_impl->notify_iopub_listener(std::move(msg));
     }
 
-    void xclient_zmq::start()
+    std::size_t xclient_zmq::iopub_queue_size() const
     {
-        p_client_impl->start();
+        return p_client_impl->iopub_queue_size();
     }
 
     std::optional<xmessage> xclient_zmq::pop_iopub_message()
     {
         return p_client_impl->pop_iopub_message();
+    }
+
+    void xclient_zmq::connect()
+    {
+        p_client_impl->connect();
+    }
+
+    void xclient_zmq::stop_channels()
+    {
+        p_client_impl->stop_channels();
+    }
+
+    void xclient_zmq::start()
+    {
+        p_client_impl->start();
+    }
+
+    void xclient_zmq::wait_for_message()
+    {
+        p_client_impl->wait_for_message();
     }
 
     std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,

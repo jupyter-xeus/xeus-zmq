@@ -13,6 +13,7 @@
 #include "xclient_zmq_impl.hpp"
 
 #include "xeus-zmq/xzmq_serializer.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 
 namespace xeus
 {
@@ -20,16 +21,14 @@ namespace xeus
     xiopub_client::xiopub_client(zmq::context_t& context,
                                  const xeus::xconfiguration& config)
         : m_iopub(context, zmq::socket_type::sub)
-        , m_iopub_end_point("")
+        , m_controller(context, zmq::socket_type::rep)
     {
-        m_iopub_end_point = xeus::get_end_point(config.m_transport, config.m_ip, config.m_iopub_port);
-
-        m_iopub.connect(m_iopub_end_point);
+        m_iopub.connect(get_end_point(config.m_transport, config.m_ip, config.m_iopub_port));
+        init_socket(m_controller, get_controller_end_point("iopub"));
     }
 
     xiopub_client::~xiopub_client()
     {
-        m_iopub.disconnect(m_iopub_end_point);
     }
 
     std::size_t xiopub_client::iopub_queue_size() const

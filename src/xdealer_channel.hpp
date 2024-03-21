@@ -24,7 +24,9 @@ namespace xeus
     public:
 
         xdealer_channel(zmq::context_t& context,
-                        const xeus::xconfiguration& config);
+                        const std::string& transport,
+                        const std::string& ip,
+                        const std::string& port);
 
         ~xdealer_channel();
 
@@ -34,9 +36,7 @@ namespace xeus
         zmq::socket_t& get_socket();
 
     private:
-
         zmq::socket_t m_socket;
-        std::string m_end_point;
     };
 }
 

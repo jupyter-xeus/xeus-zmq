@@ -15,18 +15,16 @@ namespace xeus
 {
 
     xdealer_channel::xdealer_channel(zmq::context_t& context,
-                                 const xeus::xconfiguration& config)
+                                    const std::string& transport,
+                                    const std::string& ip,
+                                    const std::string& port)
         : m_socket(context, zmq::socket_type::dealer)
-        , m_end_point("")
     {
-        m_end_point = xeus::get_end_point(config.m_transport, config.m_ip, config.m_shell_port);
-
-        m_socket.connect(m_end_point);
+        m_socket.connect(get_end_point(transport, ip, port));
     }
 
     xdealer_channel::~xdealer_channel()
     {
-        m_socket.disconnect(m_end_point);
     }
 
     void xdealer_channel::send_message(zmq::multipart_t& message)
@@ -37,7 +35,7 @@ namespace xeus
     std::optional<zmq::multipart_t> xdealer_channel::receive_message(long timeout)
     {
         zmq::multipart_t wire_msg;
-        m_socket.set(zmq::sockopt::linger, timeout);
+        m_socket.set(zmq::sockopt::linger, static_cast<int>(timeout));
         if (wire_msg.recv(m_socket))
         {
             return wire_msg;

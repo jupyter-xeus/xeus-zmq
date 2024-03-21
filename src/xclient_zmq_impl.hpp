@@ -64,7 +64,6 @@ namespace xeus
         // TODO
 
         // client messenger
-        xclient_messenger& get_client_messenger();
         void connect();
         void stop_channels();
 

@@ -47,8 +47,12 @@ namespace xeus
         void notify_control_listener(xmessage msg);
         void notify_iopub_listener(xmessage msg);
 
-        void start();
+        std::size_t iopub_queue_size() const;
         std::optional<xmessage> pop_iopub_message();
+        void connect();
+        void stop_channels();
+        void start();
+        void wait_for_message();
 
     private:
         std::unique_ptr<xclient_zmq_impl> p_client_impl;
