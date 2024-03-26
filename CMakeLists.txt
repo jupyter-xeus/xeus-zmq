@@ -80,7 +80,7 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 # ============
 
 set(xeus_REQUIRED_VERSION 3.2.0)
-set(nlohmann_json_REQUIRED_VERSION 3.2.0)
+set(nlohmann_json_REQUIRED_VERSION 3.11.2)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
 
@@ -132,6 +132,7 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
 )
 
 set(XEUS_ZMQ_SOURCES
@@ -164,6 +165,15 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.cpp
 )
 
 # Targets and link

@@ -71,7 +71,7 @@ See the [documentation](http://xeus.readthedocs.io/) for an exhaustive list of t
 We have packaged all these dependencies on conda-forge. The simplest way to install them is to run:
 
 ```bash
-mamba install cmake pkg-config zeromq cppzmq OpenSSL nlohmann_json xtl xeus -c conda-forge
+mamba install cmake pkg-config zeromq cppzmq OpenSSL nlohmann_json=3.11.2 xtl xeus -c conda-forge
 ```
 
 Once you have installed the dependencies, you can build and install `xeus-zmq`:
