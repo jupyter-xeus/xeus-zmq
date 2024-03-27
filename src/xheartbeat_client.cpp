@@ -27,4 +27,21 @@ namespace xeus
     xheartbeat_client::~xheartbeat_client()
     {
     }
+
+    void xheartbeat_client::send_heartbeat_message()
+    {
+        zmq::message_t ping_msg("ping", 4);
+        m_heartbeat.send(ping_msg, zmq::send_flags::none);
+    }
+
+    void xheartbeat_client::run()
+    {
+        bool stop = false;
+        while(!stop)
+        {
+            send_heartbeat_message();
+            // TODO
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
 }

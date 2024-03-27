@@ -30,7 +30,9 @@ namespace xeus
         void run();
 
     private:
-        zmq::socket_t m_iopub;
+        void send_heartbeat_message();
+
+        zmq::socket_t m_heartbeat;
         zmq::socket_t m_controller;
 
         xclient_zmq_impl* p_client_impl;
