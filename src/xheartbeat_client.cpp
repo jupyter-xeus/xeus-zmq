@@ -8,6 +8,7 @@
 ****************************************************************************/
 
 #include "xheartbeat_client.hpp"
+#include "xclient_zmq_impl.hpp"
 
 #include "xeus-zmq/xmiddleware.hpp"
 

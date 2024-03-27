@@ -81,6 +81,7 @@ namespace xeus
 
     private:
         void start_iopub_thread();
+        void start_heartbeat_thread();
         void poll(long timeout);
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
