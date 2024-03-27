@@ -42,10 +42,12 @@ namespace xeus
         void register_shell_listener(const listener& l);
         void register_control_listener(const listener& l);
         void register_iopub_listener(const listener& l);
+        void register_heartbeat_listener(const listener& l);
 
         void notify_shell_listener(xmessage msg);
         void notify_control_listener(xmessage msg);
         void notify_iopub_listener(xmessage msg);
+        void notify_heartbeat_listener(xmessage msg);
 
         std::size_t iopub_queue_size() const;
         std::optional<xmessage> pop_iopub_message();
