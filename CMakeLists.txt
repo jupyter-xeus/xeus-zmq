@@ -73,8 +73,8 @@ endif()
 
 message(STATUS "XEUS_ZMQ_BUILD_SHARED_LIBS:          ${XEUS_ZMQ_BUILD_SHARED_LIBS}")
 message(STATUS "XEUS_ZMQ_BUILD_STATIC_LIBS:          ${XEUS_ZMQ_BUILD_STATIC_LIBS}")
-message(STATUS "XEUS_ZMQ_STATIC_DEPENDENCIES:        ${XEUS_ZMQ_STATIC_DEPENDENCIES}")  
-message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")  
+message(STATUS "XEUS_ZMQ_STATIC_DEPENDENCIES:        ${XEUS_ZMQ_STATIC_DEPENDENCIES}")
+message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 
 # Dependencies
 # ============
@@ -119,6 +119,9 @@ endif ()
 
 find_package(OpenSSL REQUIRED)
 
+find_library(UVW_LIBRARY uvw)
+find_path(UVW_INCLUDE_DIR uvw.hpp)
+
 # Source files
 # ============
 
@@ -133,6 +136,7 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xhook_base.hpp
 )
 
 set(XEUS_ZMQ_SOURCES
@@ -157,8 +161,12 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_base.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_base.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_uv.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_context.cpp
@@ -216,6 +224,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
         PUBLIC nlohmann_json::nlohmann_json
         PUBLIC OpenSSL::Crypto
         PUBLIC ${XEUS_TARGET_NAME}
+        PUBLIC ${UVW_LIBRARY}
     )
 
     if (NOT MSVC)

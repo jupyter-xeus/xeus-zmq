@@ -10,11 +10,19 @@
 #ifndef XEUS_SERVER_ZMQ_HPP
 #define XEUS_SERVER_ZMQ_HPP
 
+#ifndef UVW_AS_LIB
+#define UVW_AS_LIB
+#include <uvw.hpp>
+#endif
+
+#include <memory>
+
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus/xserver.hpp"
 
 #include "xeus-zmq.hpp"
+#include "xhook_base.hpp"
 
 namespace xeus
 {
@@ -63,6 +71,15 @@ namespace xeus
     std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,
                                                      const xconfiguration& config,
                                                      nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+
+    XEUS_ZMQ_API
+    std::unique_ptr<xserver> make_xserver_uv_shell_main(
+        xcontext& context,
+        const xconfiguration& config,
+        nl::json::error_handler_t eh = nl::json::error_handler_t::strict,
+        std::shared_ptr<uvw::loop> loop_ptr = nullptr,
+        std::unique_ptr<xhook_base> hook = nullptr);
+
 }
 
 #endif
