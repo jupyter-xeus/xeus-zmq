@@ -21,6 +21,7 @@
 
 #include "xdealer_channel.hpp"
 #include "xiopub_client.hpp"
+#include "xheartbeat_client.hpp"
 #include "xclient_messenger.hpp"
 
 namespace xeus
@@ -31,6 +32,7 @@ namespace xeus
     {
     public:
         using iopub_client_ptr = std::unique_ptr<xiopub_client>;
+        using heartbeat_client_ptr = std::unique_ptr<xheartbeat_client>;
         using listener = std::function<void(xmessage)>;
 
         xclient_zmq_impl(zmq::context_t& context,
@@ -60,8 +62,8 @@ namespace xeus
         std::optional<xmessage> pop_iopub_message();
         void register_iopub_listener(const listener& l);
 
-        // hearbeat channel
-        // TODO
+        // heartbeat channel
+        void register_heartbeat_listener(const listener& l);
 
         // client messenger
         void connect();
@@ -70,6 +72,7 @@ namespace xeus
         void notify_shell_listener(xmessage msg);
         void notify_control_listener(xmessage msg);
         void notify_iopub_listener(xmessage msg);
+        void notify_heartbeat_listener(xmessage msg);
 
         void wait_for_message();
         void start();
@@ -86,6 +89,7 @@ namespace xeus
         xdealer_channel m_shell_client;
         xdealer_channel m_control_client;
         xiopub_client m_iopub_client;
+        xheartbeat_client m_heartbeat_client;
 
         xclient_messenger p_messenger;
 
@@ -94,10 +98,13 @@ namespace xeus
         listener m_shell_listener;
         listener m_control_listener;
         listener m_iopub_listener;
+        listener m_heartbeat_listener;
 
         iopub_client_ptr p_iopub_client;
+        heartbeat_client_ptr p_heartbeat_client;
 
         xthread m_iopub_thread;
+        xthread m_heartbeat_thread;
     };
 }
 

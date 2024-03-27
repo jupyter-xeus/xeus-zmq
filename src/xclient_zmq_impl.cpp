@@ -23,6 +23,7 @@ namespace xeus
         , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)
         , m_control_client(context, config.m_transport, config.m_ip, config.m_control_port)
         , m_iopub_client(context, config)
+        , m_heartbeat_client(context, config)
         , p_messenger(context)
         , m_error_handler(eh)
     {
@@ -93,6 +94,11 @@ namespace xeus
         m_iopub_listener = l;
     }
 
+    void xclient_zmq_impl::register_heartbeat_listener(const listener& l)
+    {
+        m_heartbeat_listener = l;
+    }
+
     void xclient_zmq_impl::connect()
     {
         p_messenger.connect();
@@ -116,6 +122,11 @@ namespace xeus
     void xclient_zmq_impl::notify_iopub_listener(xmessage msg)
     {
         m_iopub_listener(std::move(msg));
+    }
+
+    void xclient_zmq_impl::notify_heartbeat_listener(xmessage msg)
+    {
+        m_heartbeat_listener(std::move(msg));
     }
 
     void xclient_zmq_impl::poll(long timeout)
@@ -166,12 +177,17 @@ namespace xeus
     void xclient_zmq_impl::start()
     {
         start_iopub_thread();
-        // TODO : Introduce a client, xheartbeat_client that runs on its own thread, m_heartbeat_thread.
+        start_heartbeat_thread();
     }
 
     void xclient_zmq_impl::start_iopub_thread()
     {
         m_iopub_thread = std::move(xthread(&xiopub_client::run, p_iopub_client.get()));
+    }
+
+    void xclient_zmq_impl::start_heartbeat_thread()
+    {
+        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get()));
     }
 
     xmessage xclient_zmq_impl::deserialize(zmq::multipart_t& wire_msg) const
