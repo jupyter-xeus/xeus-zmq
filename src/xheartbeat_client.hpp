@@ -7,41 +7,34 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_IOPUB_CLIENT_HPP
-#define XEUS_IOPUB_CLIENT_HPP
-
-#include <queue>
-#include <mutex>
+#ifndef XEUS_HEARTBEAT_CLIENT_HPP
+#define XEUS_HEARTBEAT_CLIENT_HPP
 
 #include "zmq.hpp"
 
-#include "xeus/xmessage.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
 namespace xeus
 {
     class xclient_zmq_impl;
 
-    class xiopub_client
+    class xheartbeat_client
     {
     public:
 
-        xiopub_client(zmq::context_t& context,
+        xheartbeat_client(zmq::context_t& context,
                         const xeus::xconfiguration& config);
 
-        ~xiopub_client();
+        ~xheartbeat_client();
 
-        std::size_t iopub_queue_size() const;
-        std::optional<xmessage> pop_iopub_message();
-
-        void run();
+        void run(long timeout);
 
     private:
-        zmq::socket_t m_iopub;
-        zmq::socket_t m_controller;
+        void send_heartbeat_message();
+        bool wait_for_answer(long timeout);
 
-        std::queue<xmessage> m_message_queue;
-        mutable std::mutex m_queue_mutex;
+        zmq::socket_t m_heartbeat;
+        zmq::socket_t m_controller;
 
         xclient_zmq_impl* p_client_impl;
     };
