@@ -27,10 +27,11 @@ namespace xeus
 
         ~xheartbeat_client();
 
-        void run();
+        void run(long timeout);
 
     private:
         void send_heartbeat_message();
+        bool wait_for_answer(long timeout);
 
         zmq::socket_t m_heartbeat;
         zmq::socket_t m_controller;

@@ -34,13 +34,35 @@ namespace xeus
         m_heartbeat.send(ping_msg, zmq::send_flags::none);
     }
 
-    void xheartbeat_client::run()
+    bool xheartbeat_client::wait_for_answer(long timeout)
+    {
+        m_heartbeat.set(zmq::sockopt::linger, static_cast<int>(timeout));
+        zmq::message_t response;
+        return m_heartbeat.recv(response).has_value();
+    }
+
+    void xheartbeat_client::run(long timeout)
     {
         bool stop = false;
+        int retry_count = 0;
+        const int max_retries = 3;
+
         while(!stop)
         {
             send_heartbeat_message();
-            // TODO
+            if(!wait_for_answer(timeout))
+            {
+                if (retry_count < max_retries)
+                {
+                    ++retry_count;
+                } else {
+                    // maybe declare the kernel to be dead
+                    // declare_kernel_dead()
+                    stop = true;
+                }
+            } else {
+                retry_count = 0;
+            }
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
