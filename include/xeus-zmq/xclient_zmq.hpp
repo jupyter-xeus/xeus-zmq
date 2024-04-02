@@ -29,6 +29,7 @@ namespace xeus
     public:
 
         using listener = std::function<void(xmessage)>;
+        using kernel_status_listener = std::function<void(bool)>;
 
         explicit xclient_zmq(std::unique_ptr<xclient_zmq_impl> impl);
         ~xclient_zmq();
@@ -42,12 +43,12 @@ namespace xeus
         void register_shell_listener(const listener& l);
         void register_control_listener(const listener& l);
         void register_iopub_listener(const listener& l);
-        void register_heartbeat_listener(const listener& l);
+        void register_kernel_status_listener(const kernel_status_listener& l);
 
         void notify_shell_listener(xmessage msg);
         void notify_control_listener(xmessage msg);
         void notify_iopub_listener(xmessage msg);
-        void notify_heartbeat_listener(xmessage msg);
+        void notify_kernel_dead(bool status);
 
         std::size_t iopub_queue_size() const;
         std::optional<xmessage> pop_iopub_message();

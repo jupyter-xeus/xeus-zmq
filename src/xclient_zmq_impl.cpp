@@ -94,9 +94,9 @@ namespace xeus
         m_iopub_listener = l;
     }
 
-    void xclient_zmq_impl::register_heartbeat_listener(const listener& l)
+    void xclient_zmq_impl::register_kernel_status_listener(const kernel_status_listener& l)
     {
-        m_heartbeat_listener = l;
+        m_kernel_status_listener = l;
     }
 
     void xclient_zmq_impl::connect()
@@ -124,9 +124,9 @@ namespace xeus
         m_iopub_listener(std::move(msg));
     }
 
-    void xclient_zmq_impl::notify_heartbeat_listener(xmessage msg)
+    void xclient_zmq_impl::notify_kernel_dead(bool status)
     {
-        m_heartbeat_listener(std::move(msg));
+        m_kernel_status_listener(status);
     }
 
     void xclient_zmq_impl::poll(long timeout)
@@ -177,6 +177,7 @@ namespace xeus
     void xclient_zmq_impl::start()
     {
         start_iopub_thread();
+        // pass in desired timeout value below
         start_heartbeat_thread();
     }
 
@@ -185,9 +186,9 @@ namespace xeus
         m_iopub_thread = std::move(xthread(&xiopub_client::run, p_iopub_client.get()));
     }
 
-    void xclient_zmq_impl::start_heartbeat_thread()
+    void xclient_zmq_impl::start_heartbeat_thread(long timeout)
     {
-        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get()));
+        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get(), timeout));
     }
 
     xmessage xclient_zmq_impl::deserialize(zmq::multipart_t& wire_msg) const

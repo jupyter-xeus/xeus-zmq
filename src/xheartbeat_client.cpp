@@ -56,8 +56,7 @@ namespace xeus
                 {
                     ++retry_count;
                 } else {
-                    // maybe declare the kernel to be dead
-                    // declare_kernel_dead()
+                    p_client_impl->notify_kernel_dead(true);
                     stop = true;
                 }
             } else {
