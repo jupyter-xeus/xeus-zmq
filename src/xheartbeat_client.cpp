@@ -16,9 +16,13 @@ namespace xeus
 {
 
     xheartbeat_client::xheartbeat_client(zmq::context_t& context,
-                                 const xeus::xconfiguration& config)
+                                 const xeus::xconfiguration& config,
+                                 const std::size_t max_retry,
+                                 const long timeout)
         : m_heartbeat(context, zmq::socket_type::req)
         , m_controller(context, zmq::socket_type::rep)
+        , m_max_retry(max_retry)
+        , m_heartbeat_timeout(timeout)
     {
         m_heartbeat.connect(get_end_point(config.m_transport, config.m_ip, config.m_hb_port));
         init_socket(m_controller, get_controller_end_point("heartbeat"));
@@ -51,18 +55,17 @@ namespace xeus
         m_kernel_status_listener(status);
     }
 
-    void xheartbeat_client::run(long timeout)
+    void xheartbeat_client::run()
     {
         bool stop = false;
-        int retry_count = 0;
-        const int max_retries = 3;
+        std::size_t retry_count = 0;
 
         while(!stop)
         {
             send_heartbeat_message();
-            if(!wait_for_answer(timeout))
+            if(!wait_for_answer(m_heartbeat_timeout))
             {
-                if (retry_count < max_retries)
+                if (retry_count < m_max_retry)
                 {
                     ++retry_count;
                 } else {

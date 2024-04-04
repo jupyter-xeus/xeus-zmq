@@ -82,7 +82,7 @@ namespace xeus
 
     private:
         void start_iopub_thread();
-        void start_heartbeat_thread(long timeout);
+        void start_heartbeat_thread();
         void poll(long timeout);
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
@@ -92,6 +92,9 @@ namespace xeus
         xdealer_channel m_control_client;
         xiopub_client m_iopub_client;
         xheartbeat_client m_heartbeat_client;
+
+        const std::size_t m_max_retry = 3;
+        const long m_heartbeat_timeout = std::chrono::milliseconds(90).count();
 
         xclient_messenger p_messenger;
 

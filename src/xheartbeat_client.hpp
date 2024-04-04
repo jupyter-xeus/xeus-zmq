@@ -25,11 +25,13 @@ namespace xeus
         using kernel_status_listener = std::function<void(bool)>;
 
         xheartbeat_client(zmq::context_t& context,
-                        const xeus::xconfiguration& config);
+                        const xeus::xconfiguration& config,
+                        const std::size_t max_retry,
+                        const long timeout);
 
         ~xheartbeat_client();
 
-        void run(long timeout);
+        void run();
 
         void register_kernel_status_listener(const kernel_status_listener& l);
         void notify_kernel_dead(bool status);
@@ -42,6 +44,8 @@ namespace xeus
         zmq::socket_t m_controller;
 
         kernel_status_listener m_kernel_status_listener;
+        const std::size_t m_max_retry;
+        const long m_heartbeat_timeout;
     };
 }
 

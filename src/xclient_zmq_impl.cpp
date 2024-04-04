@@ -23,7 +23,7 @@ namespace xeus
         , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)
         , m_control_client(context, config.m_transport, config.m_ip, config.m_control_port)
         , m_iopub_client(context, config)
-        , m_heartbeat_client(context, config)
+        , m_heartbeat_client(context, config, m_max_retry, m_heartbeat_timeout)
         , p_messenger(context)
         , m_error_handler(eh)
     {
@@ -177,7 +177,6 @@ namespace xeus
     void xclient_zmq_impl::start()
     {
         start_iopub_thread();
-        // pass in desired timeout value below
         start_heartbeat_thread();
     }
 
@@ -186,9 +185,9 @@ namespace xeus
         m_iopub_thread = std::move(xthread(&xiopub_client::run, p_iopub_client.get()));
     }
 
-    void xclient_zmq_impl::start_heartbeat_thread(long timeout)
+    void xclient_zmq_impl::start_heartbeat_thread()
     {
-        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get(), timeout));
+        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get()));
     }
 
     xmessage xclient_zmq_impl::deserialize(zmq::multipart_t& wire_msg) const
