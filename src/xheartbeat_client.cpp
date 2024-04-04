@@ -41,6 +41,16 @@ namespace xeus
         return m_heartbeat.recv(response).has_value();
     }
 
+    void xheartbeat_client::register_kernel_status_listener(const kernel_status_listener& l)
+    {
+        m_kernel_status_listener = l;
+    }
+
+    void xheartbeat_client::notify_kernel_dead(bool status)
+    {
+        m_kernel_status_listener(status);
+    }
+
     void xheartbeat_client::run(long timeout)
     {
         bool stop = false;
@@ -56,7 +66,7 @@ namespace xeus
                 {
                     ++retry_count;
                 } else {
-                    p_client_impl->notify_kernel_dead(true);
+                    notify_kernel_dead(true);
                     stop = true;
                 }
             } else {

@@ -100,7 +100,6 @@ namespace xeus
         listener m_shell_listener;
         listener m_control_listener;
         listener m_iopub_listener;
-        kernel_status_listener m_kernel_status_listener;
 
         iopub_client_ptr p_iopub_client;
         heartbeat_client_ptr p_heartbeat_client;

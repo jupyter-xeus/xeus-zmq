@@ -96,7 +96,7 @@ namespace xeus
 
     void xclient_zmq_impl::register_kernel_status_listener(const kernel_status_listener& l)
     {
-        m_kernel_status_listener = l;
+        m_heartbeat_client.register_kernel_status_listener(l);
     }
 
     void xclient_zmq_impl::connect()
@@ -126,7 +126,7 @@ namespace xeus
 
     void xclient_zmq_impl::notify_kernel_dead(bool status)
     {
-        m_kernel_status_listener(status);
+        m_heartbeat_client.notify_kernel_dead(status);
     }
 
     void xclient_zmq_impl::poll(long timeout)

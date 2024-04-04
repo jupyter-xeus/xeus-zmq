@@ -10,17 +10,19 @@
 #ifndef XEUS_HEARTBEAT_CLIENT_HPP
 #define XEUS_HEARTBEAT_CLIENT_HPP
 
+#include <functional>
+
 #include "zmq.hpp"
 
 #include "xeus/xkernel_configuration.hpp"
 
 namespace xeus
 {
-    class xclient_zmq_impl;
-
     class xheartbeat_client
     {
     public:
+
+        using kernel_status_listener = std::function<void(bool)>;
 
         xheartbeat_client(zmq::context_t& context,
                         const xeus::xconfiguration& config);
@@ -29,6 +31,9 @@ namespace xeus
 
         void run(long timeout);
 
+        void register_kernel_status_listener(const kernel_status_listener& l);
+        void notify_kernel_dead(bool status);
+
     private:
         void send_heartbeat_message();
         bool wait_for_answer(long timeout);
@@ -36,7 +41,7 @@ namespace xeus
         zmq::socket_t m_heartbeat;
         zmq::socket_t m_controller;
 
-        xclient_zmq_impl* p_client_impl;
+        kernel_status_listener m_kernel_status_listener;
     };
 }
 
