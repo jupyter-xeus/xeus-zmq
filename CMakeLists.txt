@@ -174,6 +174,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.cpp
 )
 
 # Targets and link

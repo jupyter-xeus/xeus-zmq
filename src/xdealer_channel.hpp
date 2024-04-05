@@ -13,9 +13,6 @@
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 
-#include "nlohmann/json.hpp"
-#include "xeus/xkernel_configuration.hpp"
-
 namespace xeus
 {
 

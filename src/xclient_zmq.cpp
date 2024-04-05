@@ -58,6 +58,11 @@ namespace xeus
         p_client_impl->register_iopub_listener(l);
     }
 
+    void xclient_zmq::register_kernel_status_listener(const kernel_status_listener& l)
+    {
+        p_client_impl->register_kernel_status_listener(l);
+    }
+
     void xclient_zmq::notify_shell_listener(xmessage msg)
     {
         p_client_impl->notify_shell_listener(std::move(msg));
@@ -71,6 +76,11 @@ namespace xeus
     void xclient_zmq::notify_iopub_listener(xmessage msg)
     {
         p_client_impl->notify_iopub_listener(std::move(msg));
+    }
+
+    void xclient_zmq::notify_kernel_dead(bool status)
+    {
+        p_client_impl->notify_kernel_dead(status);
     }
 
     std::size_t xclient_zmq::iopub_queue_size() const
