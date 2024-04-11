@@ -12,9 +12,9 @@
 
 #include "xeus/xguid.hpp"
 #include "xeus-zmq/xauthentication.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xzmq_serializer.hpp"
 #include "xserver_zmq_default.hpp"
+#include "xmiddleware_impl.hpp"
 #include "xpublisher.hpp"
 #include "xheartbeat.hpp"
 #include "xtrivial_messenger.hpp"

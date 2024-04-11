@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "xeus-zmq/xmiddleware.hpp"
+#include "xmiddleware_impl.hpp"
 #include "xpublisher.hpp"
 
 namespace xeus
