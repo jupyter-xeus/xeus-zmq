@@ -15,6 +15,11 @@
 
 namespace xeus
 {
+    namespace
+    {
+        constexpr std::size_t max_retry = 3;
+        constexpr long heartbeat_timeout = std::chrono::milliseconds(90).count();
+    }
 
     xclient_zmq_impl::xclient_zmq_impl(zmq::context_t& context,
                                     const xeus::xconfiguration& config,
@@ -23,7 +28,7 @@ namespace xeus
         , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)
         , m_control_client(context, config.m_transport, config.m_ip, config.m_control_port)
         , m_iopub_client(context, config)
-        , m_heartbeat_client(context, config, m_max_retry, m_heartbeat_timeout)
+        , m_heartbeat_client(context, config, max_retry, heartbeat_timeout)
         , p_messenger(context)
         , m_error_handler(eh)
     {
