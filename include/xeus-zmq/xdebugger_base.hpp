@@ -14,12 +14,12 @@
 #include <cstddef>
 #include <functional>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <set>
 #include <string>
 #include <vector>
 
-#include "zmq.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xdebugger.hpp"
 #include "xeus/xeus_context.hpp"
@@ -46,11 +46,13 @@ namespace xeus
 
     };
 
+    class xdebugger_middleware;
+
     class XEUS_ZMQ_API xdebugger_base : public xdebugger
     {
     public:
 
-        virtual ~xdebugger_base() = default;
+        virtual ~xdebugger_base();
 
     protected:
 
@@ -89,10 +91,24 @@ namespace xeus
 
         const std::set<int>& get_stopped_threads() const;
 
+        /*******************
+         * Middleware APIs *
+         *******************/
+
+        void bind_sockets(const std::string& header_end_point,
+                          const std::string& request_end_point);
+
+        void unbind_sockets(const std::string& header_end_point,
+                            const std::string& request_end_point);
+
+        std::string send_recv_header(const std::string& header);
+        std::string send_recv_request(const std::string& request);
+
     protected:
 
         virtual nl::json variables_request_impl(const nl::json& message);
 
+        
     private:
 
         void handle_event(const nl::json& message);
@@ -100,15 +116,13 @@ namespace xeus
         nl::json process_request_impl(const nl::json& header,
                                       const nl::json& message) override;
 
-        virtual bool start(zmq::socket_t& header_socket,
-                           zmq::socket_t& request_socket) = 0;
-        virtual void stop(zmq::socket_t& header_socket,
-                          zmq::socket_t& request_socket) = 0;
+        virtual bool start() = 0;
+        virtual void stop() = 0;
+
         virtual xdebugger_info get_debugger_info() const = 0;
         virtual std::string get_cell_temporary_file(const std::string& code) const = 0;
 
-        zmq::socket_t m_header_socket;
-        zmq::socket_t m_request_socket;
+        std::unique_ptr<xdebugger_middleware> p_middleware;
 
         using request_handler_map_t = std::map<std::string, request_handler_t>;
         request_handler_map_t m_started_handler;

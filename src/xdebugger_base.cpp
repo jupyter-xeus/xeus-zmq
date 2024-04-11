@@ -13,7 +13,7 @@
 
 #include "xeus-zmq/xdap_tcp_client.hpp"
 #include "xeus-zmq/xdebugger_base.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
+#include "xdebugger_middleware.hpp"
 
 using namespace std::placeholders;
 
@@ -34,14 +34,12 @@ namespace xeus
     {
     }
 
+    xdebugger_base::~xdebugger_base() = default;
+
     xdebugger_base::xdebugger_base(xcontext& context)
-        : m_header_socket(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::req)
-        , m_request_socket(context.get_wrapped_context<zmq::context_t>(), zmq::socket_type::req)
+        : p_middleware(new xdebugger_middleware(context))
         , m_is_started(false)
     {
-        m_header_socket.set(zmq::sockopt::linger, xeus::get_socket_linger());
-        m_request_socket.set(zmq::sockopt::linger, xeus::get_socket_linger());
-
         register_request_handler("debugInfo", std::bind(&xdebugger_base::debug_info_request, this, _1), false);
         register_request_handler("dumpCell", std::bind(&xdebugger_base::dump_cell_request, this, _1), true);
         register_request_handler("setBreakpoints", std::bind(&xdebugger_base::set_breakpoints_request, this, _1), true);
@@ -242,13 +240,7 @@ namespace xeus
                            + std::to_string(content_length)
                            + xdap_tcp_client::SEPARATOR
                            + content;
-        zmq::message_t raw_message(buffer.c_str(), buffer.length());
-        m_request_socket.send(raw_message, zmq::send_flags::none);
-
-        zmq::message_t raw_reply;
-        (void)m_request_socket.recv(raw_reply);
-
-        return nl::json::parse(std::string(raw_reply.data<const char>(), raw_reply.size()));
+        return nl::json::parse(send_recv_request(buffer));
     }
 
     /*******************
@@ -323,6 +315,31 @@ namespace xeus
         return reply;
     }
 
+    /*******************
+     * Middleware APIs *
+     *******************/
+    void xdebugger_base::bind_sockets(const std::string& header_end_point,
+                                      const std::string& request_end_point)
+    {
+        p_middleware->bind_sockets(header_end_point, request_end_point);
+    }
+
+    void xdebugger_base::unbind_sockets(const std::string& header_end_point,
+                                        const std::string& request_end_point)
+    {
+        p_middleware->unbind_sockets(header_end_point, request_end_point);
+    }
+
+    std::string xdebugger_base::send_recv_header(const std::string& header)
+    {
+        return p_middleware->send_recv_header(header);
+    }
+
+    std::string xdebugger_base::send_recv_request(const std::string& request)
+    {
+        return p_middleware->send_recv_request(request);
+    }
+
     /**************************
      * Private implementation *
      **************************/
@@ -350,7 +367,7 @@ namespace xeus
             }
             else
             {
-                m_is_started = start(m_header_socket, m_request_socket);
+                m_is_started = start();
                 if (m_is_started)
                 {
                     std::clog << "XDEBUGGER: the debugger has started" << std::endl;
@@ -377,10 +394,8 @@ namespace xeus
         else if (m_is_started)
         {
             std::string header_buffer = header.dump();
-            zmq::message_t raw_header(header_buffer.c_str(), header_buffer.length());
-            m_header_socket.send(raw_header, zmq::send_flags::none);
             // client responds with ACK message
-            (void)m_header_socket.recv(raw_header);
+            send_recv_header(header_buffer);
 
             auto it = m_started_handler.find(message["command"]);
             if (it != m_started_handler.end())
@@ -395,7 +410,7 @@ namespace xeus
 
         if (message["command"] == "disconnect")
         {
-            stop(m_header_socket, m_request_socket);
+            stop();
             m_breakpoint_list.clear();
             m_stopped_threads.clear();
             m_is_started = false;
