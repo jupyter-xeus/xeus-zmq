@@ -140,6 +140,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_base.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.hpp
