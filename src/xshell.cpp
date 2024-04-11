@@ -11,9 +11,8 @@
 #include <chrono>
 #include <iostream>
 
-#include "xeus-zmq/xmiddleware.hpp"
-
 #include "xserver_zmq_split.hpp"
+#include "xmiddleware_impl.hpp"
 #include "xshell.hpp"
 
 namespace xeus

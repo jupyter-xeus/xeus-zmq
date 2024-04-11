@@ -9,11 +9,11 @@
 
 #include <iostream>
 
+#include "xeus-zmq/xzmq_serializer.hpp"
+
 #include "xiopub_client.hpp"
 #include "xclient_zmq_impl.hpp"
-
-#include "xeus-zmq/xzmq_serializer.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
+#include "xmiddleware_impl.hpp"
 
 namespace xeus
 {

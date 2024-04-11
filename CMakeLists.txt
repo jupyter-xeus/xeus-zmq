@@ -124,30 +124,42 @@ find_package(OpenSSL REQUIRED)
 
 set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xauthentication.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdap_tcp_client.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdap_tcp_client.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
 )
 
 set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_base.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_middleware.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_middleware.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xmiddleware.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xmiddleware_impl.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.cpp
@@ -169,17 +181,6 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.cpp
 )
 
 # Targets and link

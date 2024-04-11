@@ -7,31 +7,24 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_MIDDLEWARE_HPP
-#define XEUS_MIDDLEWARE_HPP
+#ifndef XEUS_MIDDLEWARE_IMPL_HPP
+#define XEUS_MIDDLEWARE_IMPL_HPP
 
 #include <string>
+#include "zmq.hpp"
 
-#include "xeus-zmq.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 
 namespace xeus
 {
-    XEUS_ZMQ_API
-    std::string get_controller_end_point(const std::string& channel);
-    
-    XEUS_ZMQ_API
-    std::string get_publisher_end_point();
+    void init_socket(zmq::socket_t& socket,
+                     const std::string& transport,
+                     const std::string& ip,
+                     const std::string& port);
 
-    XEUS_ZMQ_API
-    std::string get_end_point(const std::string& transport,
-                              const std::string& ip,
-                              const std::string& port);
+    void init_socket(zmq::socket_t& socket, const std::string& end_point);
 
-    XEUS_ZMQ_API
-    int get_socket_linger();
-
-    XEUS_ZMQ_API
-    std::string find_free_port(std::size_t max_tries = 100, int start = 49152, int stop = 65536);
+    std::string get_socket_port(const zmq::socket_t& socket);
 }
 
 #endif
