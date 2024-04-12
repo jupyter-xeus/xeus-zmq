@@ -189,4 +189,4 @@ if (FALSE)
     target_link_libraries(test_client_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
     target_compile_features(test_client_ipc PRIVATE cxx_std_17)
 
-endif (UNIX)
+endif (FALSE)
