@@ -7,10 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XHOOK_BASE_HPP
-#define XHOOK_BASE_HPP
-
-#include "xeus-zmq.hpp"
+#include "xeus-zmq/xhook_base.hpp"
 
 #ifndef UVW_AS_LIB
 #define UVW_AS_LIB
@@ -19,33 +16,23 @@
 
 namespace xeus
 {
-    class XEUS_ZMQ_API xhook_base
+    void xhook_base::pre_hook()
     {
-    public:
+        pre_hook_impl();
+    }
 
-        virtual ~xhook_base() = default;
+    void xhook_base::post_hook()
+    {
+        post_hook_impl();
+    }
 
-        xhook_base(const xhook_base&) = delete;
-        xhook_base& operator=(const xhook_base&) = delete;
+    void xhook_base::run(std::shared_ptr<uvw::loop> loop)
+    {
+        run_impl(loop);
+    }
 
-        xhook_base(xhook_base&&) = delete;
-        xhook_base& operator=(xhook_base&&) = delete;
-
-        void pre_hook();
-        void post_hook();
-        void run(std::shared_ptr<uvw::loop> loop);
-
-    protected:
-
-        xhook_base() = default;
-
-    private:
-
-        virtual void pre_hook_impl() = 0;
-        virtual void post_hook_impl() = 0;
-        virtual void run_impl(std::shared_ptr<uvw::loop> loop);
-
-    };
+    void xhook_base::run_impl(std::shared_ptr<uvw::loop> loop)
+    {
+        loop->run();
+    }
 }
-
-#endif

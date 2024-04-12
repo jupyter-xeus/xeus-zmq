@@ -194,6 +194,7 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xhook_base.cpp
 )
 
 # Targets and link
