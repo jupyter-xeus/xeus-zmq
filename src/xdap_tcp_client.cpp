@@ -10,9 +10,9 @@
 #include "zmq_addon.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xmessage.hpp"
-#include "xeus-zmq/xzmq_serializer.hpp"
 #include "xeus-zmq/xdap_tcp_client.hpp"
 #include "xdap_tcp_client_impl.hpp"
+#include "xzmq_serializer.hpp"
 
 namespace xeus
 {

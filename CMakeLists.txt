@@ -123,7 +123,6 @@ find_package(OpenSSL REQUIRED)
 # ============
 
 set(XEUS_ZMQ_HEADERS
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xauthentication.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdap_tcp_client.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
@@ -132,11 +131,11 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_serializer.hpp
 )
 
 set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
@@ -181,6 +180,7 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.hpp
 )
 
 # Targets and link

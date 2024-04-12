@@ -12,9 +12,9 @@
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
-#include "xeus-zmq/xauthentication.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
-#include "xeus-zmq/xzmq_serializer.hpp"
+#include "xauthentication.hpp"
+#include "xzmq_serializer.hpp"
 #include "xserver_zmq_split.hpp"
 #include "xcontrol.hpp"
 #include "xheartbeat.hpp"

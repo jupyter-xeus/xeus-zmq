@@ -6,7 +6,12 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <iostream>
+// TODO: this client should be reimplemented with
+// the new client framework. Notice that it was not
+// tested in the CI but was here for trying to reproduce
+// some issue with IPC.
+
+/*#include <iostream>
 
 #include "zmq_addon.hpp"
 #include "nlohmann/json.hpp"
@@ -53,5 +58,5 @@ int main(int, char**)
     std::cout << resp.content().dump(4) << std::endl;
 
     return 0;
-}
+}*/
 

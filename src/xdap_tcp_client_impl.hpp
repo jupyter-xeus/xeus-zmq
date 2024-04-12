@@ -18,8 +18,8 @@
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus/xeus_context.hpp"
 
-#include "xeus-zmq/xauthentication.hpp"
 #include "xeus-zmq/xdap_tcp_client.hpp"
+#include "xauthentication.hpp"
 
 namespace nl = nlohmann;
 
