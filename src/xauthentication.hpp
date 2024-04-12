@@ -13,11 +13,9 @@
 #include <memory>
 #include <string>
 
-#include "xeus-zmq.hpp"
-
 namespace xeus
 {
-    class XEUS_ZMQ_API xraw_buffer
+    class xraw_buffer
     {
     public:
 
@@ -33,7 +31,7 @@ namespace xeus
         size_t m_size;
     };
 
-    class XEUS_ZMQ_API xauthentication
+    class xauthentication
     {
     public:
 
@@ -74,7 +72,6 @@ namespace xeus
                                  const xraw_buffer& content) const = 0;
     };
 
-    XEUS_ZMQ_API
     std::unique_ptr<xauthentication> make_xauthentication(const std::string& scheme,
                                                           const std::string& key);
 }

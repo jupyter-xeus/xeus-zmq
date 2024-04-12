@@ -27,7 +27,7 @@
 #endif
 
 #include "xeus/xstring_utils.hpp"
-#include "xeus-zmq/xauthentication.hpp"
+#include "xauthentication.hpp"
 
 namespace xeus
 {

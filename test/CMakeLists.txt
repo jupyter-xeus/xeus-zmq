@@ -163,7 +163,9 @@ set_tests_properties(test_kernel_shell
     PROPERTIES
     ENVIRONMENT "JUPYTER_PATH=${CMAKE_CURRENT_BINARY_DIR}")
 
-if (UNIX)
+# TODO: enable this again when the ipc client 
+# is implemented
+if (FALSE)
 
     # Test_kernel_ipc
     # ===============

@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-#include "xeus-zmq/xauthentication.hpp"
+#include "xauthentication.hpp"
 #include "xclient_zmq_impl.hpp"
-#include "xeus-zmq/xzmq_serializer.hpp"
+#include "xzmq_serializer.hpp"
 
 namespace xeus
 {

@@ -7,7 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xeus-zmq/xzmq_serializer.hpp"
+#include "xzmq_serializer.hpp"
 
 namespace xeus
 {
