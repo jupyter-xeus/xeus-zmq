@@ -37,11 +37,11 @@ namespace xeus
                                          nl::json::error_handler_t eh)
         : xserver_zmq_split(context, config, eh,
                             std::move(std::make_unique<xshell_default>(context,
-                                               config.m_transport,
-                                               config.m_ip,
-                                               config.m_shell_port,
-                                               config.m_stdin_port,
-                                               this)))
+                                                                       config.m_transport,
+                                                                       config.m_ip,
+                                                                       config.m_shell_port,
+                                                                       config.m_stdin_port,
+                                                                       this)))
     {
     }
 
@@ -52,13 +52,13 @@ namespace xeus
                                          std::unique_ptr<xhook_base> hook)
         : xserver_zmq_split(context, config, eh,
                             std::move(std::make_unique<xshell_uv>(context,
-                                          config.m_transport,
-                                          config.m_ip,
-                                          config.m_shell_port,
-                                          config.m_stdin_port,
-                                          this,
-                                          loop_ptr,
-                                          std::move(hook))))
+                                                                  config.m_transport,
+                                                                  config.m_ip,
+                                                                  config.m_shell_port,
+                                                                  config.m_stdin_port,
+                                                                  this,
+                                                                  loop_ptr,
+                                                                  std::move(hook))))
     {
     }
 
