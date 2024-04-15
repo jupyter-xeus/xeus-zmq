@@ -38,10 +38,6 @@ namespace xeus
         m_controller.bind(get_controller_end_point("shell"));
     }
 
-    xshell_base::~xshell_base()
-    {
-    }
-
     std::string xshell_base::get_shell_port() const
     {
         return get_socket_port(m_shell);
@@ -54,6 +50,7 @@ namespace xeus
 
     void xshell_base::run()
     {
+        run_impl();
     }
 
     void xshell_base::send_shell(zmq::multipart_t& message)
