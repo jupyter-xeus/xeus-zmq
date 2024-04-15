@@ -8,11 +8,6 @@
 
 #include <iostream>
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#include <uvw.hpp>
-#endif
-
 #include "nlohmann/json.hpp"
 
 #include "xmock_interpreter.hpp"
