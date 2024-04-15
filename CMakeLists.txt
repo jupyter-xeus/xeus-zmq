@@ -79,21 +79,24 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 # Dependencies
 # ============
 
-set(xeus_REQUIRED_VERSION 3.2.0)
-set(nlohmann_json_REQUIRED_VERSION 3.11.2)
+set(xeus_REQUIRED_VERSION 4.0.3)
+set(nlohmann_json_REQUIRED_VERSION 3.11.3)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
 
 if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
+    message(STATUS "Found xeus ${xeus_VERSION}")
 endif ()
 
 if (NOT TARGET nlohmann_json)
     find_package(nlohmann_json ${nlohmann_json_REQUIRED_VERSION} REQUIRED)
+    message(STATUS "Found nlohmann_json ${nlohmann_json_VERSION}")
 endif ()
 
 if (NOT TARGET cppzmq AND NOT TARGET cppzmq-static)
     find_package(cppzmq ${cppzmq_REQUIRED_VERSION} REQUIRED)
+    message(STATUS "Found cppzmq ${cppzmq_VERSION}")
 endif ()
 
 if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
@@ -219,10 +222,10 @@ macro(xeus_zmq_create_target target_name linkage output_name)
 
     target_link_libraries(
         ${target_name}
-        PUBLIC ${CPPZMQ_TARGET_NAME}
         PUBLIC nlohmann_json::nlohmann_json
-        PUBLIC OpenSSL::Crypto
         PUBLIC ${XEUS_TARGET_NAME}
+        PRIVATE ${CPPZMQ_TARGET_NAME}
+        PRIVATE OpenSSL::Crypto
     )
 
     if (NOT MSVC)
