@@ -24,54 +24,50 @@ namespace xeus
     {
     }
 
-    xshell_default::~xshell_default()
+    void xshell_default::run_impl()
     {
-    }
+        zmq::pollitem_t items[] = {
+            { m_shell, 0, ZMQ_POLLIN, 0 },
+            { m_controller, 0, ZMQ_POLLIN, 0 }
+        };
 
-    void xshell_default::run()
+        while (true)
         {
-            zmq::pollitem_t items[] = {
-                { m_shell, 0, ZMQ_POLLIN, 0 },
-                { m_controller, 0, ZMQ_POLLIN, 0 }
-            };
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
 
-            while (true)
+            if (items[0].revents & ZMQ_POLLIN)
             {
-                zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
-
-                if (items[0].revents & ZMQ_POLLIN)
+                zmq::multipart_t wire_msg;
+                wire_msg.recv(m_shell);
+                try
                 {
-                    zmq::multipart_t wire_msg;
-                    wire_msg.recv(m_shell);
-                    try
-                    {
-                        xmessage msg = p_server->deserialize(wire_msg);
-                        p_server->notify_shell_listener(std::move(msg));
-                    }
-                    catch(std::exception& e)
-                    {
-                        std::cerr << e.what() << std::endl;
-                    }
+                    xmessage msg = p_server->deserialize(wire_msg);
+                    p_server->notify_shell_listener(std::move(msg));
                 }
-
-                if (items[1].revents & ZMQ_POLLIN)
+                catch(std::exception& e)
                 {
-                    // stop message
-                    zmq::multipart_t wire_msg;
-                    wire_msg.recv(m_controller);
-                    std::string msg = wire_msg.peekstr(0);
-                    if(msg == "stop")
-                    {
-                        wire_msg.send(m_controller);
-                        break;
-                    }
-                    else
-                    {
-                        zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
-                        wire_reply.send(m_controller);
-                    }
+                    std::cerr << e.what() << std::endl;
+                }
+            }
+
+            if (items[1].revents & ZMQ_POLLIN)
+            {
+                // stop message
+                zmq::multipart_t wire_msg;
+                wire_msg.recv(m_controller);
+                std::string msg = wire_msg.peekstr(0);
+                if(msg == "stop")
+                {
+                    wire_msg.send(m_controller);
+                    break;
+                }
+                else
+                {
+                    zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                    wire_reply.send(m_controller);
                 }
             }
         }
+    }
 
-} // namespace xeus
+}

@@ -26,11 +26,13 @@ namespace xeus
                        const std::string& stdin_port,
                        xserver_zmq_split* server);
 
-        ~xshell_default();
+        ~xshell_default() override = default;
 
-        void run() override;
+    private:
+
+        void run_impl() override;
     };
 
-} // namespace xeus
+}
 
-#endif // XEUS_SHELL_DEFAULT_HPP
+#endif

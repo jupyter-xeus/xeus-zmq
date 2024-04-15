@@ -40,10 +40,6 @@ namespace xeus
         create_polls();
     }
 
-    xshell_uv::~xshell_uv()
-    {
-    }
-
     void xshell_uv::create_polls()
     {
         // Get the file descriptor for the shell and controller sockets
@@ -109,7 +105,7 @@ namespace xeus
             });
     }
 
-    void xshell_uv::run()
+    void xshell_uv::run_impl()
     {
         p_shell_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
         p_controller_poll->start(uvw::poll_handle::poll_event_flags::READABLE);
@@ -122,4 +118,4 @@ namespace xeus
         }
     }
 
-} // namespace xeus
+}

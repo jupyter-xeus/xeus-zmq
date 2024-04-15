@@ -37,12 +37,11 @@ namespace xeus
                        std::shared_ptr<uvw::loop> loop_ptr,
                        std::unique_ptr<xhook_base> hook);
 
-        ~xshell_uv();
-
-        void run() override;
+        ~xshell_uv() override = default;
 
     private:
 
+        void run_impl() override;
         void create_polls();
 
         std::shared_ptr<uvw::loop> p_loop{ nullptr };
@@ -51,6 +50,6 @@ namespace xeus
         std::unique_ptr<xhook_base> p_hook{ nullptr };
     };
 
-} // namespace xeus
+}
 
-#endif // XEUS_SHELL_UV_HPP
+#endif
