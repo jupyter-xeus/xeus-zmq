@@ -9,9 +9,6 @@
 
 #include "xeus-zmq/xhook_base.hpp"
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#endif
 #include <uvw.hpp>
 
 namespace xeus

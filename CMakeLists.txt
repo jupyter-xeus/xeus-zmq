@@ -284,6 +284,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
     # =================
 
     target_compile_features(${target_name} PRIVATE cxx_std_17)
+    target_compile_definitions(${target_name} PUBLIC UVW_AS_LIB)
 
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
         CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR

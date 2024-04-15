@@ -12,10 +12,7 @@
 
 #include "xeus-zmq.hpp"
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
 #include <uvw.hpp>
-#endif
 
 namespace xeus
 {

@@ -12,10 +12,7 @@
 
 #include <atomic>
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
 #include <uvw.hpp>
-#endif
 
 #include "zmq_addon.hpp"
 

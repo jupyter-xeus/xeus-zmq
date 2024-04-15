@@ -10,10 +10,7 @@
 #ifndef XEUS_SERVER_SHELL_MAIN_HPP
 #define XEUS_SERVER_SHELL_MAIN_HPP
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
 #include <uvw.hpp>
-#endif
 
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"

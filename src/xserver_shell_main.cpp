@@ -11,9 +11,6 @@
 #include <chrono>
 #include <iostream>
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#endif
 #include <uvw.hpp>
 
 #include "zmq_addon.hpp"

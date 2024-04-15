@@ -10,9 +10,6 @@
 #include <memory>
 #include <iostream>
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#endif
 #include <uvw.hpp>
 
 #include "xshell_uv.hpp"

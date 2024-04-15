@@ -9,9 +9,6 @@
 
 #include <memory>
 
-#ifndef UVW_AS_LIB
-#define UVW_AS_LIB
-#endif
 #include <uvw.hpp>
 
 #include "xeus-zmq/xserver_zmq.hpp"
