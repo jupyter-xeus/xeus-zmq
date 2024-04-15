@@ -37,7 +37,7 @@ namespace xeus
                        std::shared_ptr<uvw::loop> loop_ptr,
                        std::unique_ptr<xhook_base> hook);
 
-        ~xshell_uv() override = default;
+        virtual ~xshell_uv() = default;
 
     private:
 

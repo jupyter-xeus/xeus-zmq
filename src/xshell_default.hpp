@@ -26,7 +26,7 @@ namespace xeus
                        const std::string& stdin_port,
                        xserver_zmq_split* server);
 
-        ~xshell_default() override = default;
+        virtual ~xshell_default() = default;
 
     private:
 
