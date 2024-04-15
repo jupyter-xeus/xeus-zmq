@@ -11,8 +11,8 @@
 
 #ifndef UVW_AS_LIB
 #define UVW_AS_LIB
-#include <uvw.hpp>
 #endif
+#include <uvw.hpp>
 
 namespace xeus
 {

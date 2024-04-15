@@ -48,7 +48,6 @@ namespace xeus
                           const xconfiguration& config,
                           nl::json::error_handler_t eh);
 
-        // In the case where an event loop is provided
         xserver_zmq_split(zmq::context_t& context,
                           const xconfiguration& config,
                           nl::json::error_handler_t eh,
@@ -95,6 +94,12 @@ namespace xeus
         bool is_control_stopped() const;
 
     private:
+
+        // Delegating constructor
+        xserver_zmq_split(zmq::context_t& context,
+                          const xconfiguration& config,
+                          nl::json::error_handler_t eh,
+                          shell_ptr shell);
 
         virtual void start_server(zmq::multipart_t& wire_msg) = 0;
 

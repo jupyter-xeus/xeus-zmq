@@ -7,12 +7,12 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <memory>
+
 #ifndef UVW_AS_LIB
 #define UVW_AS_LIB
-#include <uvw.hpp>
 #endif
-
-#include <memory>
+#include <uvw.hpp>
 
 #include "xeus-zmq/xserver_zmq.hpp"
 #include "xserver_zmq_impl.hpp"

@@ -12,12 +12,13 @@
 
 #ifndef UVW_AS_LIB
 #define UVW_AS_LIB
-#include <uvw.hpp>
 #endif
+#include <uvw.hpp>
 
 #include "zmq_addon.hpp"
 #include "xeus/xguid.hpp"
 #include "xeus-zmq/xmiddleware.hpp"
+#include "xeus-zmq/xhook_base.hpp"
 #include "xauthentication.hpp"
 #include "xzmq_serializer.hpp"
 #include "xserver_zmq_split.hpp"
@@ -34,38 +35,45 @@ namespace xeus
     xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh)
-        : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
-        , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
-        , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
-        , p_publisher(new xpublisher(context,
-                                     std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
-                                     config.m_transport, config.m_ip, config.m_iopub_port))
-        , p_shell(new xshell_default(context, config.m_transport, config.m_ip, config.m_shell_port, config.m_stdin_port, this))
-        , m_control_thread()
-        , m_hb_thread()
-        , m_iopub_thread()
-        , m_shell_thread()
-        , m_error_handler(eh)
-        , m_control_stopped(false)
+        : xserver_zmq_split(context, config, eh,
+                            std::move(std::make_unique<xshell_default>(context,
+                                               config.m_transport,
+                                               config.m_ip,
+                                               config.m_shell_port,
+                                               config.m_stdin_port,
+                                               this)))
     {
-        p_controller->connect_messenger();
     }
 
-    // In the case where an event loop is provided
     xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
                                          const xconfiguration& config,
                                          nl::json::error_handler_t eh,
                                          std::shared_ptr<uvw::loop> loop_ptr,
                                          std::unique_ptr<xhook_base> hook)
+        : xserver_zmq_split(context, config, eh,
+                            std::move(std::make_unique<xshell_uv>(context,
+                                          config.m_transport,
+                                          config.m_ip,
+                                          config.m_shell_port,
+                                          config.m_stdin_port,
+                                          this,
+                                          loop_ptr,
+                                          std::move(hook))))
+    {
+    }
+
+    // Delegating constructor
+    xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
+                                         const xconfiguration& config,
+                                         nl::json::error_handler_t eh,
+                                         shell_ptr shell)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
         , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
         , p_publisher(new xpublisher(context,
                                      std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
                                      config.m_transport, config.m_ip, config.m_iopub_port))
-        , p_shell(new xshell_uv(context, config.m_transport, config.m_ip,
-                                config.m_shell_port, config.m_stdin_port, this,
-                                loop_ptr, std::move(hook)))
+        , p_shell(std::move(shell))
         , m_control_thread()
         , m_hb_thread()
         , m_iopub_thread()
