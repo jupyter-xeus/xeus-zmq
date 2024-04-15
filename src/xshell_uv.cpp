@@ -113,7 +113,9 @@ namespace xeus
         if (p_hook)
         {
             p_hook->run(p_loop);
-        } else {
+        }
+        else
+        {
             p_loop->run();
         }
     }
