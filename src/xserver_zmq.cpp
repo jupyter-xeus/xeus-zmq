@@ -120,6 +120,9 @@ namespace xeus
         return std::make_unique<xserver_zmq>(std::move(impl));
     }
 
+    // Since xkernel only accepts three arguments, it is recommended to create a lambda function which
+    // captures a loop pointer and a hook object pointer. For example:
+    // auto make_xserver = [&loop_ptr, &hook_ptr](context, config, eh){ return make_xserver_uv_shell_main(...); }
     std::unique_ptr<xserver> make_xserver_uv_shell_main(xcontext& context,
                                                         const xconfiguration& config,
                                                         nl::json::error_handler_t eh,
