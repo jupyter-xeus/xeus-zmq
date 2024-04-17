@@ -6,23 +6,14 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_IPC_CLIENT_HPP
-#define XEUS_IPC_CLIENT_HPP
-
-#include "xeus-zmq/xclient_zmq.hpp"
+#include "xipc_client.hpp"
 
 namespace xeus
 {
-    class xipc_client
+
+    xipc_client::xipc_client(xcontext& context, const xconfiguration& config)
+        : p_client(make_xclient_zmq(context, config))
     {
-    public:
-        using client_ptr = std::unique_ptr<xclient_zmq>;
-
-        xipc_client(xcontext& context, const xconfiguration& config);
-
-    private:
-        client_ptr p_client;
-    };
+        // Additional initialization if needed
+    }
 }
-
-#endif

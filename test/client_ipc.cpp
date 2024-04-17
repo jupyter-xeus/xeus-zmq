@@ -11,7 +11,7 @@
 // tested in the CI but was here for trying to reproduce
 // some issue with IPC.
 
-/*#include <iostream>
+#include <iostream>
 
 #include "zmq_addon.hpp"
 #include "nlohmann/json.hpp"
@@ -58,5 +58,5 @@ int main(int, char**)
     std::cout << resp.content().dump(4) << std::endl;
 
     return 0;
-}*/
+}
 
