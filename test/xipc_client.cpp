@@ -14,6 +14,15 @@ namespace xeus
     xipc_client::xipc_client(xcontext& context, const xconfiguration& config)
         : p_client(make_xclient_zmq(context, config))
     {
-        // Additional initialization if needed
+    }
+
+    void xipc_client::send_on_shell(const xmessage& msg)
+    {
+        p_client->send_on_shell(msg);
+    }
+
+    std::optional<xmessage> xipc_client::check_shell_answer()
+    {
+        return p_client->check_shell_answer();
     }
 }
