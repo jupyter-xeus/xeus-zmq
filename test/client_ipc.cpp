@@ -21,7 +21,6 @@ namespace nl = nlohmann;
 int main(int, char**)
 {
     auto context_ptr = xeus::make_zmq_context();
-    xeus::xcontext& context = *context_ptr;
     xeus::xconfiguration config;
     config.m_transport = "ipc";
     config.m_ip = "localhost";
@@ -33,7 +32,7 @@ int main(int, char**)
     config.m_signature_scheme = "none";
     config.m_key = "";
 
-    xeus::xipc_client ipc_client(context, config);
+    xeus::xipc_client ipc_client(*context_ptr, config);
 
     xeus::xguid socket_id = xeus::new_xguid();
     nl::json header = xeus::make_header("execute_request", "tester", "DAEDZFAEDE12");
