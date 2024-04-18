@@ -80,6 +80,17 @@ namespace xeus
                 {
                     zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
                     wire_reply.send(m_controller);
+                    std::string msg = wire_reply.peekstr(0);
+                    if (msg == "stop")
+                    {
+                        wire_msg.send(m_controller);
+                        p_loop->stop();
+                    }
+                    else
+                    {
+                        zmq::multipart_t wire_reply = p_server->notify_internal_listener(wire_msg);
+                        wire_reply.send(m_controller);
+                    }
                 }
 
                 if (this->p_hook)
