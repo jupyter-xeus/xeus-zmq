@@ -6,34 +6,35 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-// TODO: this client should be reimplemented with
-// the new client framework. Notice that it was not
-// tested in the CI but was here for trying to reproduce
-// some issue with IPC.
-
-/*#include <iostream>
+#include <iostream>
 
 #include "zmq_addon.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xguid.hpp"
 #include "xeus/xmessage.hpp"
-#include "xeus-zmq/xauthentication.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
-#include "xeus-zmq/xzmq_serializer.hpp"
+#include "xeus/xkernel_configuration.hpp"
+#include "xeus-zmq/xzmq_context.hpp"
+#include "xipc_client.hpp"
 
 namespace nl = nlohmann;
 
 int main(int, char**)
 {
-    zmq::context_t context;
-    zmq::socket_t cli(context, zmq::socket_type::dealer);
+    auto context_ptr = xeus::make_zmq_context();
+    xeus::xconfiguration config;
+    config.m_transport = "ipc";
+    config.m_ip = "localhost";
+    config.m_control_port = "control";
+    config.m_shell_port = "shell";
+    config.m_stdin_port = "stdin";
+    config.m_iopub_port = "iopub";
+    config.m_hb_port = "heartbeat";
+    config.m_signature_scheme = "none";
+    config.m_key = "";
+
+    xeus::xipc_client ipc_client(*context_ptr, config);
+
     xeus::xguid socket_id = xeus::new_xguid();
-    //cli.set(ZMQ_IDENTITY, socket_id.c_str(), socket_id.size());
-    cli.set(zmq::sockopt::linger, xeus::get_socket_linger());
-    cli.connect(xeus::get_end_point("ipc", "localhost", "shell"));
-
-    auto auth = xeus::make_xauthentication("none", "");
-
     nl::json header = xeus::make_header("execute_request", "tester", "DAEDZFAEDE12");
     std::string code = "std::cout << \"this is a test\" << std::endl;";
     nl::json req = {
@@ -48,15 +49,19 @@ int main(int, char**)
         nl::json::object(),
         xeus::buffer_sequence()
     );
-    auto wire_msg = xeus::xzmq_serializer::serialize(std::move(msg), *auth);
-    wire_msg.send(cli);
 
-    zmq::multipart_t resp_msg;
-    resp_msg.recv(cli);
+    ipc_client.send_on_shell(std::move(msg));
 
-    auto resp = xeus::xzmq_serializer::deserialize(resp_msg, *auth);
-    std::cout << resp.content().dump(4) << std::endl;
+    auto response = ipc_client.check_shell_answer();
+    if (response.has_value())
+    {
+        std::cout << response->content().dump(4) << std::endl;
+    }
+    else
+    {
+        std::cout << "No response received" << std::endl;
+    }
 
     return 0;
-}*/
+}
 
