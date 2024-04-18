@@ -163,9 +163,7 @@ set_tests_properties(test_kernel_shell
     PROPERTIES
     ENVIRONMENT "JUPYTER_PATH=${CMAKE_CURRENT_BINARY_DIR}")
 
-# TODO: enable this again when the ipc client 
-# is implemented
-if (FALSE)
+if (UNIX)
 
     # Test_kernel_ipc
     # ===============
@@ -183,10 +181,12 @@ if (FALSE)
     # ===============
 
     set(TEST_CLIENT_IPC_SOURCES
+        xipc_client.cpp
+        xipc_client.hpp
         client_ipc.cpp)
 
     add_executable(test_client_ipc ${TEST_CLIENT_IPC_SOURCES})
     target_link_libraries(test_client_ipc PRIVATE ${xeus-zmq_TARGET} Threads::Threads)
     target_compile_features(test_client_ipc PRIVATE cxx_std_17)
 
-endif (FALSE)
+endif (UNIX)

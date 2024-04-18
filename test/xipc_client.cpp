@@ -16,9 +16,9 @@ namespace xeus
     {
     }
 
-    void xipc_client::send_on_shell(const xmessage& msg)
+    void xipc_client::send_on_shell(xmessage msg)
     {
-        p_client->send_on_shell(msg);
+        p_client->send_on_shell(std::move(msg));
     }
 
     std::optional<xmessage> xipc_client::check_shell_answer()

@@ -13,12 +13,15 @@
 #include "xeus/xguid.hpp"
 #include "xeus/xmessage.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus-zmq/xzmq_context.hpp"
+#include "xipc_client.hpp"
 
 namespace nl = nlohmann;
 
 int main(int, char**)
 {
-    xeus::xcontext context;
+    auto context_ptr = xeus::make_zmq_context();
+    xeus::xcontext& context = *context_ptr;
     xeus::xconfiguration config;
     config.m_transport = "ipc";
     config.m_ip = "localhost";
@@ -48,7 +51,7 @@ int main(int, char**)
         xeus::buffer_sequence()
     );
 
-    ipc_client.send_on_shell(msg);
+    ipc_client.send_on_shell(std::move(msg));
 
     auto response = ipc_client.check_shell_answer();
     if (response.has_value())

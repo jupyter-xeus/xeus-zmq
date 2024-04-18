@@ -20,7 +20,7 @@ namespace xeus
 
         xipc_client(xcontext& context, const xconfiguration& config);
 
-        void send_on_shell(const xmessage& msg);
+        void send_on_shell(xmessage msg);
         std::optional<xmessage> check_shell_answer();
 
     private:
