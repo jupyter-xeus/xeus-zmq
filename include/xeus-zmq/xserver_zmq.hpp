@@ -10,6 +10,8 @@
 #ifndef XEUS_SERVER_ZMQ_HPP
 #define XEUS_SERVER_ZMQ_HPP
 
+#include <optional>
+
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus/xserver.hpp"
@@ -19,17 +21,31 @@
 namespace xeus
 {
     class xserver_zmq_impl;
-    class XEUS_ZMQ_API xserver_zmq final: public xserver
+    
+    class XEUS_ZMQ_API xserver_zmq : public xserver
     {
     public:
 
-        explicit xserver_zmq(std::unique_ptr<xserver_zmq_impl> impl);
         ~xserver_zmq() override;
 
-        void call_notify_shell_listener(xmessage msg);
-        void call_notify_control_listener(xmessage msg);
-        void call_notify_stdin_listener(xmessage msg);
-        nl::json call_notify_internal_listener(nl::json msg);
+        using xserver::notify_internal_listener;
+
+    protected:
+
+        xserver_zmq(xcontext& context,
+                    const xconfiguration& config,
+                    nl::json::error_handler_t eh);
+
+        // API for inheriting classes
+        void start_publisher_thread();
+        void start_heartbeat_thread();
+        void stop_channels();
+
+        void set_request_stop(bool stop);
+        bool is_stopped() const;
+
+        using message_channel = std::pair<xmessage, channel>;
+        std::optional<message_channel> poll_channels(long timeout);
 
     private:
 
@@ -41,9 +57,7 @@ namespace xeus
         void send_stdin_impl(xmessage msg) override;
         void publish_impl(xpub_message msg, channel c) override;
 
-        void start_impl(xpub_message msg) override;
         void abort_queue_impl(const listener& l, long polling_interval) override;
-        void stop_impl() override;
         void update_config_impl(xconfiguration& config) const override;
 
         std::unique_ptr<xserver_zmq_impl> p_impl;
@@ -51,18 +65,8 @@ namespace xeus
 
     XEUS_ZMQ_API
     std::unique_ptr<xserver> make_xserver_default(xcontext& context,
-                                              const xconfiguration& config,
-                                              nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
-
-    XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
-                                                       const xconfiguration& config,
-                                                       nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
-
-    XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,
-                                                     const xconfiguration& config,
-                                                     nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+                                                  const xconfiguration& config,
+                                                  nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 }
 
 #endif

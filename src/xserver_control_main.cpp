@@ -7,38 +7,41 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <thread>
-#include <chrono>
-#include <iostream>
-
-#include "zmq_addon.hpp"
-#include "xeus/xguid.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
+#include "xeus-zmq/xcontrol_default_runner.hpp"
+#include "xeus-zmq/xshell_default_runner.hpp"
 #include "xserver_control_main.hpp"
-#include "xcontrol.hpp"
 
 namespace xeus
 {
-    xserver_control_main::xserver_control_main(zmq::context_t& context,
+    xserver_control_main::xserver_control_main(xcontext& context,
                                                const xconfiguration& config,
                                                nl::json::error_handler_t eh)
-        : xserver_zmq_split(context, config, eh)
+        : xserver_zmq_split(
+            context,
+            config,
+            eh,
+            std::make_unique<xcontrol_default_runner>(),
+            std::make_unique<xshell_default_runner>()
+        )
     {
     }
 
-    xserver_control_main::~xserver_control_main()
-    {
-    }
-
-    void xserver_control_main::start_server(zmq::multipart_t& wire_msg)
+    
+    void xserver_control_main::start_impl(xpub_message message)
     {
         xserver_zmq_split::start_publisher_thread();
         xserver_zmq_split::start_heartbeat_thread();
         xserver_zmq_split::start_shell_thread();
 
-        xserver_zmq_split::get_controller().publish(wire_msg);
-        xserver_zmq_split::get_controller().run();
+        xserver_zmq_split::publish(std::move(message), channel::CONTROL);
+        xserver_zmq_split::run_control();
     }
 
+    std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
+                                                       const xconfiguration& config,
+                                                       nl::json::error_handler_t eh)
+    {
+        return std::make_unique<xserver_control_main>(context, config, eh);
+    }
 }
 

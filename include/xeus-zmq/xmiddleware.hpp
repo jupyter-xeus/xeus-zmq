@@ -16,6 +16,16 @@
 
 namespace xeus
 {
+
+// Duplicate definition for cppzmq
+#if defined _WIN64
+    using fd_t = __int64;
+#elif defined _WIN32
+    using fd_t = unsinged int;
+#else
+    using fd_t = int;
+#endif
+
     XEUS_ZMQ_API
     std::string get_controller_end_point(const std::string& channel);
     

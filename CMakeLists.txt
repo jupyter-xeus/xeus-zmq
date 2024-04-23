@@ -127,11 +127,16 @@ find_package(OpenSSL REQUIRED)
 
 set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xclient_zmq.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xcontrol_default_runner.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xcontrol_runner.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdap_tcp_client.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xshell_default_runner.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xshell_runner.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xthread.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xzmq_context.hpp
 )
@@ -144,6 +149,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_default_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_runner.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
@@ -173,10 +180,13 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split_impl.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/xshell_runner.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xzmq_context.cpp

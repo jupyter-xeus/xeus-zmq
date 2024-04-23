@@ -7,163 +7,151 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <chrono>
-#include <iostream>
-
-#include "zmq_addon.hpp"
-#include "xeus/xguid.hpp"
-#include "xeus-zmq/xmiddleware.hpp"
-#include "xauthentication.hpp"
-#include "xzmq_serializer.hpp"
-#include "xserver_zmq_split.hpp"
-#include "xcontrol.hpp"
-#include "xheartbeat.hpp"
-#include "xpublisher.hpp"
-#include "xshell.hpp"
-#include "xzmq_messenger.hpp"
+#include "xeus-zmq/xserver_zmq_split.hpp"
+#include "xserver_zmq_split_impl.hpp"
 
 namespace xeus
 {
-    xserver_zmq_split::xserver_zmq_split(zmq::context_t& context,
+    xserver_zmq_split::xserver_zmq_split(xcontext& context,
                                          const xconfiguration& config,
-                                         nl::json::error_handler_t eh)
-        : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
-        , p_controller(new xcontrol(context, config.m_transport, config.m_ip ,config.m_control_port, this))
-        , p_heartbeat(new xheartbeat(context, config.m_transport, config.m_ip, config.m_hb_port))
-        , p_publisher(new xpublisher(context,
-                                     std::bind(&xserver_zmq_split::serialize_iopub, this, std::placeholders::_1),
-                                     config.m_transport, config.m_ip, config.m_iopub_port))
-        , p_shell(new xshell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this))
-        , m_control_thread()
-        , m_hb_thread()
-        , m_iopub_thread()
-        , m_shell_thread()
+                                         nl::json::error_handler_t eh,
+                                         control_runner_ptr control,
+                                         shell_runner_ptr shell)
+        : p_impl(new xserver_zmq_split_impl(context.get_wrapped_context<zmq::context_t>(), config, eh))
+        , p_control_runner(std::move(control))
+        , p_shell_runner(std::move(shell))
         , m_error_handler(eh)
-        , m_control_stopped(false)
     {
-        p_controller->connect_messenger();
+        p_control_runner->register_server(*this);
+        p_shell_runner->register_server(*this);
     }
-
-    // Has to be in the cpp because incomplete
-    // types are used in unique_ptr in the header
+    
     xserver_zmq_split::~xserver_zmq_split() = default;
 
-    zmq::multipart_t xserver_zmq_split::notify_internal_listener(zmq::multipart_t& wire_msg)
+    fd_t xserver_zmq_split::get_control_fd() const
     {
-        nl::json msg = nl::json::parse(wire_msg.popstr());
-        nl::json reply = xserver_zmq_impl::notify_internal_listener(msg);
-        return zmq::multipart_t(reply.dump(-1, ' ', false, m_error_handler));
+        return p_impl->get_control_fd();
     }
 
-    void xserver_zmq_split::notify_control_stopped()
+    std::optional<xmessage> xserver_zmq_split::read_control(int flags)
     {
-        m_control_stopped = true;
+        return p_impl->read_control(flags);
     }
 
-    xmessage xserver_zmq_split::deserialize(zmq::multipart_t& wire_msg) const
+    void xserver_zmq_split::stop_channels()
     {
-        return xzmq_serializer::deserialize(wire_msg, *p_auth);
+        p_impl->stop_channels();
     }
 
-    xcontrol_messenger& xserver_zmq_split::get_control_messenger_impl()
+    std::string xserver_zmq_split::notify_internal_listener(std::string message)
     {
-        return p_controller->get_messenger();
+        nl::json msg = nl::json::parse(std::move(message));
+        nl::json reply = xserver::notify_internal_listener(std::move(msg));
+        return reply.dump(-1, ' ', false, m_error_handler);
     }
 
-    void xserver_zmq_split::send_shell_impl(xmessage msg)
+    fd_t xserver_zmq_split::get_shell_fd() const
     {
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize(std::move(msg), *p_auth, m_error_handler);
-        p_shell->send_shell(wire_msg);
+        return p_impl->get_shell_fd();
     }
 
-    void xserver_zmq_split::send_control_impl(xmessage msg)
+    fd_t xserver_zmq_split::get_shell_controller_fd() const
     {
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize(std::move(msg), *p_auth, m_error_handler);
-        p_controller->send_control(wire_msg);
+        return p_impl->get_shell_controller_fd();
     }
 
-    void xserver_zmq_split::send_stdin_impl(xmessage msg)
+    std::optional<channel> xserver_zmq_split::poll_shell_channels(long timeout)
     {
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize(std::move(msg), *p_auth, m_error_handler);
-        p_shell->send_stdin(wire_msg);
+        return p_impl->poll_shell_channels(timeout);
     }
 
-    void xserver_zmq_split::publish_impl(xpub_message msg, channel c)
+    std::optional<xmessage> xserver_zmq_split::read_shell(int flags)
     {
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
-        if(c == channel::SHELL)
-        {
-            p_shell->publish(wire_msg);
-        }
-        else
-        {
-            p_controller->publish(wire_msg);
-        }
+        return p_impl->read_shell(flags);
     }
 
-    void xserver_zmq_split::start_impl(xpub_message msg)
+    std::optional<std::string> xserver_zmq_split::read_shell_controller(int flags)
     {
-        zmq::multipart_t wire_msg = xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
-        start_server(wire_msg);
+        return p_impl->read_shell_controller(flags);
     }
 
-    void xserver_zmq_split::abort_queue_impl(const listener& l, long polling_interval)
+    void xserver_zmq_split::send_shell_controller(std::string message)
     {
-        p_shell->abort_queue(l, polling_interval);
-    }
-    
-    void xserver_zmq_split::stop_impl()
-    {
-        p_controller->stop();
-    }
-    
-    void xserver_zmq_split::update_config_impl(xconfiguration& config) const
-    {
-        config.m_control_port = p_controller->get_port();
-        config.m_shell_port = p_shell->get_shell_port();
-        config.m_stdin_port = p_shell->get_stdin_port();
-        config.m_iopub_port = p_publisher->get_port();
-        config.m_hb_port = p_heartbeat->get_port();
-    }
-
-    void xserver_zmq_split::start_control_thread()
-    {
-        m_control_thread = std::move(xthread(&xcontrol::run, p_controller.get()));
-    }
-
-    void xserver_zmq_split::start_heartbeat_thread()
-    {
-        m_hb_thread = std::move(xthread(&xheartbeat::run, p_heartbeat.get()));
+        p_impl->send_shell_controller(std::move(message));
     }
 
     void xserver_zmq_split::start_publisher_thread()
     {
-        m_iopub_thread = std::move(xthread(&xpublisher::run, p_publisher.get()));
+        p_impl->start_publisher_thread();
+    }
+
+    void xserver_zmq_split::start_heartbeat_thread()
+    {
+        p_impl->start_heartbeat_thread();
+    }
+    
+    void xserver_zmq_split::start_control_thread()
+    {
+        m_control_thread = xthread(&xcontrol_runner::run, p_control_runner.get());
+    }
+
+    void xserver_zmq_split::run_control()
+    {
+        p_control_runner->run();
     }
 
     void xserver_zmq_split::start_shell_thread()
     {
-        m_shell_thread = std::move(xthread(&xshell::run, p_shell.get()));
+        m_shell_thread = xthread(&xshell_runner::run, p_shell_runner.get());
     }
 
-    xcontrol& xserver_zmq_split::get_controller()
+    void xserver_zmq_split::run_shell()
     {
-        return *p_controller;
+        p_shell_runner->run();
     }
 
-    xshell& xserver_zmq_split::get_shell()
+    xcontrol_messenger& xserver_zmq_split::get_control_messenger_impl()
     {
-        return *p_shell;
+        return p_impl->get_control_messenger();
     }
 
-    bool xserver_zmq_split::is_control_stopped() const
+    void xserver_zmq_split::send_shell_impl(xmessage msg)
     {
-        return m_control_stopped;
+        p_impl->send_shell(std::move(msg));
     }
 
-    zmq::multipart_t xserver_zmq_split::serialize_iopub(xpub_message&& msg)
+    void xserver_zmq_split::send_control_impl(xmessage msg)
     {
-        return xzmq_serializer::serialize_iopub(std::move(msg), *p_auth, m_error_handler);
+        p_impl->send_control(std::move(msg));
+    }
+
+    void xserver_zmq_split::send_stdin_impl(xmessage msg)
+    {
+        auto rep = p_impl->send_stdin(std::move(msg));
+        if (rep)
+        {
+            notify_stdin_listener(std::move(rep.value()));
+        }
+    }
+
+    void xserver_zmq_split::publish_impl(xpub_message msg, channel c)
+    {
+        p_impl->publish(std::move(msg), c);
+    }
+
+    void xserver_zmq_split::stop_impl()
+    {
+        p_control_runner->stop();
+    }
+
+    void xserver_zmq_split::abort_queue_impl(const listener& l, long polling_interval)
+    {
+        p_impl->abort_queue(l, polling_interval);
+    }
+
+    void xserver_zmq_split::update_config_impl(xconfiguration& config) const
+    {
+        p_impl->update_config(config);
     }
 }
 

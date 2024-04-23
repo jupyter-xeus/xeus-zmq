@@ -7,28 +7,27 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SERVER_CONTROL_MAIN_HPP
-#define XEUS_SERVER_CONTROL_MAIN_HPP
+#ifndef XEUS_CONTROL_DEFAULT_RUNNER_HPP
+#define XEUS_CONTROL_DEFAULT_RUNNER_HPP
 
-#include "xeus/xeus_context.hpp"
-#include "xeus/xkernel_configuration.hpp"
-#include "xeus-zmq/xserver_zmq_split.hpp"
+#include "xeus-zmq.hpp"
+#include "xcontrol_runner.hpp"
 
 namespace xeus
 {
-    class xserver_control_main final : public xserver_zmq_split
+    class XEUS_ZMQ_API xcontrol_default_runner final : public xcontrol_runner
     {
     public:
 
-        xserver_control_main(xcontext& context,
-                             const xconfiguration& config,
-                             nl::json::error_handler_t eh);
-        
-        virtual ~xserver_control_main() = default;
+        xcontrol_default_runner() = default;
+        ~xcontrol_default_runner() override = default;
 
     private:
 
-        void start_impl(xpub_message message) override;
+        void run_impl() override;
+        void stop_impl() override;
+        
+        bool m_request_stop;
     };
 }
 

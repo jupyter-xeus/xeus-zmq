@@ -7,26 +7,18 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "nlohmann/json.hpp"
-
-#include "xserver_zmq_default.hpp"
 #include "xtrivial_messenger.hpp"
 
 namespace xeus
 {
-    xtrivial_messenger::xtrivial_messenger(xserver_zmq_default* server)
-        : p_server(server)
+    xtrivial_messenger::xtrivial_messenger(listener l)
+        : m_listener(std::move(l))
     {
-    }
-
-    xtrivial_messenger::~xtrivial_messenger()
-    {
-        p_server = nullptr;
     }
 
     nl::json xtrivial_messenger::send_to_shell_impl(const nl::json& message)
     {
-        return p_server->notify_internal_listener(message);
+        return m_listener(message);
     }
 }
 
