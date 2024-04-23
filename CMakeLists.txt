@@ -133,6 +133,8 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_control_main.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_shell_main.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xshell_default_runner.hpp
@@ -172,9 +174,7 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.cpp
