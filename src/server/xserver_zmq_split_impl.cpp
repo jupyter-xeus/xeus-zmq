@@ -8,7 +8,7 @@
 ****************************************************************************/
 
 #include "xserver_zmq_split_impl.hpp"
-#include "xzmq_serializer.hpp"
+#include "../common/xzmq_serializer.hpp"
 
 namespace xeus
 {

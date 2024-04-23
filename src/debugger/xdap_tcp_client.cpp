@@ -12,7 +12,7 @@
 #include "xeus/xmessage.hpp"
 #include "xeus-zmq/xdap_tcp_client.hpp"
 #include "xdap_tcp_client_impl.hpp"
-#include "xzmq_serializer.hpp"
+#include "../common/xzmq_serializer.hpp"
 
 namespace xeus
 {

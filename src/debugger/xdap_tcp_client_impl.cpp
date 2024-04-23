@@ -11,7 +11,7 @@
 #include "nlohmann/json.hpp"
 #include "xeus/xmessage.hpp"
 #include "xdap_tcp_client_impl.hpp"
-#include "xzmq_serializer.hpp"
+#include "../common/xzmq_serializer.hpp"
 
 namespace xeus
 {

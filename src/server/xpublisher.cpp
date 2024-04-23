@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "xmiddleware_impl.hpp"
+#include "../common/xmiddleware_impl.hpp"
 #include "xpublisher.hpp"
 
 namespace xeus
