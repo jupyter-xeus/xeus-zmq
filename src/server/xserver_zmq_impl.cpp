@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-#include "xmiddleware_impl.hpp"
 #include "xserver_zmq_impl.hpp"
-#include "xzmq_serializer.hpp"
+#include "../common/xmiddleware_impl.hpp"
+#include "../common/xzmq_serializer.hpp"
 
 namespace xeus
 {

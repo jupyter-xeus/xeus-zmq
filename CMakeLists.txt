@@ -133,6 +133,8 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_control_main.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_shell_main.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xshell_default_runner.hpp
@@ -142,58 +144,56 @@ set(XEUS_ZMQ_HEADERS
 )
 
 set(XEUS_ZMQ_SOURCES
-    ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xauthentication.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_messenger.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xclient_zmq_impl.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_default_runner.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol_runner.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xcontrol.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdap_tcp_client_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdealer_channel.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_base.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_middleware.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xdebugger_middleware.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xheartbeat_client.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xiopub_client.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xmiddleware.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xmiddleware_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xpublisher.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_control_main.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_shell_main.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_default.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split_impl.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq_split_impl.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xserver_zmq.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell_default_runner.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xshell_runner.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xtrivial_messenger.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_context.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.hpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_messenger.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.cpp
-    ${XEUS_ZMQ_SOURCE_DIR}/xzmq_serializer.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_zmq.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_zmq_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_zmq_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xdealer_channel.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xdealer_channel.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xheartbeat_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xheartbeat_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xiopub_client.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xiopub_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xauthentication.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xauthentication.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xmiddleware.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xmiddleware_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xzmq_context.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xzmq_serializer.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/common/xzmq_serializer.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdap_tcp_client.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdap_tcp_client_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdap_tcp_client_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdebugger_base.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdebugger_middleware.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/debugger/xdebugger_middleware.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol_default_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xheartbeat.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xheartbeat.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xpublisher.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xpublisher.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_control_main.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_shell_main.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_default.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_default.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_split.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_split_impl.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_split_impl.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xshell.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xshell.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xshell_default_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xshell_runner.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xtrivial_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xtrivial_messenger.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xzmq_messenger.hpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xzmq_messenger.cpp
 )
 
 # Targets and link

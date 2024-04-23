@@ -7,53 +7,55 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SERVER_ZMQ_IMPL_HPP
-#define XEUS_SERVER_ZMQ_IMPL_HPP
+#ifndef XEUS_SERVER_ZMQ_SPLIT_IMPL_HPP
+#define XEUS_SERVER_ZMQ_SPLIT_IMPL_HPP
 
 #include <memory>
 
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 
-#include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
-#include "xeus/xserver.hpp"
 
-#include "xeus-zmq/xeus-zmq.hpp"
+#include "xeus-zmq/xmiddleware.hpp"
 #include "xeus-zmq/xthread.hpp"
 
-#include "xauthentication.hpp"
-#include "xpublisher.hpp"
+#include "../common/xauthentication.hpp"
+#include "xcontrol.hpp"
 #include "xheartbeat.hpp"
-#include "xtrivial_messenger.hpp"
+#include "xpublisher.hpp"
+#include "xshell.hpp"
 
 namespace xeus
 {
-    class xserver_zmq_impl
+
+    class xserver_zmq_split_impl
     {
     public:
 
         using listener = std::function<void(xmessage)>;
-        using internal_listener = xtrivial_messenger::listener;
+        
+        xserver_zmq_split_impl(zmq::context_t& context,
+                               const xconfiguration& config,
+                               nl::json::error_handler_t eh);
 
-        xserver_zmq_impl(zmq::context_t& context,
-                         const xconfiguration& config,
-                         nl::json::error_handler_t eh,
-                         internal_listener listener);
-
-        void start_publisher_thread();
         void start_heartbeat_thread();
+        void start_publisher_thread();
         void stop_channels();
 
-        void set_request_stop(bool stop);
-        bool is_stopped() const;
+        fd_t get_shell_fd() const;
+        fd_t get_shell_controller_fd() const;
+        fd_t get_control_fd() const;
 
-        using message_channel = std::pair<xmessage, channel>;
-        std::optional<message_channel> poll_channels(long timeout);
+        std::optional<channel> poll_shell_channels(long timeout);
+        std::optional<xmessage> read_shell(int flags);
+        std::optional<std::string> read_shell_controller(int flags);
+        std::optional<xmessage> read_control(int flags);
 
         xcontrol_messenger& get_control_messenger();
 
         void send_shell(xmessage message);
+        void send_shell_controller(std::string message);
         void send_control(xmessage message);
         std::optional<xmessage> send_stdin(xmessage message);
         void publish(xpub_message message, channel c);
@@ -61,31 +63,23 @@ namespace xeus
         void abort_queue(const listener& l, long polling_interval);
         void update_config(xconfiguration& config) const;
 
+        xmessage deserialize(zmq::multipart_t& wire_msg) const;
         zmq::multipart_t serialize_iopub(xpub_message&& msg);
-
+    
     private:
-
-        zmq::socket_t m_shell;
-        zmq::socket_t m_controller;
-        zmq::socket_t m_stdin;
-        zmq::socket_t m_publisher_pub;
-        zmq::socket_t m_publisher_controller;
-        zmq::socket_t m_heartbeat_controller;
 
         using authentication_ptr = std::unique_ptr<xauthentication>;
         authentication_ptr p_auth;
 
-        xpublisher m_publisher;
+        xcontrol m_control;
         xheartbeat m_heartbeat;
+        xpublisher m_publisher;
+        xshell m_shell;
 
-        xthread m_iopub_thread;
         xthread m_hb_thread;
-
-        xtrivial_messenger m_messenger;
+        xthread m_iopub_thread;
 
         nl::json::error_handler_t m_error_handler;
-
-        bool m_request_stop;
     };
 }
 

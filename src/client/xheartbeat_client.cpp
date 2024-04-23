@@ -9,7 +9,7 @@
 
 #include "xheartbeat_client.hpp"
 #include "xclient_zmq_impl.hpp"
-#include "xmiddleware_impl.hpp"
+#include "../common/xmiddleware_impl.hpp"
 
 namespace xeus
 {

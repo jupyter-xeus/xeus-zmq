@@ -19,7 +19,7 @@
 #include "xeus/xeus_context.hpp"
 
 #include "xeus-zmq/xdap_tcp_client.hpp"
-#include "xauthentication.hpp"
+#include "../common/xauthentication.hpp"
 
 namespace nl = nlohmann;
 

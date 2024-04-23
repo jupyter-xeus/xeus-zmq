@@ -12,8 +12,8 @@
 #include <iostream>
 
 #include "xcontrol.hpp"
-#include "xmiddleware_impl.hpp"
 #include "xserver_zmq_split_impl.hpp"
+#include "../common/xmiddleware_impl.hpp"
 
 namespace xeus
 {
