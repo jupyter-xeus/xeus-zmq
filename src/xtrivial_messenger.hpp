@@ -10,10 +10,11 @@
 #ifndef XEUS_TRIVIAL_MESSENGER_HPP
 #define XEUS_TRIVIAL_MESSENGER_HPP
 
+#include <functional>
+
 #include "nlohmann/json.hpp"
 
 #include "xeus/xcontrol_messenger.hpp"
-#include "xeus-zmq/xeus-zmq.hpp"
 
 namespace nl = nlohmann;
 
@@ -25,14 +26,16 @@ namespace xeus
     {
     public:
         
-        explicit xtrivial_messenger(xserver_zmq_default* server);
-        virtual ~xtrivial_messenger ();
+        using listener = std::function<nl::json(nl::json)>;
+
+        explicit xtrivial_messenger(listener l);
+        virtual ~xtrivial_messenger() = default;
 
     private:
 
         nl::json send_to_shell_impl(const nl::json& message) override;
 
-        xserver_zmq_default* p_server;
+        listener m_listener;
     };
 }
 

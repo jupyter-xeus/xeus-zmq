@@ -11,9 +11,9 @@
 #include <chrono>
 #include <iostream>
 
-#include "xmiddleware_impl.hpp"
-#include "xserver_zmq_split.hpp"
 #include "xcontrol.hpp"
+#include "xmiddleware_impl.hpp"
+#include "xserver_zmq_split_impl.hpp"
 
 namespace xeus
 {
@@ -21,20 +21,15 @@ namespace xeus
                        const std::string& transport,
                        const std::string& ip,
                        const std::string& control_port,
-                       xserver_zmq_split* server)
+                       xserver_zmq_split_impl* server)
         : m_control(context, zmq::socket_type::router)
         , m_publisher_pub(context, zmq::socket_type::pub)
         , m_messenger(context)
         , p_server(server)
-        , m_request_stop(false)
     {
         init_socket(m_control, transport, ip, control_port);
         m_publisher_pub.set(zmq::sockopt::linger, get_socket_linger());
         m_publisher_pub.connect(get_publisher_end_point());
-    }
-    
-    xcontrol::~xcontrol()
-    {
     }
 
     std::string xcontrol::get_port() const
@@ -42,9 +37,19 @@ namespace xeus
         return get_socket_port(m_control);
     }
 
+    fd_t xcontrol::get_fd() const
+    {
+        return m_control.get(zmq::sockopt::fd);
+    }
+
     void xcontrol::connect_messenger()
     {
         m_messenger.connect();
+    }
+
+    void xcontrol::stop_channels()
+    {
+        m_messenger.stop_channels();
     }
 
     xcontrol_messenger& xcontrol::get_messenger()
@@ -52,32 +57,21 @@ namespace xeus
         return m_messenger;
     }
 
-    void xcontrol::run()
+    std::optional<xmessage> xcontrol::read_control(int flags)
     {
-        m_request_stop = false;
-
-        while (!m_request_stop)
+        zmq::multipart_t wire_msg;
+        if (wire_msg.recv(m_control, flags))
         {
-            zmq::multipart_t wire_msg;
-            wire_msg.recv(m_control);
             try
             {
-                xmessage msg = p_server->deserialize(wire_msg);
-                p_server->notify_control_listener(std::move(msg));
+                return p_server->deserialize(wire_msg);
             }
             catch (std::exception& e)
             {
                 std::cerr << e.what() << std::endl;
             }
         }
-
-        m_messenger.stop_channels();
-        p_server->notify_control_stopped();
-    }
-
-    void xcontrol::stop()
-    {
-        m_request_stop = true;
+        return std::nullopt;
     }
 
     void xcontrol::send_control(zmq::multipart_t& message)

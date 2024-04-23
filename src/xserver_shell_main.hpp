@@ -12,26 +12,24 @@
 
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
-
-#include "xeus-zmq/xeus-zmq.hpp"
-#include "xserver_zmq_split.hpp"
+#include "xeus-zmq/xserver_zmq_split.hpp"
 
 namespace xeus
 {
-    class xserver_shell_main : public xserver_zmq_split
+    class xserver_shell_main final : public xserver_zmq_split
     {
     public:
 
-        xserver_shell_main(zmq::context_t& context,
+        xserver_shell_main(xcontext& context,
                            const xconfiguration& config,
-                           nl::json::error_handler_t he);
-        virtual ~xserver_shell_main();
+                           nl::json::error_handler_t eh);
+        
+        virtual ~xserver_shell_main() = default;
 
     private:
 
-        void start_server(zmq::multipart_t& wire_msg) override;
+        void start_impl(xpub_message message) override;
     };
-
 }
 
 #endif
