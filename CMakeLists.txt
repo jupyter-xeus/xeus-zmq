@@ -199,6 +199,8 @@ set(XEUS_ZMQ_SOURCES
 # Targets and link
 # ================
 
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 include(CheckCXXCompilerFlag)
 
 string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
