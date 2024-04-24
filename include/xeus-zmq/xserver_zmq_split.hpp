@@ -97,14 +97,33 @@ namespace xeus
     };
 
     XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_control_main(xcontext& context,
-                                                       const xconfiguration& config,
-                                                       nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+    std::unique_ptr<xserver>
+    make_xserver_control_main(xcontext& context,
+                              const xconfiguration& config,
+                              nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+    
+    XEUS_ZMQ_API
+    std::unique_ptr<xserver>
+    make_xserver_control(xcontext& context,
+                         const xconfiguration& config,
+                         nl::json::error_handler_t eh,
+                         std::unique_ptr<xcontrol_runner> control,
+                         std::unique_ptr<xshell_runner> shell);
+
 
     XEUS_ZMQ_API
-    std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,
-                                                     const xconfiguration& config,
-                                                     nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+    std::unique_ptr<xserver>
+    make_xserver_shell_main(xcontext& context,
+                            const xconfiguration& config,
+                            nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
+
+    XEUS_ZMQ_API
+    std::unique_ptr<xserver>
+    make_xserver_shell(xcontext& context,
+                       const xconfiguration& config,
+                       nl::json::error_handler_t eh,
+                       std::unique_ptr<xcontrol_runner> control,
+                       std::unique_ptr<xshell_runner> shell);
 }
 
 #endif

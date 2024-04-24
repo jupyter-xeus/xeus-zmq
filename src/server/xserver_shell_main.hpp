@@ -13,8 +13,8 @@
 #include "xeus/xeus_context.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
-#include "xeus-zmq.hpp"
-#include "xserver_zmq_split.hpp"
+#include "xeus-zmq/xeus-zmq.hpp"
+#include "xeus-zmq/xserver_zmq_split.hpp"
 
 namespace xeus
 {
