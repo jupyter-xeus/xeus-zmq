@@ -133,8 +133,6 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_control_main.hpp
-    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_shell_main.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xshell_default_runner.hpp
@@ -177,7 +175,9 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/server/xpublisher.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xpublisher.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_control_main.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_control_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_shell_main.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_shell_main.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_default.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_default.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xserver_zmq_impl.cpp
@@ -199,6 +199,10 @@ set(XEUS_ZMQ_SOURCES
 # Targets and link
 # ================
 
+# Binaries that link with xeus-zmq must be able to find and load
+# libzmq. However, since xeus-zmq privately links with libzmq,
+# we need to tell cmake to append to rpath directories containing
+# linked libraries.
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 include(CheckCXXCompilerFlag)

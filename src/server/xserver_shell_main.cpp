@@ -9,7 +9,7 @@
 
 #include "xeus-zmq/xcontrol_default_runner.hpp"
 #include "xeus-zmq/xshell_default_runner.hpp"
-#include "xeus-zmq/xserver_shell_main.hpp"
+#include "xserver_shell_main.hpp"
 
 namespace xeus
 {
@@ -38,17 +38,35 @@ namespace xeus
         xserver_zmq_split::run_shell();
     }
 
-    std::unique_ptr<xserver> make_xserver_shell_main(xcontext& context,
-                                                     const xconfiguration& config,
-                                                     nl::json::error_handler_t eh)
+    std::unique_ptr<xserver>
+    make_xserver_shell_main(xcontext& context,
+                            const xconfiguration& config,
+                            nl::json::error_handler_t eh)
     {
-        return std::make_unique<xserver_shell_main>
+        return make_xserver_shell
         (
             context,
             config,
             eh,
             std::make_unique<xcontrol_default_runner>(),
             std::make_unique<xshell_default_runner>()
+        );
+    }
+
+    std::unique_ptr<xserver>
+    make_xserver_shell(xcontext& context,
+                       const xconfiguration& config,
+                       nl::json::error_handler_t eh,
+                       std::unique_ptr<xcontrol_runner> control,
+                       std::unique_ptr<xshell_runner> shell)
+    {
+        return std::make_unique<xserver_shell_main>
+        (
+            context,
+            config,
+            eh,
+            std::move(control),
+            std::move(shell)
         );
     }
 }
