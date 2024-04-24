@@ -55,6 +55,9 @@ option(XEUS_ZMQ_STATIC_DEPENDENCIES "link statically with xeus dependencies" OFF
 # Test options
 option(XEUS_ZMQ_BUILD_TESTS "xeus test suite" OFF)
 
+# Option to build without libsodium
+option(XEUS_ZMQ_BUILD_WITHOUT_LIBSODIUM "Build xeus-zmq without libsodium" OFF)
+
 # Static build configuration
 # ==========================
 
@@ -209,7 +212,7 @@ include(CheckCXXCompilerFlag)
 
 string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
 
-if (XEUS_ZMQ_STATIC_DEPENDENCIES AND NOT MSVC AND NOT APPLE)
+if (XEUS_ZMQ_STATIC_DEPENDENCIES AND NOT MSVC AND NOT APPLE AND NOT XEUS_ZMQ_BUILD_WITHOUT_LIBSODIUM)
 	# Explicitly finds and links with libsodium.a
 	# because it is not exported as a dependency by
 	# the static build of libzmq. Remove this when
