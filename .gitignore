@@ -33,3 +33,8 @@
 
 build/
 test/__pycache__/
+
+# Documentation build artefacts
+docs/CMakeCache.txt
+docs/xml/
+docs/build/
