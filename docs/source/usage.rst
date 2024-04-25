@@ -1,0 +1,65 @@
+.. Copyright (c) 2022, Johan Mabille and Sylvain Corlay
+
+   Distributed under the terms of the BSD 3-Clause License.
+
+   The full license is in the file LICENSE, distributed with this software.
+
+Usage
+=====
+
+Instantiating a server
+----------------------
+
+`xeus-zmq` provides server building functions that can be passed to the kernel constructor:
+
+.. code::
+
+    #include <iostream>
+    #include <memory>
+
+    #include "xeus/xkernel.hpp"
+    #include "xeus/xkernel_configuration.hpp"
+    #include "xeus-zmq/xzmq_context.hpp"
+    #include "xeus-zmq/xserver_zmq.hpp"
+    #include "xmock_interpreter.hpp"
+
+    int main(int argc, char* argv[])
+    {
+        std::string file_name = (argc == 1) ? "connection.json" : argv[2];
+        xeus::xconfiguration config = xeus::load_configuration(file_name);
+
+        auto context = xeus::make_zmq_context();
+
+        using interpreter_ptr = std::unique_ptr<my_custom_interpreter>;
+        interpreter_ptr interpreter = interpreter_ptr(new my_custom_interpreter());
+        xeus::xkernel kernel(config,
+                             xeus::get_user_name(),
+                             std::move(context),
+                             std::move(interpreter),
+                             xeus::make_xserver_default);
+        std::cout << "starting kernel" << std::endl;
+        kernel.start();
+
+        return 0;
+    }
+
+`xeus-zmq` provides three different implementations for the server:
+
+- ``xserver_zmq_default`` is the default server implementaion, it runs three thread, one for publishing,
+  one for the heartbeat messages, and the main thread handles the shell, control and stdin sockets. To
+  instantiate this implementation, include ``xserver_zmq.hpp``  and call the ``make_xserver_default``
+  function.
+- ``xserver_control_main`` runs an additional thread for handling the shell and the stdin sockets. Therefore
+  the main thread only listens to the control socket. This allow to easily implement interruption of code
+  execution. This server is required if you want to plug a debugger in the kernel. To instantiate this
+  implementation, include ``xserver_zmq_split`` and call the ``make_xserver_control_main`` function.
+- ``xserver_shell_main`` is similar to ``xserver_control_main`` except that the main thread handles the shell
+  and the stdin sockets while the additional thread listens to the control socket. This server is required if
+  you want to plug a debugger that does not support native threads and requires the code to be run by the main
+  thread. To instantiate this implementation, include ``xserver_zmq_split``  and call the
+  ``make_xserver_shell_main`` function.
+
+Instantiating a client
+----------------------
+
+TODO
