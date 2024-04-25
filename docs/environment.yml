@@ -1,0 +1,8 @@
+name: xeus-zmq-docs
+
+channels:
+  - conda-forge
+
+dependencies:
+  - breathe
+  - sphinx_rtd_theme
