@@ -1,6 +1,7 @@
 # xeus-zmq
 
 [![GithubActions](https://github.com/jupyter-xeus/xeus-zmq/actions/workflows/main.yml/badge.svg)](https://github.com/jupyter-xeus/xeus-zmq/actions/workflows/main.yml)
+[![Documentation Status](https://readthedocs.org/projects/xeus-zmq/badge/?version=latest)](https://xeus-zmq.readthedocs.io/en/latest/?badge=latest)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ZeroMQ-based middleware for xeus
@@ -13,11 +14,15 @@ API from `xeus`, based on the [ZeroMQ library](https://zeromq.org/). These imple
 
 ## Installation
 
-TODO
+`xeus-zmq` has been packaged on all platforms for the mamba (or conda) package manager.
+
+```
+mamba install xeus-zmq -c conda-forge
+```
 
 ## Documentation
 
-The documentation can be found with that of xeus at http://xeus.readthedocs.io/
+The documentation can be found with that of xeus at http://xeus-zmq.readthedocs.io/
 
 ## Usage
 

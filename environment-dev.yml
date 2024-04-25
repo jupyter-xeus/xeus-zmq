@@ -13,8 +13,8 @@ dependencies:
   - cppzmq
   - xtl=0.7
   - xeus>=4.0.3,<5.0
-  - OpenSSL=1 
-  - libopenssl-static=1
+  - OpenSSL 
+  - libopenssl-static
   - nlohmann_json=3.11.3
   # Test dependencies
   - doctest >= 2.4.6
