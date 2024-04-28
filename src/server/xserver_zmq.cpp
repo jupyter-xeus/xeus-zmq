@@ -61,6 +61,16 @@ namespace xeus
         return p_impl->poll_channels(timeout);
     }
 
+    void xserver_zmq::send_shell_message(xmessage msg)
+    {
+        p_impl->send_shell(std::move(msg));
+    }
+
+    void xserver_zmq::send_control_message(xmessage msg)
+    {
+        p_impl->send_control(std::move(msg));
+    }
+
     ///////////////////////////////////////////////
     // Implementation of xserver virtual methods //
     ///////////////////////////////////////////////
@@ -72,12 +82,12 @@ namespace xeus
 
     void xserver_zmq::send_shell_impl(xmessage msg)
     {
-        p_impl->send_shell(std::move(msg));
+        send_shell_message(std::move(msg));
     }
 
     void xserver_zmq::send_control_impl(xmessage msg)
     {
-        p_impl->send_control(std::move(msg));
+        send_control_message(std::move(msg));
     }
 
     void xserver_zmq::send_stdin_impl(xmessage msg)
