@@ -44,8 +44,11 @@ namespace xeus
         void set_request_stop(bool stop);
         bool is_stopped() const;
 
+        // The following methods must be called in the same thread
         using message_channel = std::pair<xmessage, channel>;
         std::optional<message_channel> poll_channels(long timeout);
+        void send_shell_message(xmessage msg);
+        void send_control_message(xmessage msg);
 
     private:
 

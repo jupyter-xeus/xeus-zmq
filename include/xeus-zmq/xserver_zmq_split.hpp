@@ -37,6 +37,7 @@ namespace xeus
 
         fd_t get_control_fd() const;
         std::optional<xmessage> read_control(int flags);
+        void send_control_message(xmessage msg);
         void stop_channels();
 
         // API for xshell_runner
@@ -48,6 +49,7 @@ namespace xeus
 
         std::optional<channel> poll_shell_channels(long timeout);
         std::optional<xmessage> read_shell(int flags);
+        void send_shell_message(xmessage msg);
         std::optional<std::string> read_shell_controller(int flags);
         void send_shell_controller(std::string message);
    

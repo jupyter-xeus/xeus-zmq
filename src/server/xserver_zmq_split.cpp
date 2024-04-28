@@ -38,6 +38,11 @@ namespace xeus
         return p_impl->read_control(flags);
     }
 
+    void xserver_zmq_split::send_control_message(xmessage msg)
+    {
+        p_impl->send_control(std::move(msg));
+    }
+
     void xserver_zmq_split::stop_channels()
     {
         p_impl->stop_channels();
@@ -68,6 +73,11 @@ namespace xeus
     std::optional<xmessage> xserver_zmq_split::read_shell(int flags)
     {
         return p_impl->read_shell(flags);
+    }
+
+    void xserver_zmq_split::send_shell_message(xmessage msg)
+    {
+        p_impl->send_shell(std::move(msg));
     }
 
     std::optional<std::string> xserver_zmq_split::read_shell_controller(int flags)
@@ -117,12 +127,12 @@ namespace xeus
 
     void xserver_zmq_split::send_shell_impl(xmessage msg)
     {
-        p_impl->send_shell(std::move(msg));
+        send_shell_message(std::move(msg));
     }
 
     void xserver_zmq_split::send_control_impl(xmessage msg)
     {
-        p_impl->send_control(std::move(msg));
+        send_control_message(std::move(msg));
     }
 
     void xserver_zmq_split::send_stdin_impl(xmessage msg)
