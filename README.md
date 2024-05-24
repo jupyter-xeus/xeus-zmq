@@ -67,6 +67,13 @@ See the [documentation](http://xeus.readthedocs.io/) for an exhaustive list of t
 `xeus-zmq` depends on the following libraries: [xeus](https://github.com/jupyter-xeus/xeus), [`ZeroMQ`](https://github.com/zeromq/libzmq),
 [`cppzmq`](https://github.com/zeromq/cppzmq), [`OpenSSL`](https://github.com/openssl/openssl), and [`nlohmann_json`](https://github.com/nlohmann/json).
 
+| xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |
+|----------|---------|---------|---------|---------------|---------|
+|  main    | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
+|  3.x     | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
+
+Versions prior to version 3 depend have an additional dependency on [xtl](https://github.com/xtensor-stack/xtl).
+
 | xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |      xtl       |
 |----------|---------|---------|---------|---------------|---------|----------------|
 |  main    | ^4.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    | >=0.7.0,<0.8.0 |
