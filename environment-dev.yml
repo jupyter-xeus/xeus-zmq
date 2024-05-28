@@ -11,8 +11,7 @@ dependencies:
   - zeromq
   - zeromq-static
   - cppzmq
-  - xtl=0.7
-  - xeus>=4.0.3,<5.0
+  - xeus>=5.0.0,<6.0
   - OpenSSL 
   - libopenssl-static
   - nlohmann_json=3.11.3
