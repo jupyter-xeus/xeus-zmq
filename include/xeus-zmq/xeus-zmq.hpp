@@ -25,14 +25,14 @@
 #endif
 
 // Project version
-#define XEUS_ZMQ_VERSION_MAJOR 2
+#define XEUS_ZMQ_VERSION_MAJOR 3
 #define XEUS_ZMQ_VERSION_MINOR 0
 #define XEUS_ZMQ_VERSION_PATCH 0
 
 // Binary version
 // See the following URL for explanations about the binary versionning
 // https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
-#define XEUS_ZMQ_BINARY_CURRENT 5
+#define XEUS_ZMQ_BINARY_CURRENT 6
 #define XEUS_ZMQ_BINARY_REVISION 0
 #define XEUS_ZMQ_BINARY_AGE 0
 
