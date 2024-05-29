@@ -25,6 +25,7 @@ namespace xeus
 
     private:
         zmq::socket_t m_iopub_controller;
+        zmq::socket_t m_heartbeat_controller;
     };
 }
 
