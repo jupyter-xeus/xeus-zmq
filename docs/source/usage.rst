@@ -70,7 +70,9 @@ have a look at our `ipc client class`_ and the `ipc client implementation file`_
 - ``xclient_zmq`` is the primary client implementaion, it runs two threads, one for sending a "ping" message to the
   heartbeat each 100ms, one for polling the iopub socket and pushing the received message into a queue, and the main
   thread waits for messages either popping messages from the queue or polling the shell and the controll sockets for
-  receieved messages.
+  receieved messages. To instantiate this implementation, include ``xclient_zmq.hpp`` and call the
+  ``make_xclient_zmq`` function.
+
 .. _ipc client class: https://github.com/jupyter-xeus/xeus-zmq/blob/main/test/xipc_client.hpp
 .. _ipc client implementation file: https://github.com/jupyter-xeus/xeus-zmq/blob/main/test/client_ipc.cpp
 
