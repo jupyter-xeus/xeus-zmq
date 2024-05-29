@@ -17,6 +17,7 @@ namespace xeus
 {
     xclient_messenger::xclient_messenger(zmq::context_t& context)
         : m_iopub_controller(context, zmq::socket_type::req)
+        , m_heartbeat_controller(context, zmq::socket_type::req)
     {
     }
 
@@ -28,6 +29,9 @@ namespace xeus
     {
         m_iopub_controller.set(zmq::sockopt::linger, get_socket_linger());
         m_iopub_controller.connect(get_controller_end_point("iopub"));
+
+        m_heartbeat_controller.set(zmq::sockopt::linger, get_socket_linger());
+        m_heartbeat_controller.connect(get_controller_end_point("heartbeat"));
     }
 
     void xclient_messenger::stop_channels()
@@ -38,5 +42,9 @@ namespace xeus
         // Wait for iopub answer
         m_iopub_controller.send(stop_msg, zmq::send_flags::none);
         (void)m_iopub_controller.recv(response);
+
+        // Wait for heartbeat answer
+        m_heartbeat_controller.send(stop_msg, zmq::send_flags::none);
+        (void)m_heartbeat_controller.recv(response);
     }
 }
