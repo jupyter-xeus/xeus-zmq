@@ -82,7 +82,7 @@ message(STATUS "XEUS_ZMQ_BUILD_TESTS:                ${XEUS_ZMQ_BUILD_TESTS}")
 # Dependencies
 # ============
 
-set(xeus_REQUIRED_VERSION 4.0.3)
+set(xeus_REQUIRED_VERSION 5.0.0)
 set(nlohmann_json_REQUIRED_VERSION 3.11.3)
 set(cppzmq_REQUIRED_VERSION 4.8.1)
 set(zeromq_REQUIRED_VERSION 4.3.2)
