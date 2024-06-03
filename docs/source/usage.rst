@@ -45,18 +45,18 @@ Instantiating a server
 
 `xeus-zmq` provides three different implementations for the server:
 
-- ``xserver_zmq_default`` is the default server implementaion, it runs three thread, one for publishing,
-  one for the heartbeat messages, and the main thread handles the shell, control and stdin sockets. To
+- ``xserver_zmq_default`` is the default server implementation; it runs three threads, one for publishing,
+  one for the heartbeat messages, and the main thread for handling the shell, control and stdin sockets. To
   instantiate this implementation, include ``xserver_zmq.hpp``  and call the ``make_xserver_default``
   function.
-- ``xserver_control_main`` runs an additional thread for handling the shell and the stdin sockets. Therefore
-  the main thread only listens to the control socket. This allow to easily implement interruption of code
+- ``xserver_control_main`` runs an additional thread for handling the shell and the stdin sockets. Therefore,
+  the main thread only listens to the control socket. This allows us to easily implement interruption of code
   execution. This server is required if you want to plug a debugger in the kernel. To instantiate this
-  implementation, include ``xserver_zmq_split`` and call the ``make_xserver_control_main`` function.
+  implementation, include ``xserver_zmq_split.hpp`` and call the ``make_xserver_control_main`` function.
 - ``xserver_shell_main`` is similar to ``xserver_control_main`` except that the main thread handles the shell
   and the stdin sockets while the additional thread listens to the control socket. This server is required if
   you want to plug a debugger that does not support native threads and requires the code to be run by the main
-  thread. To instantiate this implementation, include ``xserver_zmq_split``  and call the
+  thread. To instantiate this implementation, include ``xserver_zmq_split.hpp``  and call the
   ``make_xserver_shell_main`` function.
 
 Instantiating a client
@@ -67,10 +67,10 @@ have a look at our `ipc client class`_ and the `ipc client implementation file`_
 
 `xeus-zmq` currently provides a single implementation for the client:
 
-- ``xclient_zmq`` is the primary client implementaion, it runs two threads, one for sending a "ping" message to the
-  heartbeat each 100ms, one for polling the iopub socket and pushing the received message into a queue, and the main
-  thread waits for messages either popping messages from the queue or polling the shell and the controll sockets for
-  receieved messages. To instantiate this implementation, include ``xclient_zmq.hpp`` and call the
+- ``xclient_zmq`` is the primary client implementation, it runs two threads, one for sending a "ping" message to the
+  heartbeat every 100ms, and one for polling the iopub socket and pushing the received message into a queue. The main
+  thread waits for messages by either popping messages from the queue or polling the shell and the control sockets for
+  received messages. To instantiate this implementation, include ``xclient_zmq.hpp`` and call the
   ``make_xclient_zmq`` function.
 
 .. _ipc client class: https://github.com/jupyter-xeus/xeus-zmq/blob/main/test/xipc_client.hpp

@@ -14,16 +14,16 @@ With mamba or conda
 
 To ensure that the installation works, it is preferable to install ``xeus-zmq`` in a fresh environment.
 It is also needed to use a `miniforge`_  or `miniconda`_ installation because with the full `anaconda`_
-you may have a conflict with the ``zeroMQ`` library already installed in the distribution.
+you may have a conflict with the ``ZeroMQ`` library already installed in the distribution.
 
-The safest usage is to create an environment named ``xeus-zmq``
+The safest usage is to create an environment named ``xeus-env``
 
 .. code:: bash
 
-    mamba create -n xeus-zmq
-    mamba activate xeus-zmq
+    mamba create -n xeus-env
+    mamba activate xeus-env
 
-Then you can install in this freshly created environment ``xeus-zmq`` and its dependencies:
+Then you can install ``xeus-zmq`` and its dependencies in this freshly created environment:
 
 .. code:: bash
 
@@ -44,8 +44,8 @@ We have packaged all these dependencies on conda-forge. The simplest way to inst
 
 .. code:: bash
 
-    mamba env create -f environment-dev.yml -n xeus-zmq
-    mamba activate xeus-zmq
+    mamba env create -f environment-dev.yml -n xeus-env
+    mamba activate xeus-env
 
 You can then build and install ``xeus-zmq``:
 
