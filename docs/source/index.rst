@@ -28,7 +28,7 @@ copyright on their contributions.
 This software is licensed under the BSD-3-Clause license. See the LICENSE file
 for details.
 
-.. toctree:: 
+.. toctree::
    :caption: INSTALLATION
    :maxdepth: 2
 
