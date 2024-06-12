@@ -73,7 +73,14 @@ namespace xeus
                 if (items[1].revents & ZMQ_POLLIN)
                 {
                     wire_msg.recv(m_controller);
-                    // check if stop message and break ?
+                    if (wire_msg.size() > 0)
+                    {
+                        std::string received_msg = wire_msg.at(0).to_string();
+                        if (received_msg == "stop")
+                        {
+                            break;
+                        }
+                    }
                 }
             }
             catch (std::exception& e)
