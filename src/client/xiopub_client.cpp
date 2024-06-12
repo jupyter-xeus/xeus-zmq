@@ -36,12 +36,12 @@ namespace xeus
         return m_message_queue.size();
     }
 
-    std::optional<xmessage> xiopub_client::pop_iopub_message()
+    std::optional<xpub_message> xiopub_client::pop_iopub_message()
     {
         std::lock_guard<std::mutex> guard(m_queue_mutex);
         if (!m_message_queue.empty())
         {
-            xmessage msg = std::move(m_message_queue.back());
+            xpub_message msg = std::move(m_message_queue.back());
             m_message_queue.pop();
             return msg;
         } else {
@@ -51,31 +51,41 @@ namespace xeus
 
     void xiopub_client::run()
     {
+        zmq::multipart_t wire_msg;
         zmq::pollitem_t items[] = {
-            { m_iopub, 0, ZMQ_POLLIN, 0 }
+            { m_iopub, 0, ZMQ_POLLIN, 0 }, { m_controller, 0, ZMQ_POLLIN, 0 }
         };
 
         while (true)
         {
-            zmq::poll(&items[0], 1, std::chrono::milliseconds(-1));
-
-            if (items[0].revents & ZMQ_POLLIN)
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(-1));
+            try
             {
-                zmq::multipart_t wire_msg;
-                wire_msg.recv(m_iopub);
-                try
+                if (items[0].revents & ZMQ_POLLIN)
                 {
-                    xmessage msg = p_client_impl->deserialize(wire_msg);
+                    wire_msg.recv(m_iopub);
+                    xpub_message msg = p_client_impl->deserialize_iopub(wire_msg);
                     {
                         std::lock_guard<std::mutex> guard(m_queue_mutex);
                         m_message_queue.push(std::move(msg));
                     }
-                    p_client_impl->notify_shell_listener(std::move(msg));
                 }
-                catch(std::exception& e)
+                if (items[1].revents & ZMQ_POLLIN)
                 {
-                    std::cerr << e.what() << std::endl;
+                    wire_msg.recv(m_controller);
+                    if (wire_msg.size() > 0)
+                    {
+                        std::string received_msg = wire_msg.at(0).to_string();
+                        if (received_msg == "stop")
+                        {
+                            break;
+                        }
+                    }
                 }
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
             }
         }
     }

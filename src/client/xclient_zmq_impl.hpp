@@ -34,6 +34,7 @@ namespace xeus
         using iopub_client_ptr = std::unique_ptr<xiopub_client>;
         using heartbeat_client_ptr = std::unique_ptr<xheartbeat_client>;
         using listener = std::function<void(xmessage)>;
+        using iopub_listener = std::function<void(xpub_message)>;
         using kernel_status_listener = std::function<void(bool)>;
 
         xclient_zmq_impl(zmq::context_t& context,
@@ -60,8 +61,8 @@ namespace xeus
 
         // iopub channel
         std::size_t iopub_queue_size() const;
-        std::optional<xmessage> pop_iopub_message();
-        void register_iopub_listener(const listener& l);
+        std::optional<xpub_message> pop_iopub_message();
+        void register_iopub_listener(const iopub_listener& l);
 
         // heartbeat channel
         void register_kernel_status_listener(const kernel_status_listener& l);
@@ -72,13 +73,14 @@ namespace xeus
 
         void notify_shell_listener(xmessage msg);
         void notify_control_listener(xmessage msg);
-        void notify_iopub_listener(xmessage msg);
+        void notify_iopub_listener(xpub_message msg);
         void notify_kernel_dead(bool status);
 
         void wait_for_message();
         void start();
 
         xmessage deserialize(zmq::multipart_t& wire_msg) const;
+        xpub_message deserialize_iopub(zmq::multipart_t& wire_msg) const;
 
     private:
         void start_iopub_thread();
@@ -99,7 +101,7 @@ namespace xeus
 
         listener m_shell_listener;
         listener m_control_listener;
-        listener m_iopub_listener;
+        iopub_listener m_iopub_listener;
 
         iopub_client_ptr p_iopub_client;
         heartbeat_client_ptr p_heartbeat_client;

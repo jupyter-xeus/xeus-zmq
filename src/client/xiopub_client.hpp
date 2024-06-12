@@ -32,7 +32,7 @@ namespace xeus
         ~xiopub_client();
 
         std::size_t iopub_queue_size() const;
-        std::optional<xmessage> pop_iopub_message();
+        std::optional<xpub_message> pop_iopub_message();
 
         void run();
 
@@ -40,7 +40,7 @@ namespace xeus
         zmq::socket_t m_iopub;
         zmq::socket_t m_controller;
 
-        std::queue<xmessage> m_message_queue;
+        std::queue<xpub_message> m_message_queue;
         mutable std::mutex m_queue_mutex;
 
         xclient_zmq_impl* p_client_impl;

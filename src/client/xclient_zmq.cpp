@@ -53,7 +53,7 @@ namespace xeus
         p_client_impl->register_control_listener(l);
     }
 
-    void xclient_zmq::register_iopub_listener(const listener& l)
+    void xclient_zmq::register_iopub_listener(const iopub_listener& l)
     {
         p_client_impl->register_iopub_listener(l);
     }
@@ -73,7 +73,7 @@ namespace xeus
         p_client_impl->notify_control_listener(std::move(msg));
     }
 
-    void xclient_zmq::notify_iopub_listener(xmessage msg)
+    void xclient_zmq::notify_iopub_listener(xpub_message msg)
     {
         p_client_impl->notify_iopub_listener(std::move(msg));
     }
@@ -88,7 +88,7 @@ namespace xeus
         return p_client_impl->iopub_queue_size();
     }
 
-    std::optional<xmessage> xclient_zmq::pop_iopub_message()
+    std::optional<xpub_message> xclient_zmq::pop_iopub_message()
     {
         return p_client_impl->pop_iopub_message();
     }
