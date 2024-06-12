@@ -89,12 +89,12 @@ namespace xeus
         return m_iopub_client.iopub_queue_size();
     }
 
-    std::optional<xmessage> xclient_zmq_impl::pop_iopub_message()
+    std::optional<xpub_message> xclient_zmq_impl::pop_iopub_message()
     {
         return m_iopub_client.pop_iopub_message();
     }
 
-    void xclient_zmq_impl::register_iopub_listener(const listener& l)
+    void xclient_zmq_impl::register_iopub_listener(const iopub_listener& l)
     {
         m_iopub_listener = l;
     }
@@ -124,7 +124,7 @@ namespace xeus
         m_control_listener(std::move(msg));
     }
 
-    void xclient_zmq_impl::notify_iopub_listener(xmessage msg)
+    void xclient_zmq_impl::notify_iopub_listener(xpub_message msg)
     {
         m_iopub_listener(std::move(msg));
     }
@@ -169,7 +169,7 @@ namespace xeus
 
     void xclient_zmq_impl::wait_for_message()
     {
-        std::optional<xmessage> pending_message = pop_iopub_message();
+        std::optional<xpub_message> pending_message = pop_iopub_message();
 
         if (pending_message.has_value())
         {
@@ -198,6 +198,11 @@ namespace xeus
     xmessage xclient_zmq_impl::deserialize(zmq::multipart_t& wire_msg) const
     {
         return xzmq_serializer::deserialize(wire_msg, *p_auth);
+    }
+
+    xpub_message xclient_zmq_impl::deserialize_iopub(zmq::multipart_t& wire_msg) const
+    {
+        return xzmq_serializer::deserialize_iopub(wire_msg, *p_auth);
     }
 
 }

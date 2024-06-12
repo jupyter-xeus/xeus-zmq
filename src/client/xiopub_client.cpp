@@ -36,12 +36,12 @@ namespace xeus
         return m_message_queue.size();
     }
 
-    std::optional<xmessage> xiopub_client::pop_iopub_message()
+    std::optional<xpub_message> xiopub_client::pop_iopub_message()
     {
         std::lock_guard<std::mutex> guard(m_queue_mutex);
         if (!m_message_queue.empty())
         {
-            xmessage msg = std::move(m_message_queue.back());
+            xpub_message msg = std::move(m_message_queue.back());
             m_message_queue.pop();
             return msg;
         } else {
@@ -64,7 +64,7 @@ namespace xeus
                 if (items[0].revents & ZMQ_POLLIN)
                 {
                     wire_msg.recv(m_iopub);
-                    xmessage msg = p_client_impl->deserialize(wire_msg);
+                    xpub_message msg = p_client_impl->deserialize_iopub(wire_msg);
                     {
                         std::lock_guard<std::mutex> guard(m_queue_mutex);
                         m_message_queue.push(std::move(msg));
