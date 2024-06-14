@@ -36,7 +36,6 @@ From source
  - libzmq_
  - cppzmq_
  - OpenSSL_
- - xtl_
  - nlohmann_json_
  - xeus_
 
@@ -63,5 +62,4 @@ You can then build and install ``xeus-zmq``:
 .. _cppzmq: https://github.com/zeromq/cppzmq
 .. _OpenSSL: https://github.com/OpenSSL/OpenSSL
 .. _nlohmann_json: https://github.com/nlohmann/json
-.. _xtl: https://github.com/xtensor-stack/xtl
 .. _xeus: https://github.com/jupyter-xeus/xeus
