@@ -34,7 +34,7 @@ namespace xeus
         , m_hb_thread()
         , m_messenger(std::move(listener))
         , m_error_handler(eh)
-        , m_request_stop(true)
+        , m_request_stop(false)
     {
         init_socket(m_shell, config.m_transport, config.m_ip, config.m_shell_port);
         init_socket(m_controller, config.m_transport, config.m_ip, config.m_control_port);
