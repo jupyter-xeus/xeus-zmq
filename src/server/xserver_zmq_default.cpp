@@ -22,7 +22,6 @@ namespace xeus
     {
         start_publisher_thread();
         start_heartbeat_thread();
-        set_request_stop(false);
 
         publish(std::move(msg), channel::SHELL);
 
