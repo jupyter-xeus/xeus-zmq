@@ -38,8 +38,14 @@ namespace xeus
     std::optional<zmq::multipart_t> xdealer_channel::receive_message(long timeout)
     {
         zmq::multipart_t wire_msg;
-        m_socket.set(zmq::sockopt::linger, static_cast<int>(timeout));
-        if (wire_msg.recv(m_socket))
+        zmq::recv_flags flags = zmq::recv_flags::none;
+
+        if (timeout == 0)
+        {
+            flags = zmq::recv_flags::dontwait;
+        }
+
+        if (wire_msg.recv(m_socket, static_cast<int>(flags)))
         {
             return wire_msg;
         } else {

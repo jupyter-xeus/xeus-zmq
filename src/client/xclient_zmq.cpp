@@ -35,12 +35,12 @@ namespace xeus
 
     std::optional<xmessage> xclient_zmq::check_shell_answer()
     {
-        return p_client_impl->receive_on_shell(-1);
+        return p_client_impl->receive_on_shell(0);
     }
 
     std::optional<xmessage> xclient_zmq::check_control_answer()
     {
-        return p_client_impl->receive_on_control(-1);
+        return p_client_impl->receive_on_control(0);
     }
 
     void xclient_zmq::register_shell_listener(const listener& l)
