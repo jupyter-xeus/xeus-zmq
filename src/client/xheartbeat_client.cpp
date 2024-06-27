@@ -22,13 +22,16 @@ namespace xeus
         , m_controller(context, zmq::socket_type::rep)
         , m_max_retry(max_retry)
         , m_heartbeat_timeout(timeout)
+        , m_heartbeat_end_point("")
     {
-        m_heartbeat.connect(get_end_point(config.m_transport, config.m_ip, config.m_hb_port));
+        m_heartbeat_end_point = get_end_point(config.m_transport, config.m_ip, config.m_hb_port);
+        m_heartbeat.connect(m_heartbeat_end_point);
         init_socket(m_controller, get_controller_end_point("heartbeat"));
     }
 
     xheartbeat_client::~xheartbeat_client()
     {
+        m_heartbeat.disconnect(m_heartbeat_end_point);
     }
 
     void xheartbeat_client::send_heartbeat_message()

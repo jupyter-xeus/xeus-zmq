@@ -40,6 +40,8 @@ namespace xeus
         zmq::socket_t m_iopub;
         zmq::socket_t m_controller;
 
+        std::string m_iopub_end_point;
+
         std::queue<xpub_message> m_message_queue;
         mutable std::mutex m_queue_mutex;
 

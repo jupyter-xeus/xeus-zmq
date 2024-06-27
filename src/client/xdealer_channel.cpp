@@ -19,12 +19,15 @@ namespace xeus
                                     const std::string& ip,
                                     const std::string& port)
         : m_socket(context, zmq::socket_type::dealer)
+        , m_dealer_end_point("")
     {
-        m_socket.connect(get_end_point(transport, ip, port));
+        m_dealer_end_point = get_end_point(transport, ip, port);
+        m_socket.connect(m_dealer_end_point);
     }
 
     xdealer_channel::~xdealer_channel()
     {
+        m_socket.disconnect(m_dealer_end_point);
     }
 
     void xdealer_channel::send_message(zmq::multipart_t& message)

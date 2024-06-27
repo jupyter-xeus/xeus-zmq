@@ -46,6 +46,8 @@ namespace xeus
         kernel_status_listener m_kernel_status_listener;
         const std::size_t m_max_retry;
         const long m_heartbeat_timeout;
+
+        std::string m_heartbeat_end_point;
     };
 }
 
