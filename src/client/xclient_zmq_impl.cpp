@@ -50,26 +50,30 @@ namespace xeus
         m_control_client.send_message(wire_msg);
     }
 
-    std::optional<xmessage> xclient_zmq_impl::receive_on_shell(long timeout)
+    std::optional<xmessage> xclient_zmq_impl::receive_on_shell(bool blocking)
     {
-        std::optional<zmq::multipart_t> wire_msg = m_shell_client.receive_message(timeout);
+        std::optional<zmq::multipart_t> wire_msg = m_shell_client.receive_message(blocking);
 
         if (wire_msg.has_value())
         {
             return deserialize(wire_msg.value());
-        } else {
+        }
+        else
+        {
             return std::nullopt;
         }
     }
 
-    std::optional<xmessage> xclient_zmq_impl::receive_on_control(long timeout)
+    std::optional<xmessage> xclient_zmq_impl::receive_on_control(bool blocking)
     {
-        std::optional<zmq::multipart_t> wire_msg = m_control_client.receive_message(timeout);
+        std::optional<zmq::multipart_t> wire_msg = m_control_client.receive_message(blocking);
 
         if (wire_msg.has_value())
         {
             return deserialize(wire_msg.value());
-        } else {
+        }
+        else
+        {
             return std::nullopt;
         }
     }

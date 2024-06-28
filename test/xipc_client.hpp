@@ -21,7 +21,7 @@ namespace xeus
         xipc_client(xcontext& context, const xconfiguration& config);
 
         void send_on_shell(xmessage msg);
-        std::optional<xmessage> check_shell_answer();
+        std::optional<xmessage> receive_on_shell(bool blocking = true);
 
     private:
         client_ptr p_client;

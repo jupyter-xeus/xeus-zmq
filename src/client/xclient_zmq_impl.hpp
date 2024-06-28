@@ -51,12 +51,12 @@ namespace xeus
 
         // shell channel
         void send_on_shell(xmessage msg);
-        std::optional<xmessage> receive_on_shell(long timeout);
+        std::optional<xmessage> receive_on_shell(bool blocking);
         void register_shell_listener(const listener& l);
 
         // control channel
         void send_on_control(xmessage msg);
-        std::optional<xmessage> receive_on_control(long timeout);
+        std::optional<xmessage> receive_on_control(bool blocking);
         void register_control_listener(const listener& l);
 
         // iopub channel
@@ -83,6 +83,7 @@ namespace xeus
         xpub_message deserialize_iopub(zmq::multipart_t& wire_msg) const;
 
     private:
+
         void start_iopub_thread();
         void start_heartbeat_thread();
         void poll(long timeout);

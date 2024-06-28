@@ -34,31 +34,35 @@ namespace xeus
 
         explicit xclient_zmq(std::unique_ptr<xclient_zmq_impl> impl);
         ~xclient_zmq();
+        
+        void connect();
+        void start();
+        void stop_channels();
 
         void send_on_shell(xmessage msg);
         void send_on_control(xmessage msg);
 
-        std::optional<xmessage> check_shell_answer();
-        std::optional<xmessage> check_control_answer();
+        // APIs for receiving on a specified channel
+        std::optional<xmessage> receive_on_shell(bool bocking = true);
+        std::optional<xmessage> receive_on_control(bool blocking = true);
 
+        std::size_t iopub_queue_size() const;
+        std::optional<xpub_message> pop_iopub_message();
+
+        // APIs for receiving on all channels
         void register_shell_listener(const listener& l);
         void register_control_listener(const listener& l);
         void register_iopub_listener(const iopub_listener& l);
         void register_kernel_status_listener(const kernel_status_listener& l);
 
-        void notify_shell_listener(xmessage msg);
-        void notify_control_listener(xmessage msg);
-        void notify_iopub_listener(xpub_message msg);
-        void notify_kernel_dead(bool status);
-
-        std::size_t iopub_queue_size() const;
-        std::optional<xpub_message> pop_iopub_message();
-        void connect();
-        void stop_channels();
-        void start();
         void wait_for_message();
 
     private:
+
+        void notify_shell_listener(xmessage msg);
+        void notify_control_listener(xmessage msg);
+        void notify_iopub_listener(xpub_message msg);
+        
         std::unique_ptr<xclient_zmq_impl> p_client_impl;
     };
 
