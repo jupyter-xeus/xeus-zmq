@@ -18,13 +18,16 @@ namespace xeus
 {
 
     xiopub_client::xiopub_client(zmq::context_t& context,
-                                 const xeus::xconfiguration& config)
+                                 const xeus::xconfiguration& config,
+                                 xclient_zmq_impl* client)
         : m_iopub(context, zmq::socket_type::sub)
         , m_controller(context, zmq::socket_type::rep)
         , m_iopub_end_point("")
+        , p_client_impl(client)
     {
         m_iopub_end_point = get_end_point(config.m_transport, config.m_ip, config.m_iopub_port);
         m_iopub.connect(m_iopub_end_point);
+        m_iopub.set(zmq::sockopt::subscribe, "");
         init_socket(m_controller, get_controller_end_point("iopub"));
     }
 
@@ -47,7 +50,9 @@ namespace xeus
             xpub_message msg = std::move(m_message_queue.back());
             m_message_queue.pop();
             return msg;
-        } else {
+        }
+        else
+        {
             return std::nullopt;
         }
     }

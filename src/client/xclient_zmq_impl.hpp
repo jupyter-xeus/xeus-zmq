@@ -103,9 +103,6 @@ namespace xeus
         listener m_control_listener;
         iopub_listener m_iopub_listener;
 
-        iopub_client_ptr p_iopub_client;
-        heartbeat_client_ptr p_heartbeat_client;
-
         xthread m_iopub_thread;
         xthread m_heartbeat_thread;
     };

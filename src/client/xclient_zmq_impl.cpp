@@ -27,7 +27,7 @@ namespace xeus
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)
         , m_control_client(context, config.m_transport, config.m_ip, config.m_control_port)
-        , m_iopub_client(context, config)
+        , m_iopub_client(context, config, this)
         , m_heartbeat_client(context, config, max_retry, heartbeat_timeout)
         , p_messenger(context)
         , m_error_handler(eh)
@@ -174,7 +174,9 @@ namespace xeus
         if (pending_message.has_value())
         {
             notify_iopub_listener(std::move(*pending_message));
-        } else {
+        }
+        else
+        {
             poll(-1);
         }
     }
@@ -187,12 +189,12 @@ namespace xeus
 
     void xclient_zmq_impl::start_iopub_thread()
     {
-        m_iopub_thread = std::move(xthread(&xiopub_client::run, p_iopub_client.get()));
+        m_iopub_thread = std::move(xthread(&xiopub_client::run, &m_iopub_client));
     }
 
     void xclient_zmq_impl::start_heartbeat_thread()
     {
-        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, p_heartbeat_client.get()));
+        m_heartbeat_thread = std::move(xthread(&xheartbeat_client::run, &m_heartbeat_client));
     }
 
     xmessage xclient_zmq_impl::deserialize(zmq::multipart_t& wire_msg) const
