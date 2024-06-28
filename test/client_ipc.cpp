@@ -52,7 +52,7 @@ int main(int, char**)
 
     ipc_client.send_on_shell(std::move(msg));
 
-    auto response = ipc_client.check_shell_answer();
+    auto response = ipc_client.receive_on_shell(false);
     if (response.has_value())
     {
         std::cout << response->content().dump(4) << std::endl;

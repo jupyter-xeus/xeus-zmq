@@ -21,8 +21,8 @@ namespace xeus
         p_client->send_on_shell(std::move(msg));
     }
 
-    std::optional<xmessage> xipc_client::check_shell_answer()
+    std::optional<xmessage> xipc_client::receive_on_shell(bool blocking)
     {
-        return p_client->check_shell_answer();
+        return p_client->receive_on_shell(blocking);
     }
 }

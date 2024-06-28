@@ -28,13 +28,13 @@ namespace xeus
         ~xdealer_channel();
 
         void send_message(zmq::multipart_t& message);
-        std::optional<zmq::multipart_t> receive_message(long timeout);
+        std::optional<zmq::multipart_t> receive_message(bool blocking);
 
         zmq::socket_t& get_socket();
 
     private:
-        zmq::socket_t m_socket;
 
+        zmq::socket_t m_socket;
         std::string m_dealer_end_point;
     };
 }
