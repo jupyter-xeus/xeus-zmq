@@ -70,11 +70,15 @@ namespace xeus
                 if (retry_count < m_max_retry)
                 {
                     ++retry_count;
-                } else {
+                }
+                else
+                {
                     notify_kernel_dead(true);
                     stop = true;
                 }
-            } else {
+            }
+            else
+            {
                 retry_count = 0;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
