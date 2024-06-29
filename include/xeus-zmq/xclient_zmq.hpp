@@ -58,10 +58,6 @@ namespace xeus
         void wait_for_message();
 
     private:
-
-        void notify_shell_listener(xmessage msg);
-        void notify_control_listener(xmessage msg);
-        void notify_iopub_listener(xpub_message msg);
         
         std::unique_ptr<xclient_zmq_impl> p_client_impl;
     };
