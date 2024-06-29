@@ -59,7 +59,6 @@ namespace xeus
 
     void xiopub_client::run()
     {
-        zmq::multipart_t wire_msg;
         zmq::pollitem_t items[] = {
             { m_iopub, 0, ZMQ_POLLIN, 0 }, { m_controller, 0, ZMQ_POLLIN, 0 }
         };
@@ -71,6 +70,7 @@ namespace xeus
             {
                 if (items[0].revents & ZMQ_POLLIN)
                 {
+                    zmq::multipart_t wire_msg;
                     wire_msg.recv(m_iopub);
                     xpub_message msg = p_client_impl->deserialize_iopub(wire_msg);
                     {
@@ -80,15 +80,11 @@ namespace xeus
                 }
                 if (items[1].revents & ZMQ_POLLIN)
                 {
+                    // stop message
+                    zmq::multipart_t wire_msg;
                     wire_msg.recv(m_controller);
-                    if (wire_msg.size() > 0)
-                    {
-                        std::string received_msg = wire_msg.at(0).to_string();
-                        if (received_msg == "stop")
-                        {
-                            break;
-                        }
-                    }
+                    wire_msg.send(m_controller);
+                    break;
                 }
             }
             catch (std::exception& e)

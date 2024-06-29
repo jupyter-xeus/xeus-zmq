@@ -7,6 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
+
 #include "xheartbeat_client.hpp"
 #include "xclient_zmq_impl.hpp"
 #include "../common/xmiddleware_impl.hpp"
@@ -23,6 +25,7 @@ namespace xeus
         , m_max_retry(max_retry)
         , m_heartbeat_timeout(timeout)
         , m_heartbeat_end_point("")
+        , m_request_stop(false)
     {
         m_heartbeat_end_point = get_end_point(config.m_transport, config.m_ip, config.m_hb_port);
         m_heartbeat.connect(m_heartbeat_end_point);
@@ -42,9 +45,35 @@ namespace xeus
 
     bool xheartbeat_client::wait_for_answer(long timeout)
     {
-        m_heartbeat.set(zmq::sockopt::linger, static_cast<int>(timeout));
-        zmq::message_t response;
-        return m_heartbeat.recv(response).has_value();
+        zmq::pollitem_t items[] = {
+            { m_heartbeat, 0, ZMQ_POLLIN, 0 }, { m_controller, 0, ZMQ_POLLIN, 0 }
+        };
+
+        zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
+        try
+        {
+            if (items[0].revents & ZMQ_POLLIN)
+            {
+                zmq::multipart_t wire_msg;
+                wire_msg.recv(m_heartbeat);
+            }
+
+            if (items[1].revents & ZMQ_POLLIN)
+            {
+                // stop message
+                zmq::multipart_t wire_msg;
+                wire_msg.recv(m_controller);
+                wire_msg.send(m_controller);
+                m_request_stop = true;
+            }
+
+            return true;
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
+        return false;
     }
 
     void xheartbeat_client::register_kernel_status_listener(const kernel_status_listener& l)
@@ -59,10 +88,9 @@ namespace xeus
 
     void xheartbeat_client::run()
     {
-        bool stop = false;
         std::size_t retry_count = 0;
 
-        while(!stop)
+        while(!m_request_stop)
         {
             send_heartbeat_message();
             if(!wait_for_answer(m_heartbeat_timeout))
@@ -74,7 +102,7 @@ namespace xeus
                 else
                 {
                     notify_kernel_dead(true);
-                    stop = true;
+                    break;
                 }
             }
             else

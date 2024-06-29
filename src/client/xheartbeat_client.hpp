@@ -48,6 +48,7 @@ namespace xeus
         const long m_heartbeat_timeout;
 
         std::string m_heartbeat_end_point;
+        bool m_request_stop;
     };
 }
 
