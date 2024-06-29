@@ -31,8 +31,6 @@ namespace xeus
     class xclient_zmq_impl
     {
     public:
-        using iopub_client_ptr = std::unique_ptr<xiopub_client>;
-        using heartbeat_client_ptr = std::unique_ptr<xheartbeat_client>;
         using listener = std::function<void(xmessage)>;
         using iopub_listener = std::function<void(xpub_message)>;
         using kernel_status_listener = std::function<void(bool)>;

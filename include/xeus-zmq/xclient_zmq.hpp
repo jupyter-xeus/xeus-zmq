@@ -43,7 +43,7 @@ namespace xeus
         void send_on_control(xmessage msg);
 
         // APIs for receiving on a specified channel
-        std::optional<xmessage> receive_on_shell(bool bocking = true);
+        std::optional<xmessage> receive_on_shell(bool blocking = true);
         std::optional<xmessage> receive_on_control(bool blocking = true);
 
         std::size_t iopub_queue_size() const;
