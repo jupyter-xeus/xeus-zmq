@@ -36,7 +36,11 @@ namespace xeus
 
     // Has to be in the cpp because incomplete
     // types are used in unique_ptr in the header
-    xclient_zmq_impl::~xclient_zmq_impl() = default;
+    xclient_zmq_impl::~xclient_zmq_impl()
+    {
+        m_iopub_thread.join();
+        m_heartbeat_thread.join();
+    }
 
     void xclient_zmq_impl::send_on_shell(xmessage msg)
     {
