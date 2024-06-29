@@ -91,21 +91,6 @@ namespace xeus
     {
         p_client_impl->wait_for_message();
     }
-
-    void xclient_zmq::notify_shell_listener(xmessage msg)
-    {
-        p_client_impl->notify_shell_listener(std::move(msg));
-    }
-
-    void xclient_zmq::notify_control_listener(xmessage msg)
-    {
-        p_client_impl->notify_control_listener(std::move(msg));
-    }
-
-    void xclient_zmq::notify_iopub_listener(xpub_message msg)
-    {
-        p_client_impl->notify_iopub_listener(std::move(msg));
-    }
     
     std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,
                                                 const xconfiguration& config,
