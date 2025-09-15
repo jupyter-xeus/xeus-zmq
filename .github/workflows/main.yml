@@ -16,14 +16,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-13, macos-14]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
         xeus_static_dependencies: [0]
         xeus_build_shared_lib: [1]
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             xeus_static_dependencies: 1
             xeus_build_shared_lib: 0
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             xeus_static_dependencies: 1
             xeus_build_shared_lib: 0
 
@@ -79,7 +79,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2019, windows-2022 ]
+        os: [ windows-2022, windows-2025 ]
 
     steps:
       - uses: actions/checkout@v4

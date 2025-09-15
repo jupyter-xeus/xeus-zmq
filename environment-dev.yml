@@ -11,10 +11,10 @@ dependencies:
   - zeromq
   - zeromq-static
   - cppzmq
-  - xeus>=5.0.0,<6.0
+  - xeus>=5.2.1,<6.0
   - OpenSSL 
   - libopenssl-static
-  - nlohmann_json=3.11.3
+  - nlohmann_json=3.12.0
   # Test dependencies
   - doctest >= 2.4.6
   - pytest
