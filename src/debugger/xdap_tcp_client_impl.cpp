@@ -57,7 +57,7 @@ namespace xeus
             send_dap_request(std::move(req));
             auto rep = wait_for_message([](const nl::json& msg)
             {
-                return msg["command"] == "threads";
+                return msg.contains("command") && msg["command"] == "threads";
             });
             nl::json new_message = message;
             new_message["body"]["threadList"] = nl::json::array();
