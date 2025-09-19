@@ -69,8 +69,10 @@ See the [documentation](http://xeus.readthedocs.io/) for an exhaustive list of t
 
 | xeus-zmq |  xeus   | ZeroMQ  | cppzmq  | nlohmann json | OpenSSL |
 |----------|---------|---------|---------|---------------|---------|
-|  main    | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
-|  3.x     | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
+|  main    | ^5.2.4  | ^4.2.5  | ^4.8.1  |     ^3.12.0   | ^3.0    |
+|  3.1.1   | ^5.2.4  | ^4.2.5  | ^4.8.1  |     ^3.12.0   | ^3.0    |
+|  3.1.0   | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
+|  3.0.0   | ^5.0.0  | ^4.2.5  | ^4.8.1  |     ^3.11.3   | ^3.0    |
 
 Versions prior to version 3 depend have an additional dependency on [xtl](https://github.com/xtensor-stack/xtl).
 
