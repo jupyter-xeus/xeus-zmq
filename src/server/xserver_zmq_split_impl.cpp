@@ -7,6 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
+
 #include "xserver_zmq_split_impl.hpp"
 #include "../common/xzmq_serializer.hpp"
 
@@ -134,9 +136,17 @@ namespace xeus
         config.m_hb_port = m_heartbeat.get_port();
     }
 
-    xmessage xserver_zmq_split_impl::deserialize(zmq::multipart_t& wire_msg) const
+    std::optional<xmessage> xserver_zmq_split_impl::deserialize(zmq::multipart_t& wire_msg) const
     {
-        return xzmq_serializer::deserialize(wire_msg, *p_auth);
+        try
+        {
+            return xzmq_serializer::deserialize(wire_msg, *p_auth);
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
+        return std::nullopt;
     }
     
     zmq::multipart_t xserver_zmq_split_impl::serialize_iopub(xpub_message&& msg)

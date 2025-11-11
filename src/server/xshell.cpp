@@ -9,7 +9,6 @@
 
 #include <thread>
 #include <chrono>
-#include <iostream>
 
 #include "xserver_zmq_split_impl.hpp"
 #include "xshell.hpp"
@@ -86,14 +85,7 @@ namespace xeus
         zmq::multipart_t wire_msg;
         if (wire_msg.recv(m_shell, flags))
         {
-            try
-            {
-                return p_server->deserialize(wire_msg);
-            }
-            catch(std::exception& e)
-            {
-                std::cerr << e.what() << std::endl;
-            }
+            return p_server->deserialize(wire_msg);
         }
         return std::nullopt;
     }
@@ -118,15 +110,7 @@ namespace xeus
         message.send(m_stdin);
         zmq::multipart_t wire_msg;
         wire_msg.recv(m_stdin);
-        try
-        {
-            return p_server->deserialize(wire_msg);
-        }
-        catch (std::exception& e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
-        return std::nullopt;
+        return p_server->deserialize(wire_msg);
     }
 
     void xshell::send_controller(std::string message)
@@ -151,14 +135,10 @@ namespace xeus
                 return;
             }
 
-            try
+            auto msg = p_server->deserialize(wire_msg);
+            if (msg)
             {
-                xmessage msg = p_server->deserialize(wire_msg);
-                l(std::move(msg));
-            }
-            catch (std::exception& e)
-            {
-                std::cerr << e.what() << std::endl;
+                l(std::move(msg.value()));
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(polling_interval));
         }

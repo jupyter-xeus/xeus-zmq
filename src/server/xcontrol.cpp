@@ -62,14 +62,7 @@ namespace xeus
         zmq::multipart_t wire_msg;
         if (wire_msg.recv(m_control, flags))
         {
-            try
-            {
-                return p_server->deserialize(wire_msg);
-            }
-            catch (std::exception& e)
-            {
-                std::cerr << e.what() << std::endl;
-            }
+            return p_server->deserialize(wire_msg);
         }
         return std::nullopt;
     }
