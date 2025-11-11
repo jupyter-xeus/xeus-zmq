@@ -63,7 +63,7 @@ namespace xeus
         void abort_queue(const listener& l, long polling_interval);
         void update_config(xconfiguration& config) const;
 
-        xmessage deserialize(zmq::multipart_t& wire_msg) const;
+        std::optional<xmessage> deserialize(zmq::multipart_t& wire_msg) const;
         zmq::multipart_t serialize_iopub(xpub_message&& msg);
     
     private:
