@@ -15,16 +15,11 @@
 #include <vector>
 
 #include <openssl/opensslv.h>
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-#include <openssl/hmac.h>
-#include <openssl/sha.h>
-#else
 #include <algorithm>
 #include <cctype>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/params.h>
-#endif
 
 #include "xeus/xstring_utils.hpp"
 #include "xauthentication.hpp"
@@ -75,15 +70,10 @@ namespace xeus
                                           const xraw_buffer& content) const;
 
         std::string m_key;
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-        const EVP_MD* m_evp;
-        HMAC_CTX* m_hmac;
-#else
         std::string m_hash_name;
         OSSL_PARAM m_ossl_params[2];
         EVP_MAC* m_evp_mac;
         EVP_MAC_CTX* m_evp_mac_ctx;
-#endif
         mutable std::mutex m_mac_mutex;
     };
 
@@ -139,45 +129,12 @@ namespace xeus
         }
     }
 
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-    inline const EVP_MD* asevp(const std::string& scheme)
-    {
-        static const std::map<std::string, const EVP_MD*(*)()> schemes = {
-            {"hmac-md5", EVP_md5},
-            {"hmac-sha1", EVP_sha1},
-            // MDC2 is disabled by default unless enable-mdc2 is specified
-            // {"hmac-mdc2", EVP_mdc2},
-            {"hmac-ripemd160", EVP_ripemd160},
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-            {"hmac-blake2b512", EVP_blake2b512},
-            {"hmac-blake2s256", EVP_blake2s256},
-#endif
-            {"hmac-sha224", EVP_sha224},
-            {"hmac-sha256", EVP_sha256},
-            {"hmac-sha384", EVP_sha384},
-            {"hmac-sha512", EVP_sha512}
-        };
-        return schemes.at(scheme)();
-    }
-#endif
-
     openssl_xauthentication::openssl_xauthentication(const std::string& scheme, const std::string& key)
         : m_key(key)
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-        , m_evp(asevp(scheme))
-#else
         , m_evp_mac(nullptr)
         , m_evp_mac_ctx(nullptr)
-#endif
 
     {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        // OpenSSL 1.0.x
-        m_hmac = new HMAC_CTX();
-        HMAC_CTX_init(m_hmac);
-#elif OPENSSL_VERSION_NUMBER < 0x30000000L
-        m_hmac = HMAC_CTX_new();
-#else
         m_hash_name = scheme.substr(5);
         std::transform(m_hash_name.begin(), m_hash_name.end(), m_hash_name.begin(),
                        [](unsigned char c) { return std::toupper(c); });
@@ -193,20 +150,12 @@ namespace xeus
         {
             throw std::runtime_error("Could not allocate evp_mac_ctx");
         }
-#endif
     }
 
     openssl_xauthentication::~openssl_xauthentication()
     {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        // OpenSSL 1.0.x
-        HMAC_CTX_cleanup(m_hmac);
-#elif OPENSSL_VERSION_NUMBER < 0x30000000L
-        HMAC_CTX_free(m_hmac);
-#else
         EVP_MAC_CTX_free(m_evp_mac_ctx);
         EVP_MAC_free(m_evp_mac);
-#endif
     }
 
     std::string openssl_xauthentication::sign_impl(const xraw_buffer& header,
@@ -236,17 +185,6 @@ namespace xeus
                                                                const xraw_buffer& meta_data,
                                                                const xraw_buffer& content) const
     {
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-        HMAC_Init_ex(m_hmac, m_key.c_str(), m_key.size(), m_evp, nullptr);
-
-        HMAC_Update(m_hmac, header.data(), header.size());
-        HMAC_Update(m_hmac, parent_header.data(), parent_header.size());
-        HMAC_Update(m_hmac, meta_data.data(), meta_data.size());
-        HMAC_Update(m_hmac, content.data(), content.size());
-
-        auto sig = std::vector<unsigned char>(EVP_MD_size(m_evp));
-        HMAC_Final(m_hmac, sig.data(), nullptr);
-#else
         EVP_MAC_init(m_evp_mac_ctx, reinterpret_cast<const unsigned char*>(m_key.c_str()), m_key.size(), m_ossl_params);
 
         EVP_MAC_update(m_evp_mac_ctx, header.data(), header.size());
@@ -259,7 +197,6 @@ namespace xeus
         EVP_MAC_final(m_evp_mac_ctx, nullptr, &final_size, size_t(0));
         auto sig = std::vector<unsigned char>(final_size);
         EVP_MAC_final(m_evp_mac_ctx, sig.data(), &final_size, sig.size());
-#endif
         return hex_string(sig);
 
     }
