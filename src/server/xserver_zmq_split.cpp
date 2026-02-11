@@ -8,6 +8,7 @@
 ****************************************************************************/
 
 #include "xeus-zmq/xserver_zmq_split.hpp"
+#include "xhandshaking.hpp"
 #include "xserver_zmq_split_impl.hpp"
 
 namespace xeus
@@ -17,7 +18,11 @@ namespace xeus
                                          nl::json::error_handler_t eh,
                                          control_runner_ptr control,
                                          shell_runner_ptr shell)
-        : p_impl(new xserver_zmq_split_impl(context.get_wrapped_context<zmq::context_t>(), config, eh))
+        : p_impl(new xserver_zmq_split_impl(
+                    context.get_wrapped_context<zmq::context_t>(),
+                    config,
+                    xeus::get_kernel_configuration(config),
+                    eh))
         , p_control_runner(std::move(control))
         , p_shell_runner(std::move(shell))
         , m_error_handler(eh)
@@ -159,7 +164,7 @@ namespace xeus
         p_impl->abort_queue(l, polling_interval);
     }
 
-    void xserver_zmq_split::update_config_impl(xconfiguration& config) const
+    void xserver_zmq_split::update_config_impl(xkernel_configuration& config) const
     {
         p_impl->update_config(config);
     }

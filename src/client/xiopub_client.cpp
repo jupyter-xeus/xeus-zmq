@@ -18,7 +18,7 @@ namespace xeus
 {
 
     xiopub_client::xiopub_client(zmq::context_t& context,
-                                 const xeus::xconfiguration& config,
+                                 const xeus::xkernel_configuration& config,
                                  xclient_zmq_impl* client)
         : m_iopub(context, zmq::socket_type::sub)
         , m_controller(context, zmq::socket_type::rep)

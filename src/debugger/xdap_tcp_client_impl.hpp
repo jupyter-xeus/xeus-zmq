@@ -32,7 +32,7 @@ namespace xeus
         using event_callback = std::function<void(const nl::json&)>;
 
         xdap_tcp_client_impl(xcontext& context,
-                             const xeus::xconfiguration& config,
+                             const xeus::xkernel_configuration& config,
                              int socket_linger,
                              const xdap_tcp_configuration& dap_config,
                              const event_callback& cb,

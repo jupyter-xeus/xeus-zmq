@@ -11,7 +11,7 @@
 namespace xeus
 {
 
-    xipc_client::xipc_client(xcontext& context, const xconfiguration& config)
+    xipc_client::xipc_client(xcontext& context, const xkernel_configuration& config)
         : p_client(make_xclient_zmq(context, config))
     {
     }

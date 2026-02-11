@@ -91,9 +91,9 @@ namespace xeus
     {
         p_client_impl->wait_for_message();
     }
-    
+
     std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,
-                                                const xconfiguration& config,
+                                                const xkernel_configuration& config,
                                                 nl::json::error_handler_t eh)
     {
         auto impl = std::make_unique<xclient_zmq_impl>(context.get_wrapped_context<zmq::context_t>(), config, eh);

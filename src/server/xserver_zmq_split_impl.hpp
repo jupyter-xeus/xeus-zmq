@@ -34,9 +34,10 @@ namespace xeus
     public:
 
         using listener = std::function<void(xmessage)>;
-        
+
         xserver_zmq_split_impl(zmq::context_t& context,
-                               const xconfiguration& config,
+                               const xconfiguration& initial_config,
+                               xkernel_configuration kernel_config,
                                nl::json::error_handler_t eh);
 
         void start_heartbeat_thread();
@@ -61,11 +62,11 @@ namespace xeus
         void publish(xpub_message message, channel c);
 
         void abort_queue(const listener& l, long polling_interval);
-        void update_config(xconfiguration& config) const;
+        void update_config(xkernel_configuration& config) const;
 
         std::optional<xmessage> deserialize(zmq::multipart_t& wire_msg) const;
         zmq::multipart_t serialize_iopub(xpub_message&& msg);
-    
+
     private:
 
         using authentication_ptr = std::unique_ptr<xauthentication>;

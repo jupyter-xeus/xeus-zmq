@@ -74,6 +74,13 @@ namespace xeus
                                           const xraw_buffer& meta_data,
                                           const xraw_buffer& content) const;
 
+        std::string sign_impl(const xraw_buffer& content) const override;
+        bool verify_impl(const xraw_buffer& signature, const xraw_buffer& content) const override;
+        std::string compute_hex_signature(const xraw_buffer& content) const;
+
+        void init_hex_signature() const;
+        std::string finalize_hex_signature() const;
+
         std::string m_key;
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
         const EVP_MD* m_evp;
@@ -107,6 +114,9 @@ namespace xeus
                          const xraw_buffer& parent_header,
                          const xraw_buffer& meta_data,
                          const xraw_buffer& content) const override;
+
+        std::string sign_impl(const xraw_buffer& content) const override;
+        bool verify_impl(const xraw_buffer& signature, const xraw_buffer& content) const override;
     };
 
     std::string xauthentication::sign(const xraw_buffer& header,
@@ -126,6 +136,16 @@ namespace xeus
         return verify_impl(signature, header, parent_header, meta_data, content);
     }
 
+    std::string xauthentication::sign(const xraw_buffer& content) const
+    {
+        return sign_impl(content);
+    }
+
+    bool xauthentication::verify(const xraw_buffer& signature, const xraw_buffer& content) const
+    {
+        return verify_impl(signature, content);
+    }
+    
     std::unique_ptr<xauthentication> make_xauthentication(const std::string& scheme,
                                                           const std::string& key)
     {
@@ -236,24 +256,62 @@ namespace xeus
                                                                const xraw_buffer& meta_data,
                                                                const xraw_buffer& content) const
     {
+        init_hex_signature();
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
-        HMAC_Init_ex(m_hmac, m_key.c_str(), m_key.size(), m_evp, nullptr);
-
         HMAC_Update(m_hmac, header.data(), header.size());
         HMAC_Update(m_hmac, parent_header.data(), parent_header.size());
         HMAC_Update(m_hmac, meta_data.data(), meta_data.size());
         HMAC_Update(m_hmac, content.data(), content.size());
-
-        auto sig = std::vector<unsigned char>(EVP_MD_size(m_evp));
-        HMAC_Final(m_hmac, sig.data(), nullptr);
 #else
-        EVP_MAC_init(m_evp_mac_ctx, reinterpret_cast<const unsigned char*>(m_key.c_str()), m_key.size(), m_ossl_params);
-
         EVP_MAC_update(m_evp_mac_ctx, header.data(), header.size());
         EVP_MAC_update(m_evp_mac_ctx, parent_header.data(), parent_header.size());
         EVP_MAC_update(m_evp_mac_ctx, meta_data.data(), meta_data.size());
         EVP_MAC_update(m_evp_mac_ctx, content.data(), content.size());
+#endif
+        return finalize_hex_signature();
+    }
 
+    std::string openssl_xauthentication::sign_impl(const xraw_buffer& content) const
+    {
+        std::lock_guard<std::mutex> lock(m_mac_mutex);
+        std::string hex_sig = compute_hex_signature(content);
+        return hex_sig;
+    }
+
+    bool openssl_xauthentication::verify_impl(const xraw_buffer& signature, const xraw_buffer& content) const
+    {
+        std::lock_guard<std::mutex> lock(m_mac_mutex);
+        std::string hex_sig = compute_hex_signature(content);
+        auto cmp = CRYPTO_memcmp(reinterpret_cast<const void*>(hex_sig.c_str()), signature.data(), hex_sig.size());
+        return cmp == 0;
+    }
+
+    std::string openssl_xauthentication::compute_hex_signature(const xraw_buffer& content) const
+    {
+        init_hex_signature();
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+        HMAC_Update(m_hmac, content.data(), content.size());
+#else
+        EVP_MAC_update(m_evp_mac_ctx, content.data(), content.size());
+#endif
+        return finalize_hex_signature();
+    }
+
+    void openssl_xauthentication::init_hex_signature() const
+    {
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+        HMAC_Init_ex(m_hmac, m_key.c_str(), m_key.size(), m_evp, nullptr);
+#else
+        EVP_MAC_init(m_evp_mac_ctx, reinterpret_cast<const unsigned char*>(m_key.c_str()), m_key.size(), m_ossl_params);
+#endif
+    }
+
+    std::string openssl_xauthentication::finalize_hex_signature() const
+    {
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+        auto sig = std::vector<unsigned char>(EVP_MD_size(m_evp));
+        HMAC_Final(m_hmac, sig.data(), nullptr);
+#else
         size_t final_size(0);
         // Computes the final size
         EVP_MAC_final(m_evp_mac_ctx, nullptr, &final_size, size_t(0));
@@ -261,7 +319,6 @@ namespace xeus
         EVP_MAC_final(m_evp_mac_ctx, sig.data(), &final_size, sig.size());
 #endif
         return hex_string(sig);
-
     }
 
     std::string no_xauthentication::sign_impl(const xraw_buffer& /*header*/,
@@ -269,7 +326,7 @@ namespace xeus
                                               const xraw_buffer& /*meta_data*/,
                                               const xraw_buffer& /*content*/) const
     {
-        return std::string();
+        return {};
     }
 
     bool no_xauthentication::verify_impl(const xraw_buffer& /*signature*/,
@@ -277,6 +334,16 @@ namespace xeus
                                          const xraw_buffer& /*parent_header*/,
                                          const xraw_buffer& /*meta_data*/,
                                          const xraw_buffer& /*content*/) const
+    {
+        return true;
+    }
+
+    std::string no_xauthentication::sign_impl(const xraw_buffer&) const
+    {
+        return {};
+    }
+
+    bool no_xauthentication::verify_impl(const xraw_buffer&, const xraw_buffer&) const
     {
         return true;
     }

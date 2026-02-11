@@ -36,7 +36,7 @@ namespace xeus
         using kernel_status_listener = std::function<void(bool)>;
 
         xclient_zmq_impl(zmq::context_t& context,
-                    const xconfiguration& config,
+                    const xkernel_configuration& config,
                     nl::json::error_handler_t eh);
 
         ~xclient_zmq_impl();

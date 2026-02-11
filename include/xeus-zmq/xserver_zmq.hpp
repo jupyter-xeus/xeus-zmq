@@ -61,7 +61,7 @@ namespace xeus
         void publish_impl(xpub_message msg, channel c) override;
 
         void abort_queue_impl(const listener& l, long polling_interval) override;
-        void update_config_impl(xconfiguration& config) const override;
+        void update_config_impl(xkernel_configuration& config) const override;
 
         std::unique_ptr<xserver_zmq_impl> p_impl;
     };

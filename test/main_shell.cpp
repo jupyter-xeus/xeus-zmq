@@ -22,12 +22,12 @@ int main(int argc, char* argv[])
 
     using history_manager_ptr = std::unique_ptr<xeus::xhistory_manager>;
     history_manager_ptr hist = xeus::make_in_memory_history_manager();
-    
+
     auto context = xeus::make_zmq_context();
 
     using interpreter_ptr = std::unique_ptr<xeus::xmock_interpreter>;
     interpreter_ptr interpreter = interpreter_ptr(new xeus::xmock_interpreter());
-    
+
     xeus::xkernel kernel(config,
                          xeus::get_user_name(),
                          std::move(context),

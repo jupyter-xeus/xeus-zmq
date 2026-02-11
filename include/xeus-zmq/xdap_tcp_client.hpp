@@ -78,7 +78,7 @@ namespace xeus
     protected:
 
         xdap_tcp_client(xcontext& context,
-                        const xeus::xconfiguration& config,
+                        const xeus::xkernel_configuration& config,
                         int socket_linger,
                         const xdap_tcp_configuration& dap_config,
                         const event_callback& cb);

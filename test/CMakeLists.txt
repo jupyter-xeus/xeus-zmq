@@ -10,7 +10,7 @@
 # Unit tests
 # ==========
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     project(xeus-zmq-test)
@@ -162,6 +162,15 @@ add_test(NAME test_kernel_shell
 set_tests_properties(test_kernel_shell
     PROPERTIES
     ENVIRONMENT "JUPYTER_PATH=${CMAKE_CURRENT_BINARY_DIR}")
+
+# test_handshake
+# ==============
+
+add_executable(test_handshake test_handshake.cpp)
+target_link_libraries(test_handshake PRIVATE ${xeus-zmq_TARGET} ${CPPZMQ_TARGET_NAME} Threads::Threads)
+target_compile_features(test_handshake PRIVATE cxx_std_17)
+
+add_test(NAME test_handshake COMMAND ./test_handshake)
 
 if (UNIX)
 

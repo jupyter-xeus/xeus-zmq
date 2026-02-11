@@ -18,7 +18,7 @@ namespace xeus
     public:
         using client_ptr = std::unique_ptr<xclient_zmq>;
 
-        xipc_client(xcontext& context, const xconfiguration& config);
+        xipc_client(xcontext& context, const xkernel_configuration& config);
 
         void send_on_shell(xmessage msg);
         std::optional<xmessage> receive_on_shell(bool blocking = true);

@@ -17,7 +17,7 @@ namespace xeus
 {
     xdap_tcp_client_impl::xdap_tcp_client_impl(
         xcontext& context,
-        const xeus::xconfiguration& config,
+        const xeus::xkernel_configuration& config,
         int socket_linger,
         const xdap_tcp_configuration& dap_config,
         const event_callback& cb,

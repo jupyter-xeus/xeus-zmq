@@ -52,7 +52,7 @@ namespace xeus
         void send_shell_message(xmessage msg);
         std::optional<std::string> read_shell_controller(int flags);
         void send_shell_controller(std::string message);
-   
+
     protected:
 
         using control_runner_ptr = std::unique_ptr<xcontrol_runner>;
@@ -67,13 +67,13 @@ namespace xeus
         // API for inheriting classes
         void start_publisher_thread();
         void start_heartbeat_thread();
-        
+
         void start_control_thread();
         void run_control();
 
         void start_shell_thread();
         void run_shell();
-        
+
     private:
 
         // Implementation of xserver virtual methods
@@ -86,7 +86,7 @@ namespace xeus
 
         void stop_impl() override;
         void abort_queue_impl(const listener& l, long polling_interval) override;
-        void update_config_impl(xconfiguration& config) const override;
+        void update_config_impl(xkernel_configuration& config) const override;
 
         std::unique_ptr<xserver_zmq_split_impl> p_impl;
         control_runner_ptr p_control_runner;
@@ -103,7 +103,7 @@ namespace xeus
     make_xserver_control_main(xcontext& context,
                               const xconfiguration& config,
                               nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
-    
+
     XEUS_ZMQ_API
     std::unique_ptr<xserver>
     make_xserver_control(xcontext& context,

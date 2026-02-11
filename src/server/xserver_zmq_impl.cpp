@@ -9,6 +9,7 @@
 
 #include <iostream>
 
+#include "xhandshaking.hpp"
 #include "xserver_zmq_impl.hpp"
 #include "../common/xmiddleware_impl.hpp"
 #include "../common/xzmq_serializer.hpp"
@@ -16,7 +17,8 @@
 namespace xeus
 {
     xserver_zmq_impl::xserver_zmq_impl(zmq::context_t& context,
-                                       const xconfiguration& config,
+                                       const xconfiguration& initial_config,
+                                       xkernel_configuration kernel_config,
                                        nl::json::error_handler_t eh,
                                        internal_listener listener)
         : m_shell(context, zmq::socket_type::router)
@@ -25,20 +27,20 @@ namespace xeus
         , m_publisher_pub(context, zmq::socket_type::pub)
         , m_publisher_controller(context, zmq::socket_type::req)
         , m_heartbeat_controller(context, zmq::socket_type::req)
-        , p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
+        , p_auth(make_xauthentication(kernel_config.m_signature_scheme, kernel_config.m_key))
         , m_publisher(context,
                       std::bind(&xserver_zmq_impl::serialize_iopub, this, std::placeholders::_1),
-                      config.m_transport, config.m_ip, config.m_iopub_port)
-        , m_heartbeat(context, config.m_transport, config.m_ip, config.m_hb_port)
+                      kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_iopub_port)
+        , m_heartbeat(context, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_hb_port)
         , m_iopub_thread()
         , m_hb_thread()
         , m_messenger(std::move(listener))
         , m_error_handler(eh)
         , m_request_stop(false)
     {
-        init_socket(m_shell, config.m_transport, config.m_ip, config.m_shell_port);
-        init_socket(m_controller, config.m_transport, config.m_ip, config.m_control_port);
-        init_socket(m_stdin, config.m_transport, config.m_ip, config.m_stdin_port);
+        init_socket(m_shell, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_shell_port);
+        init_socket(m_controller, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_control_port);
+        init_socket(m_stdin, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_stdin_port);
         m_publisher_pub.set(zmq::sockopt::linger, get_socket_linger());
         m_publisher_pub.connect(get_publisher_end_point());
 
@@ -46,6 +48,19 @@ namespace xeus
         m_publisher_controller.connect(get_controller_end_point("publisher"));
         m_heartbeat_controller.set(zmq::sockopt::linger, get_socket_linger());
         m_heartbeat_controller.connect(get_controller_end_point("heartbeat"));
+
+        if (std::holds_alternative<xregistration_configuration>(initial_config))
+        {
+            update_config(kernel_config);
+            xeus::send_connection_info
+            (
+                context,
+                std::get<xregistration_configuration>(initial_config),
+                kernel_config,
+                *p_auth,
+                m_error_handler
+            );
+        }
     }
 
     void xserver_zmq_impl::start_publisher_thread()
@@ -137,7 +152,7 @@ namespace xeus
         zmq::multipart_t wire_msg = xzmq_serializer::serialize(std::move(message), *p_auth, m_error_handler);
         wire_msg.send(m_stdin);
         zmq::multipart_t wire_reply;
-	// Block until a response to the input request is received.
+	      // Block until a response to the input request is received.
         wire_reply.recv(m_stdin);
         try
         {
@@ -180,7 +195,7 @@ namespace xeus
         }
     }
 
-    void xserver_zmq_impl::update_config(xconfiguration& config) const
+    void xserver_zmq_impl::update_config(xkernel_configuration& config) const
     {
         config.m_control_port = get_socket_port(m_controller);
         config.m_shell_port = get_socket_port(m_shell);
