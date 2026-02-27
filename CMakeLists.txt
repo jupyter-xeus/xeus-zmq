@@ -123,7 +123,8 @@ if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
     endif ()
 endif ()
 
-find_package(OpenSSL REQUIRED)
+find_package(OpenSSL 3.0 REQUIRED)
+message(STATUS "Found OpenSSL ${OPENSSL_VERSION}")
 
 # Source files
 # ============
