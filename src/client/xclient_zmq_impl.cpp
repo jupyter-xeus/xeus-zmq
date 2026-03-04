@@ -22,7 +22,7 @@ namespace xeus
     }
 
     xclient_zmq_impl::xclient_zmq_impl(zmq::context_t& context,
-                                    const xeus::xconfiguration& config,
+                                    const xkernel_configuration& config,
                                     nl::json::error_handler_t eh)
         : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
         , m_shell_client(context, config.m_transport, config.m_ip, config.m_shell_port)

@@ -17,7 +17,7 @@ namespace xeus
 {
 
     xheartbeat_client::xheartbeat_client(zmq::context_t& context,
-                                 const xeus::xconfiguration& config,
+                                 const xeus::xkernel_configuration& config,
                                  const std::size_t max_retry,
                                  const long timeout)
         : m_heartbeat(context, zmq::socket_type::req)

@@ -21,7 +21,7 @@ namespace nl = nlohmann;
 int main(int, char**)
 {
     auto context_ptr = xeus::make_zmq_context();
-    xeus::xconfiguration config;
+    xeus::xkernel_configuration config;
     config.m_transport = "ipc";
     config.m_ip = "localhost";
     config.m_control_port = "control";

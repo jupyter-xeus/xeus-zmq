@@ -7,8 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <thread>
 #include <chrono>
+#include <thread>
 
 #include "xserver_zmq_split_impl.hpp"
 #include "xshell.hpp"

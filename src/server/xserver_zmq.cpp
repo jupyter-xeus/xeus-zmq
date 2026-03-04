@@ -8,6 +8,7 @@
 ****************************************************************************/
 
 #include "xeus-zmq/xserver_zmq.hpp"
+#include "xhandshaking.hpp"
 #include "xserver_zmq_impl.hpp"
 
 namespace xeus
@@ -15,9 +16,10 @@ namespace xeus
     xserver_zmq::xserver_zmq(xcontext& context,
                              const xconfiguration& config,
                              nl::json::error_handler_t eh)
-        : p_impl(std::make_unique<xserver_zmq_impl>(
+        : p_impl(new xserver_zmq_impl(
                     context.get_wrapped_context<zmq::context_t>(),
                     config,
+                    xeus::get_kernel_configuration(config),
                     eh,
                     std::bind(&xserver_zmq::notify_internal_listener, this, std::placeholders::_1)))
     {
@@ -109,7 +111,7 @@ namespace xeus
         p_impl->abort_queue(l, polling_interval);
     }
 
-    void xserver_zmq::update_config_impl(xconfiguration& config) const
+    void xserver_zmq::update_config_impl(xkernel_configuration& config) const
     {
         p_impl->update_config(config);
     }

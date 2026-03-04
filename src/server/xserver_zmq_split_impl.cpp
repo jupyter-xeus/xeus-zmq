@@ -9,26 +9,44 @@
 
 #include <iostream>
 
+#include "xhandshaking.hpp"
 #include "xserver_zmq_split_impl.hpp"
 #include "../common/xzmq_serializer.hpp"
 
 namespace xeus
 {
     xserver_zmq_split_impl::xserver_zmq_split_impl(zmq::context_t& context,
-                                                   const xconfiguration& config,
+                                                   const xconfiguration& initial_config,
+                                                   xkernel_configuration kernel_config,
                                                    nl::json::error_handler_t eh)     
-        : p_auth(make_xauthentication(config.m_signature_scheme, config.m_key))
-        , m_control(context, config.m_transport, config.m_ip ,config.m_control_port, this)
-        , m_heartbeat(context, config.m_transport, config.m_ip, config.m_hb_port)
+        : p_auth(make_xauthentication(kernel_config.m_signature_scheme, kernel_config.m_key))
+        , m_control(context, kernel_config.m_transport, kernel_config.m_ip ,kernel_config.m_control_port, this)
+        , m_heartbeat(context, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_hb_port)
         , m_publisher(context,
                       std::bind(&xserver_zmq_split_impl::serialize_iopub, this, std::placeholders::_1),
-                      config.m_transport, config.m_ip, config.m_iopub_port)
-        , m_shell(context, config.m_transport, config.m_ip ,config.m_shell_port, config.m_stdin_port, this)
+                      kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_iopub_port)
+        , m_shell(context,
+                  kernel_config.m_transport, kernel_config.m_ip,
+                  kernel_config.m_shell_port, kernel_config.m_stdin_port,
+                  this)
         , m_hb_thread()
         , m_iopub_thread()
         , m_error_handler(eh)
     {
         m_control.connect_messenger();
+
+        if (std::holds_alternative<xregistration_configuration>(initial_config))
+        {
+            update_config(kernel_config);
+            xeus::send_connection_info
+            (
+                context,
+                std::get<xregistration_configuration>(initial_config),
+                kernel_config,
+                *p_auth,
+                m_error_handler
+            );
+        }
     }
 
     void xserver_zmq_split_impl::start_heartbeat_thread()
@@ -127,7 +145,7 @@ namespace xeus
         m_shell.abort_queue(l, polling_interval);
     }
 
-    void xserver_zmq_split_impl::update_config(xconfiguration& config) const
+    void xserver_zmq_split_impl::update_config(xkernel_configuration& config) const
     {
         config.m_control_port = m_control.get_port();
         config.m_shell_port = m_shell.get_shell_port();

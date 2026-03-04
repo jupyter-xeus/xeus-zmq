@@ -21,7 +21,7 @@ int main(int /*argc*/, char* /*argv*/[])
 
     using namespace std::chrono_literals;
 
-    xeus::xconfiguration config;
+    xeus::xkernel_configuration config;
     config.m_transport = "ipc";
     config.m_ip = "localhost";
     config.m_control_port = "control";

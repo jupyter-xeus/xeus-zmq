@@ -54,6 +54,9 @@ namespace xeus
                     const xraw_buffer& meta_data,
                     const xraw_buffer& content) const;
 
+        std::string sign(const xraw_buffer& content) const;
+        bool verify(const xraw_buffer& signature, const xraw_buffer& content) const;
+
     protected:
 
         xauthentication() = default;
@@ -70,6 +73,9 @@ namespace xeus
                                  const xraw_buffer& parent_header,
                                  const xraw_buffer& meta_data,
                                  const xraw_buffer& content) const = 0;
+
+        virtual std::string sign_impl(const xraw_buffer& content) const = 0;
+        virtual bool verify_impl(const xraw_buffer& signature, const xraw_buffer& content) const = 0;
     };
 
     std::unique_ptr<xauthentication> make_xauthentication(const std::string& scheme,

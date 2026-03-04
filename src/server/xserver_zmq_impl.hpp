@@ -37,7 +37,8 @@ namespace xeus
         using internal_listener = xtrivial_messenger::listener;
 
         xserver_zmq_impl(zmq::context_t& context,
-                         const xconfiguration& config,
+                         const xconfiguration& initial_config,
+                         xkernel_configuration kernel_config,
                          nl::json::error_handler_t eh,
                          internal_listener listener);
 
@@ -59,7 +60,7 @@ namespace xeus
         void publish(xpub_message message, channel c);
 
         void abort_queue(const listener& l, long polling_interval);
-        void update_config(xconfiguration& config) const;
+        void update_config(xkernel_configuration& config) const;
 
         zmq::multipart_t serialize_iopub(xpub_message&& msg);
 

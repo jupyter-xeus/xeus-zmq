@@ -27,7 +27,7 @@ namespace xeus
     public:
 
         xiopub_client(zmq::context_t& context,
-                      const xeus::xconfiguration& config,
+                      const xeus::xkernel_configuration& config,
                       xclient_zmq_impl* client);
 
         ~xiopub_client();

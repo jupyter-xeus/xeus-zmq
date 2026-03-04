@@ -26,10 +26,10 @@ namespace xeus
             std::string check(frame.data<const char>(), frame_size);
             return check == DELIMITER;
         }
-        
+
         xraw_buffer make_raw_buffer(zmq::message_t& msg)
         {
-            return xraw_buffer(msg.data<const unsigned char>(), msg.size());
+            return xzmq_serializer::make_raw_buffer(msg);
         }
 
         void parse_zmq_message(const zmq::message_t& msg, nl::json& json)
@@ -43,7 +43,7 @@ namespace xeus
             std::string buffer = json.dump(-1, ' ', false, error_handler);
             return zmq::message_t(buffer.c_str(), buffer.size());
         }
-    
+
         void serialize_message_base(xmessage_base&& msg,
                                     const xauthentication& auth,
                                     nl::json::error_handler_t error_handler,
@@ -107,36 +107,6 @@ namespace xeus
             return data;
         }
 
-        void serialize_zmq_id(const xmessage& msg, zmq::multipart_t& wire_msg)
-        {
-            auto app = [&wire_msg](const std::string& uid) {
-                wire_msg.add(zmq::message_t(uid.begin(), uid.end()));
-            };
-            std::for_each(msg.identities().begin(), msg.identities().end(), app);
-            wire_msg.add(zmq::message_t(DELIMITER.begin(), DELIMITER.end()));
-        }
-
-        xmessage::guid_list deserialize_zmq_id(zmq::multipart_t& wire_msg)
-        {
-            xmessage::guid_list zmq_id;
-            zmq::message_t frame = wire_msg.pop();
-
-            // ZMQ identites
-            while (!is_delimiter(frame) && wire_msg.size() != 0)
-            {
-                zmq_id.emplace_back(frame.data<const char>(), frame.size());
-                frame = wire_msg.pop();
-            }
-
-            // if wire_msg is empty, that means frame doesn't contain <IDS|MSG>
-            if (wire_msg.size() == 0)
-            {
-                throw std::runtime_error("ERROR: Delimiter not present in message");
-            }
-            return zmq_id;
-        }
-
-
         void serialize_topic(const xpub_message& msg, zmq::multipart_t& wire_msg)
         {
             wire_msg.add(zmq::message_t(msg.topic().begin(), msg.topic().end()));
@@ -157,7 +127,7 @@ namespace xeus
                                                 nl::json::error_handler_t error_handler)
     {
         zmq::multipart_t wire_msg;
-        serialize_zmq_id(msg, wire_msg);
+        serialize_zmq_id(msg.identities(), wire_msg);
         serialize_message_base(std::move(msg), auth, error_handler, wire_msg);
         return wire_msg;
     }
@@ -186,6 +156,40 @@ namespace xeus
         std::string topic = deserialize_topic(wire_msg);
         xmessage_base_data data = deserialize_message_base(wire_msg, auth);
         return xpub_message(topic, std::move(data));
+    }
+
+    void xzmq_serializer::serialize_zmq_id(const xmessage::guid_list& ids, zmq::multipart_t& wire_msg)
+    {
+        auto app = [&wire_msg](const std::string& uid) {
+            wire_msg.add(zmq::message_t(uid.begin(), uid.end()));
+        };
+        std::for_each(ids.begin(), ids.end(), app);
+        wire_msg.add(zmq::message_t(DELIMITER.begin(), DELIMITER.end()));
+    }
+
+    xmessage::guid_list xzmq_serializer::deserialize_zmq_id(zmq::multipart_t& wire_msg)
+    {
+        xmessage::guid_list zmq_id;
+        zmq::message_t frame = wire_msg.pop();
+
+        // ZMQ identites
+        while (!is_delimiter(frame) && wire_msg.size() != 0)
+        {
+            zmq_id.emplace_back(frame.data<const char>(), frame.size());
+            frame = wire_msg.pop();
+        }
+
+        // if wire_msg is empty, that means frame doesn't contain <IDS|MSG>
+        if (wire_msg.size() == 0)
+        {
+            throw std::runtime_error("ERROR: Delimiter not present in message");
+        }
+        return zmq_id;
+    }
+
+    xraw_buffer xzmq_serializer::make_raw_buffer(zmq::message_t& msg)
+    {
+        return xraw_buffer(msg.data<const unsigned char>(), msg.size());
     }
 }
 

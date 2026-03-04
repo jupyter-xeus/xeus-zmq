@@ -34,7 +34,7 @@ namespace xeus
 
         explicit xclient_zmq(std::unique_ptr<xclient_zmq_impl> impl);
         ~xclient_zmq();
-        
+
         void connect();
         void start();
         void stop_channels();
@@ -58,13 +58,13 @@ namespace xeus
         void wait_for_message();
 
     private:
-        
+
         std::unique_ptr<xclient_zmq_impl> p_client_impl;
     };
 
     XEUS_ZMQ_API
     std::unique_ptr<xclient_zmq> make_xclient_zmq(xcontext& context,
-                                              const xconfiguration& config,
+                                              const xkernel_configuration& config,
                                               nl::json::error_handler_t eh = nl::json::error_handler_t::strict);
 }
 

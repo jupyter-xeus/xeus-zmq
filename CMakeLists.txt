@@ -7,7 +7,7 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 project(xeus-zmq)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
@@ -135,6 +135,7 @@ set(XEUS_ZMQ_HEADERS
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdap_tcp_client.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xdebugger_base.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xeus-zmq.hpp
+    ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xhandshake_client_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xmiddleware.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq.hpp
     ${XEUS_ZMQ_INCLUDE_DIR}/xeus-zmq/xserver_zmq_split.hpp
@@ -152,6 +153,7 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/client/xclient_zmq_impl.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/client/xdealer_channel.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/client/xdealer_channel.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/client/xhandshake_client_zmq.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/client/xheartbeat_client.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/client/xheartbeat_client.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/client/xiopub_client.hpp
@@ -173,6 +175,8 @@ set(XEUS_ZMQ_SOURCES
     ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol_runner.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xcontrol.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xhandshaking.cpp
+    ${XEUS_ZMQ_SOURCE_DIR}/server/xhandshaking.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xheartbeat.cpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xheartbeat.hpp
     ${XEUS_ZMQ_SOURCE_DIR}/server/xpublisher.cpp

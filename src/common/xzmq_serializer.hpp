@@ -35,6 +35,12 @@ namespace xeus
 
         static xpub_message deserialize_iopub(zmq::multipart_t& wire_msg,
                                               const xauthentication& auth);
+
+
+        static void serialize_zmq_id(const xmessage::guid_list& ids, zmq::multipart_t& wire_msg);
+        static xmessage::guid_list deserialize_zmq_id(zmq::multipart_t& wire_msg);
+
+        static xraw_buffer make_raw_buffer(zmq::message_t& msg);
     };
 
 }
