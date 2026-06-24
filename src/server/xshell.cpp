@@ -17,10 +17,7 @@
 namespace xeus
 {
     xshell::xshell(zmq::context_t& context,
-                   const std::string& transport,
-                   const std::string& ip,
-                   const std::string& shell_port,
-                   const std::string& stdin_port,
+                   const xkernel_configuration& config,
                    xserver_zmq_split_impl* server)
         : m_shell(context, zmq::socket_type::router)
         , m_stdin(context, zmq::socket_type::router)
@@ -28,8 +25,13 @@ namespace xeus
         , m_controller(context, zmq::socket_type::rep)
         , p_server(server)
     {
-        init_socket(m_shell, transport, ip, shell_port);
-        init_socket(m_stdin, transport, ip, stdin_port);
+        if (config.m_curve_public_key != "")
+        {
+            set_curve_encryption(m_shell, config.m_curve_public_key, config.m_curve_secret_key);
+            set_curve_encryption(m_stdin, config.m_curve_public_key, config.m_curve_secret_key);
+        }
+        init_socket(m_shell, config.m_transport, config.m_ip, config.m_shell_port);
+        init_socket(m_stdin, config.m_transport, config.m_ip, config.m_stdin_port);
 
         m_publisher_pub.set(zmq::sockopt::linger, get_socket_linger());
         m_publisher_pub.connect(get_publisher_end_point());

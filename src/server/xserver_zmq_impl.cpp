@@ -30,14 +30,22 @@ namespace xeus
         , p_auth(make_xauthentication(kernel_config.m_signature_scheme, kernel_config.m_key))
         , m_publisher(context,
                       std::bind(&xserver_zmq_impl::serialize_iopub, this, std::placeholders::_1),
-                      kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_iopub_port)
-        , m_heartbeat(context, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_hb_port)
+                      kernel_config)
+        , m_heartbeat(context, kernel_config)
         , m_iopub_thread()
         , m_hb_thread()
         , m_messenger(std::move(listener))
         , m_error_handler(eh)
         , m_request_stop(false)
     {
+        if (kernel_config.m_curve_public_key != "")
+        {
+            const std::string& public_key = kernel_config.m_curve_public_key;
+            const std::string& secret_key = kernel_config.m_curve_secret_key;
+            set_curve_encryption(m_shell, public_key, secret_key);
+            set_curve_encryption(m_controller, public_key, secret_key);
+            set_curve_encryption(m_stdin, public_key, secret_key);
+        }
         init_socket(m_shell, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_shell_port);
         init_socket(m_controller, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_control_port);
         init_socket(m_stdin, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_stdin_port);

@@ -17,6 +17,10 @@
 
 namespace xeus
 {
+    void set_curve_encryption(zmq::socket_t& socket,
+                              const std::string curve_public_key,
+                              const std::string curve_secret_key);
+
     void init_socket(zmq::socket_t& socket,
                      const std::string& transport,
                      const std::string& ip,

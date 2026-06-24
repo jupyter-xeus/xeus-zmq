@@ -14,6 +14,7 @@
 
 #include "zmq.hpp"
 
+#include "xeus/xkernel_configuration.hpp"
 namespace xeus
 {
     class xheartbeat
@@ -21,9 +22,7 @@ namespace xeus
     public:
 
         xheartbeat(zmq::context_t& context,
-                   const std::string& transport,
-                   const std::string& ip,
-                   const std::string& port);
+                   const xkernel_configuration& config);
 
         ~xheartbeat();
 
