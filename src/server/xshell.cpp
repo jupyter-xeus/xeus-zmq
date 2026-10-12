@@ -8,6 +8,7 @@
 ****************************************************************************/
 
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 #include "xserver_zmq_split_impl.hpp"
@@ -65,16 +66,25 @@ namespace xeus
             { m_controller, 0, ZMQ_POLLIN, 0 }
         };
 
-        zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
+        try
+        {
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
 
-        if (items[0].revents & ZMQ_POLLIN)
-        {
-            return channel::SHELL;
+            if (items[0].revents & ZMQ_POLLIN)
+            {
+                return channel::SHELL;
+            }
+
+            if (items[1].revents & ZMQ_POLLIN)
+            {
+                return channel::CONTROL;
+            }
         }
-        
-        if (items[1].revents & ZMQ_POLLIN)
+        catch (const zmq::error_t& e)
         {
-            return channel::CONTROL;
+            std::cerr << "Shell: " << e.what() << std::endl;
+            if (e.num() != EINTR && e.num() != ETERM)
+                throw e;
         }
 
         return std::nullopt;

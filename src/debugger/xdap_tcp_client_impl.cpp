@@ -7,6 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
+
 #include "zmq_addon.hpp"
 #include "nlohmann/json.hpp"
 #include "xeus/xmessage.hpp"
@@ -155,7 +157,7 @@ namespace xeus
         zmq::message_t req;
         (void)m_controller.recv(req);
         m_controller.send(zmq::message_t("ACK", 3), zmq::send_flags::none);
-        
+
         zmq::pollitem_t items[] =
         {
             { m_controller_header, 0, ZMQ_POLLIN, 0 },
@@ -167,7 +169,17 @@ namespace xeus
         m_wait_attach = m_dap_init_type == dap_init_type::parallel;
         while(!m_request_stop)
         {
-            zmq::poll(&items[0], 3, std::chrono::milliseconds(-1));
+            try
+            {
+                zmq::poll(&items[0], 3, std::chrono::milliseconds(-1));
+            }
+            catch (const zmq::error_t& e)
+            {
+                std::cerr << "DAP Client: " << e.what() << std::endl;
+                if (e.num() == EINTR) continue;
+                if (e.num() == ETERM) break;
+                throw e;
+            }
 
             if(items[0].revents & ZMQ_POLLIN)
             {
@@ -187,7 +199,7 @@ namespace xeus
             process_message_queue();
         }
         m_request_stop = false;
-        
+
         finalize_tcp_socket(tcp_end_point);
         m_controller.disconnect(controller_end_point);
         m_controller_header.disconnect(controller_header_end_point);
