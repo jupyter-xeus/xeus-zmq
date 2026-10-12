@@ -7,6 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <iostream>
 #include <string>
 
 #include "../common/xmiddleware_impl.hpp"
@@ -62,7 +63,17 @@ namespace xeus
 
         while (true)
         {
-            zmq::poll(&items[0], 3, std::chrono::milliseconds(-1));
+            try
+            {
+                zmq::poll(&items[0], 3, std::chrono::milliseconds(-1));
+            }
+            catch (const zmq::error_t& e)
+            {
+                std::cerr << "IOPUB: " << e.what() << std::endl;
+                if (e.num() == EINTR) continue;
+                if (e.num() == ETERM) break;
+                throw e;
+            }
 
             if (items[0].revents & ZMQ_POLLIN)
             {

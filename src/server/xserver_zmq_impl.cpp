@@ -102,10 +102,10 @@ namespace xeus
         zmq::pollitem_t items[]
             = { { m_controller, 0, ZMQ_POLLIN, 0 }, { m_shell, 0, ZMQ_POLLIN, 0 } };
 
-        zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
-
         try
         {
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
+
             if (items[0].revents & ZMQ_POLLIN)
             {
                 zmq::multipart_t wire_msg;
@@ -122,9 +122,11 @@ namespace xeus
                 return { std::make_pair(std::move(msg), channel::SHELL) };
             }
         }
-        catch (std::exception& e)
+        catch (const zmq::error_t& e)
         {
             std::cerr << e.what() << std::endl;
+            if (e.num() != EINTR && e.num() != ETERM)
+                throw e;
         }
 
         return std::nullopt;
