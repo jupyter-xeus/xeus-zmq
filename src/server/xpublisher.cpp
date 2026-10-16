@@ -105,6 +105,10 @@ namespace xeus
                 // exit by sending a single malformed message.
                 if (wire_msg.size() != 1 || wire_msg.front().size() == 0)
                 {
+                    std::cerr << "IOPUB: ignoring unexpected message on XPUB socket ("
+                              << wire_msg.size() << " frame(s), first frame "
+                              << (wire_msg.empty() ? 0 : wire_msg.front().size())
+                              << " byte(s))" << std::endl;
                     continue;
                 }
 
