@@ -99,10 +99,13 @@ namespace xeus
                 zmq::multipart_t wire_msg;
                 wire_msg.recv(m_publisher);
 
-                // Received event should be a single frame
-                if (wire_msg.size() != 1)
+                // Subscription events are single non-empty frames. But XPUB sockets also
+                // pass along any other message sent by a peer, so anything else is ignored
+                // rather than treated as an error, as a peer could otherwise make the kernel
+                // exit by sending a single malformed message.
+                if (wire_msg.size() != 1 || wire_msg.front().size() == 0)
                 {
-                    throw std::runtime_error("ERROR: Received message on XPUB is not a single frame");
+                    continue;
                 }
 
                 zmq::message_t frame = wire_msg.pop();
