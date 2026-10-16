@@ -16,6 +16,7 @@
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 
+#include "xeus/xkernel_configuration.hpp"
 #include "xeus/xmessage.hpp"
 
 namespace xeus
@@ -26,9 +27,7 @@ namespace xeus
 
         xpublisher(zmq::context_t& context,
                    std::function<zmq::multipart_t(xpub_message&&)> serialize_iopub_msg_cb,
-                   const std::string& transport,
-                   const std::string& ip,
-                   const std::string& port);
+                   const xkernel_configuration& config);
 
         ~xpublisher();
 

@@ -16,6 +16,7 @@
 #include "zmq_addon.hpp"
 #include "xzmq_messenger.hpp"
 
+#include "xeus/xkernel_configuration.hpp"
 #include "xeus/xmessage.hpp"
 
 #include "xeus-zmq/xmiddleware.hpp"
@@ -31,9 +32,7 @@ namespace xeus
         using listener = std::function<void(zmq::multipart_t&)>;
 
         xcontrol(zmq::context_t& context,
-                 const std::string& transport,
-                 const std::string& ip,
-                 const std::string& control_port,
+                 const xkernel_configuration& config,
                  xserver_zmq_split_impl* server);
 
         std::string get_port() const;

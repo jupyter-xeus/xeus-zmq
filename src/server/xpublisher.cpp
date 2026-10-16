@@ -17,15 +17,17 @@ namespace xeus
 {
     xpublisher::xpublisher(zmq::context_t& context,
                            std::function<zmq::multipart_t(xpub_message&&)> serialize_iopub_msg_cb,
-                           const std::string& transport,
-                           const std::string& ip,
-                           const std::string& port)
+                           const xkernel_configuration& config)
         : m_publisher(context, zmq::socket_type::xpub)
         , m_listener(context, zmq::socket_type::sub)
         , m_controller(context, zmq::socket_type::rep)
         , m_serialize_iopub_msg_cb(std::move(serialize_iopub_msg_cb))
     {
-        init_socket(m_publisher, transport, ip, port);
+        if (config.m_curve_public_key != "")
+        {
+            set_curve_encryption(m_publisher, config.m_curve_public_key, config.m_curve_secret_key);
+        }
+        init_socket(m_publisher, config.m_transport, config.m_ip, config.m_iopub_port);
         // Set xpub_verbose option to 1 to pass all subscription messages (not only unique ones).
         m_publisher.set(zmq::sockopt::xpub_verbose, 1);
         m_listener.set(zmq::sockopt::subscribe, "");
