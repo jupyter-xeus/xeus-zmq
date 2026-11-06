@@ -45,6 +45,8 @@ namespace xeus
         xmessage_base_data data;
         data.m_header = xeus::make_header("iopub_welcome", "", "");
         data.m_content["subscription"] = topic;
+        data.m_parent_header = nl::json::object();
+        data.m_metadata = nl::json::object();
         xpub_message p_msg("", std::move(data));
 
         return p_msg;
