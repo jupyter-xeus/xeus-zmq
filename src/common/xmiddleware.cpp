@@ -65,6 +65,15 @@ namespace xeus
             return rd_port;
     }
 
+    void set_curve_encryption(zmq::socket_t& socket,
+                              const std::string curve_public_key,
+                              const std::string curve_secret_key)
+    {
+        socket.set(zmq::sockopt::curve_publickey, curve_public_key);
+        socket.set(zmq::sockopt::curve_secretkey, curve_secret_key);
+        socket.set(zmq::sockopt::curve_server, 1);
+    }
+
     void init_socket(zmq::socket_t& socket,
                      const std::string& transport,
                      const std::string& ip,

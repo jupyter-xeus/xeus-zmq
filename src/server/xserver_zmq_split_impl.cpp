@@ -20,15 +20,12 @@ namespace xeus
                                                    xkernel_configuration kernel_config,
                                                    nl::json::error_handler_t eh)     
         : p_auth(make_xauthentication(kernel_config.m_signature_scheme, kernel_config.m_key))
-        , m_control(context, kernel_config.m_transport, kernel_config.m_ip ,kernel_config.m_control_port, this)
-        , m_heartbeat(context, kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_hb_port)
+        , m_control(context, kernel_config, this)
+        , m_heartbeat(context, kernel_config)
         , m_publisher(context,
                       std::bind(&xserver_zmq_split_impl::serialize_iopub, this, std::placeholders::_1),
-                      kernel_config.m_transport, kernel_config.m_ip, kernel_config.m_iopub_port)
-        , m_shell(context,
-                  kernel_config.m_transport, kernel_config.m_ip,
-                  kernel_config.m_shell_port, kernel_config.m_stdin_port,
-                  this)
+                      kernel_config)
+        , m_shell(context, kernel_config, this)
         , m_hb_thread()
         , m_iopub_thread()
         , m_error_handler(eh)

@@ -18,13 +18,15 @@
 namespace xeus
 {
     xheartbeat::xheartbeat(zmq::context_t& context,
-                           const std::string& transport,
-                           const std::string& ip,
-                           const std::string& port)
+                           const xkernel_configuration& config)
         : m_heartbeat(context, zmq::socket_type::router)
         , m_controller(context, zmq::socket_type::rep)
     {
-        init_socket(m_heartbeat, transport, ip, port);
+        if (config.m_curve_public_key != "")
+        {
+            set_curve_encryption(m_heartbeat, config.m_curve_public_key, config.m_curve_secret_key);
+        }
+        init_socket(m_heartbeat, config.m_transport, config.m_ip, config.m_hb_port);
         init_socket(m_controller, get_controller_end_point("heartbeat"));
     }
 

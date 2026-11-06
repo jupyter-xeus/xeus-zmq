@@ -16,6 +16,7 @@
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 
+#include "xeus/xkernel_configuration.hpp"
 #include "xeus/xmessage.hpp"
 #include "xeus/xserver.hpp"
 
@@ -32,10 +33,7 @@ namespace xeus
         using listener = std::function<void(xmessage)>;
 
         xshell(zmq::context_t& context,
-               const std::string& transport,
-               const std::string& ip,
-               const std::string& shell_port,
-               const std::string& stdin_port,
+               const xkernel_configuration& config,
                xserver_zmq_split_impl* server);
  
         std::string get_shell_port() const;
