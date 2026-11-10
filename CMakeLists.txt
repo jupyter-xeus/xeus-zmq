@@ -277,7 +277,7 @@ macro(xeus_zmq_create_target target_name linkage output_name)
             COMPILE_DEFINITIONS "XEUS_ZMQ_EXPORTS"
             PREFIX ""
             VERSION
-            "${XEUS_ZMQ_BINARY_COMPATIBLE}.${XEUS_ZMQ_BINARY_REVISION}.${XEUS_ZMQ_BINARY_AGE}"
+            "${XEUS_ZMQ_BINARY_COMPATIBLE}.${XEUS_ZMQ_BINARY_AGE}.${XEUS_ZMQ_BINARY_REVISION}"
             SOVERSION ${XEUS_ZMQ_BINARY_COMPATIBLE}
             OUTPUT_NAME "lib${output_name}"
         )
