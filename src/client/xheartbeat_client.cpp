@@ -28,6 +28,12 @@ namespace xeus
         , m_request_stop(false)
     {
         m_heartbeat_end_point = get_end_point(config.m_transport, config.m_ip, config.m_hb_port);
+        // A REQ socket must alternate send / recv. When a ping times out, the
+        // next ping would be sent while the socket still waits for the previous
+        // answer and throw EFSM. Relaxed mode allows sending again; correlation
+        // drops late answers to earlier pings.
+        m_heartbeat.set(zmq::sockopt::req_relaxed, 1);
+        m_heartbeat.set(zmq::sockopt::req_correlate, 1);
         m_heartbeat.connect(m_heartbeat_end_point);
         init_socket(m_controller, get_controller_end_point("heartbeat"));
     }
@@ -49,13 +55,16 @@ namespace xeus
             { m_heartbeat, 0, ZMQ_POLLIN, 0 }, { m_controller, 0, ZMQ_POLLIN, 0 }
         };
 
-        zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
         try
         {
+            zmq::poll(&items[0], 2, std::chrono::milliseconds(timeout));
+
+            bool answered = false;
             if (items[0].revents & ZMQ_POLLIN)
             {
                 zmq::multipart_t wire_msg;
                 wire_msg.recv(m_heartbeat);
+                answered = true;
             }
 
             if (items[1].revents & ZMQ_POLLIN)
@@ -65,9 +74,11 @@ namespace xeus
                 wire_msg.recv(m_controller);
                 wire_msg.send(m_controller);
                 m_request_stop = true;
+                return true;
             }
 
-            return true;
+            // no answer within the timeout: count it as a missed heartbeat
+            return answered;
         }
         catch (std::exception& e)
         {
@@ -92,7 +103,15 @@ namespace xeus
 
         while(!m_request_stop)
         {
-            send_heartbeat_message();
+            // an exception escaping this thread would terminate the process
+            try
+            {
+                send_heartbeat_message();
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+            }
             if(!wait_for_answer(m_heartbeat_timeout))
             {
                 if (retry_count < m_max_retry)

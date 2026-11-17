@@ -18,7 +18,8 @@ namespace xeus
     namespace
     {
         constexpr std::size_t max_retry = 3;
-        constexpr long heartbeat_timeout = std::chrono::milliseconds(90).count();
+        // generous: a busy machine (e.g. CI) must not make a healthy kernel look dead
+        constexpr long heartbeat_timeout = std::chrono::milliseconds(1000).count();
     }
 
     xclient_zmq_impl::xclient_zmq_impl(zmq::context_t& context,
